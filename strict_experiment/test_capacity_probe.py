@@ -15,18 +15,19 @@ from strict_experiment import runner
 class CapacityProbeTest(unittest.TestCase):
     def test_plan_covers_mixed_and_long_scheduler_without_claiming_full262k(self):
         plan = capacity.plan(runner.config_template())
-        self.assertEqual(plan["max_generation_requests"], 6)
+        self.assertEqual(plan["max_generation_requests"], 8)
         self.assertEqual(plan["resident_reranker_instances"], 1)
-        self.assertEqual(plan["reranker_leases"], 3)
+        self.assertEqual(plan["reranker_leases"], 4)
+        self.assertEqual(plan["question_concurrency"], 4)
         self.assertEqual(plan["benchmark_questions_used"], 0)
         self.assertFalse(plan["all_selected_concurrency_full262k_tested"])
         self.assertFalse(plan["formal32768_output_generation_tested"])
         for wave in plan["waves"]:
-            self.assertEqual(len(wave["input_token_targets"]), 3)
+            self.assertEqual(len(wave["input_token_targets"]), 4)
             for target in wave["input_token_targets"]:
                 self.assertLessEqual(target + 64 + 32768 + 256, 262144)
-        self.assertEqual(plan["waves"][0]["input_token_targets"], [163840, 65536, 65536])
-        self.assertEqual(plan["waves"][1]["input_token_targets"], [229056, 163840, 163840])
+        self.assertEqual(plan["waves"][0]["input_token_targets"], [163840, 65536, 65536, 65536])
+        self.assertEqual(plan["waves"][1]["input_token_targets"], [229056, 163840, 163840, 163840])
 
     def test_generation_requires_exact_model_input_usage_and_bounded_output(self):
         row = {"success": True, "reported_model": runner.MODEL, "prompt_tokens": 163840,
@@ -39,15 +40,16 @@ class CapacityProbeTest(unittest.TestCase):
                 self.assertFalse(capacity.validate_generation(changed, 163840))
 
     def test_wave_cannot_pass_merely_because_models_were_loaded(self):
-        row = {"llm_requests": [{"success": True}] * 3,
+        row = {"llm_requests": [{"success": True}] * 4,
             "reranker_request": {"success": True, "scores_count": 1000,
                 "scheduler_admission_observed": True, "admitted_num_requests_running": 1},
-            "all_three_requests_admitted_concurrently": True,
+            "all_four_requests_admitted_concurrently": True,
             "overlap": {"real_rerank_llm_overlap_verified": True}}
         self.assertTrue(capacity.wave_passed(row))
         self.assertFalse(capacity.wave_passed({**row, "overlap": {"real_rerank_llm_overlap_verified": False}}))
         self.assertFalse(capacity.wave_passed({**row, "reranker_request": {"success": True, "scores_count": 2}}))
-        self.assertFalse(capacity.wave_passed({**row, "all_three_requests_admitted_concurrently": False}))
+        self.assertFalse(capacity.wave_passed({**row, "all_four_requests_admitted_concurrently": False}))
+        self.assertFalse(capacity.wave_passed({**row, "llm_requests": [{"success": True}] * 3}))
         self.assertFalse(capacity.wave_passed({**row, "reranker_request": {"success": True,
             "scores_count": 1000, "scheduler_admission_observed": False}}))
 
@@ -79,7 +81,7 @@ class CapacityProbeTest(unittest.TestCase):
             "results": []}
         for name, targets in capacity.WAVES:
             report["results"].append({"name": name, "input_token_targets": list(targets),
-                "all_three_requests_admitted_concurrently": True,
+                "all_four_requests_admitted_concurrently": True,
                 "overlap": {"real_rerank_llm_overlap_verified": True},
                 "reranker_request": {"success": True, "scores_count": 1000,
                     "scheduler_admission_observed": True, "admitted_num_requests_running": 1},
@@ -116,6 +118,19 @@ class CapacityProbeTest(unittest.TestCase):
                 runner.verify_capacity_report(config)
             self.save_capacity_fixture(config, report)
             Path(config["model_identity"]["service_config"]).write_text('{"pid":999}')
+            with self.assertRaisesRegex(RuntimeError, "another config, source, service"):
+                runner.verify_capacity_report(config)
+
+    def test_c3_reports_are_not_reinterpreted_as_c4_capacity(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            config, report = self.capacity_fixture(Path(temporary))
+            report.update(version="strict-qwen35-c3-shared-reranker-capacity-v2",
+                question_concurrency=3, reranker_leases=3)
+            for wave in report["results"]:
+                wave["llm_requests"] = wave["llm_requests"][:3]
+                wave["input_token_targets"] = wave["input_token_targets"][:3]
+                wave["all_three_requests_admitted_concurrently"] = wave.pop("all_four_requests_admitted_concurrently")
+            self.save_capacity_fixture(config, report)
             with self.assertRaisesRegex(RuntimeError, "another config, source, service"):
                 runner.verify_capacity_report(config)
 

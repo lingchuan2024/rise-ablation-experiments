@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Bounded C3 synthetic long-context / shared-reranker coexistence probe.
+"""Bounded C4 synthetic long-context / shared-reranker coexistence probe.
 
 The two waves certify only their measured mixed workloads. They do not certify
-three simultaneous262k histories or32768 generated tokens. No benchmark
+four simultaneous262k histories or32768 generated tokens. No benchmark
 question, solver response text, or private reasoning enters this report.
 """
 from __future__ import annotations
@@ -28,11 +28,12 @@ for directory in (ROOT, ROOT / "server", ROOT / "code/src"):
 from strict_experiment import runner
 import concurrency_probe as probe
 
-VERSION = "strict-qwen35-c3-shared-reranker-capacity-v2"
+VERSION = "strict-qwen35-c4-shared-reranker-capacity-v1"
+CONCURRENCY = 4
 TOLERANCE = 64
 OUTPUT_CAP = 128
-WAVES = (("mixed", (163840, 65536, 65536)),
-         ("long_scheduler", (229056, 163840, 163840)))
+WAVES = (("mixed", (163840, 65536, 65536, 65536)),
+         ("long_scheduler", (229056, 163840, 163840, 163840)))
 
 
 def plan(config):
@@ -41,15 +42,15 @@ def plan(config):
         raise ValueError("This real capacity probe fixes the v14 BF16 reranker")
     return {"version": VERSION, "model": runner.MODEL, "config_sha256": runner.digest(config),
         "base_url": config["base_url"], "context_tokens": config["context_length"],
-        "question_concurrency": 3, "resident_reranker_instances": 1,
-        "reranker_leases": 3, "reranker_revision": runner.PIN,
+        "question_concurrency": CONCURRENCY, "resident_reranker_instances": 1,
+        "reranker_leases": CONCURRENCY, "reranker_revision": runner.PIN,
         "reranker_device": config["reranker_device"], "reranker_dtype": config["reranker_dtype"],
         "reranker_batch_size": 8, "rerank_passages_per_wave": 1000,
         "passage_tokens": 128, "output_tokens_per_request": OUTPUT_CAP,
         "formal_output_budget_not_generated_by_probe": config["per_call_max_tokens"],
         "token_calibration_tolerance": TOLERANCE,
         "waves": [{"name": name, "input_token_targets": list(targets)} for name, targets in WAVES],
-        "max_generation_requests": 6, "max_calibration_tokenize_requests": 24,
+        "max_generation_requests": 8, "max_calibration_tokenize_requests": 24,
         "scheduler_admission_wait_limit_seconds": 60,
         "rerank_start_rule": "Observe actual /metrics num_requests_running>0 within60seconds, then score; HTTP request start alone is insufficient.",
         "benchmark_questions_used": 0, "answer_quality_evaluated": False,
@@ -57,9 +58,9 @@ def plan(config):
         "all_selected_concurrency_full262k_tested": False,
         "formal32768_output_generation_tested": False,
         "certification_scope": (
-            "C3 admissions: one163840+two65536 inputs, then one229056+two163840 inputs; "
+            "C4 admissions: one163840+three65536 inputs, then one229056+three163840 inputs; "
             "each wave overlaps one real shared BF16 reranker scoring1000 exact128-token passages. "
-            "Requests may queue or be preempted. Three full262k resident histories and32768-token generation are NOT certified.")}
+            "Requests may queue or be preempted. Four full262k resident histories and32768-token generation are NOT certified.")}
 
 
 def calibrate(transport, body, nonce, target):
@@ -197,12 +198,12 @@ def wait_for_scheduler_admission(transport, timeout):
 def wave_passed(row):
     requests = row.get("llm_requests", [])
     neural = row.get("reranker_request", {})
-    return (len(requests) == 3 and all(item.get("success") is True for item in requests)
+    return (len(requests) == CONCURRENCY and all(item.get("success") is True for item in requests)
         and neural.get("success") is True and neural.get("scores_count") == 1000
         and neural.get("scheduler_admission_observed") is True
         and isinstance(neural.get("admitted_num_requests_running"), (int, float))
         and neural["admitted_num_requests_running"] > 0
-        and row.get("all_three_requests_admitted_concurrently") is True
+        and row.get("all_four_requests_admitted_concurrently") is True
         and row.get("overlap", {}).get("real_rerank_llm_overlap_verified") is True)
 
 
@@ -232,7 +233,7 @@ def execute(config, output, *, timeout=1200, rerank_delay=2):
         from rise.reranker_backend import QwenReranker
         leases = [QwenReranker(model=config["reranker_model"], revision=runner.PIN,
             device=config["reranker_device"], dtype=config["reranker_dtype"],
-            batch_size=8, max_length=32768, local_files_only=True) for _ in range(3)]
+            batch_size=8, max_length=32768, local_files_only=True) for _ in range(CONCURRENCY)]
         if len({id(lease._backend) for lease in leases}) != 1:
             raise probe.ProbeError("capacity_reranker_is_not_single_shared_backend")
         if not config["reranker_device"].startswith("cuda") or not torch.cuda.is_available():
@@ -260,7 +261,7 @@ def execute(config, output, *, timeout=1200, rerank_delay=2):
                 if abs(count - target) > TOLERANCE or count + config["per_call_max_tokens"] + 256 > config["context_length"]:
                     raise probe.ProbeError("capacity_input_or_formal_output_reservation_mismatch")
                 prepared.append((messages, count, tag))
-            barrier = threading.Barrier(4)
+            barrier = threading.Barrier(CONCURRENCY + 1)
             torch.cuda.reset_peak_memory_stats(config["reranker_device"])
             def score():
                 barrier.wait(timeout=30)
@@ -286,7 +287,7 @@ def execute(config, output, *, timeout=1200, rerank_delay=2):
                     if neural["score_started"] else 0.0)
                 return neural
             started = time.monotonic()
-            with ThreadPoolExecutor(max_workers=4) as executor:
+            with ThreadPoolExecutor(max_workers=CONCURRENCY + 1) as executor:
                 futures = [executor.submit(generation, transport, messages, count, tag, barrier)
                            for messages, count, tag in prepared]
                 neural_future = executor.submit(score)
@@ -296,7 +297,7 @@ def execute(config, output, *, timeout=1200, rerank_delay=2):
                     "real_rerank_llm_overlap_verified": False})
             row = {"name": name, "input_token_targets": list(targets), "llm_requests": requests,
                 "reranker_request": neural, "overlap": overlap,
-                "all_three_requests_admitted_concurrently": max(item["started_unix"] for item in requests) < min(item["finished_unix"] for item in requests),
+                "all_four_requests_admitted_concurrently": max(item["started_unix"] for item in requests) < min(item["finished_unix"] for item in requests),
                 "wall_seconds": time.monotonic() - started,
                 "reranker_torch_peak_allocated_bytes": torch.cuda.max_memory_allocated(config["reranker_device"]),
                 "reranker_torch_peak_reserved_bytes": torch.cuda.max_memory_reserved(config["reranker_device"])}

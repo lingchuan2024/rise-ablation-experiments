@@ -63,7 +63,7 @@ class RunnerContractsTest(unittest.TestCase):
     def test_common_config_rejects_extra_arm_overrides_and_wrong_model(self):
         config = runner.config_template()
         self.assertIs(runner.validate_config(config), config)
-        for key, value in (("model", "qwen3.8-flash"), ("per_call_max_tokens", 32000),
+        for key, value in (("model", "qwen3.8-flash"), ("concurrency", 3), ("per_call_max_tokens", 32000),
                 ("run_max_attempts", 2), ("A", {"max_turns": 101})):
             changed = copy.deepcopy(config); changed[key] = value
             with self.subTest(key=key), self.assertRaises(ValueError):

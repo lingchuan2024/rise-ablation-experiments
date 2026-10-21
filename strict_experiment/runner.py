@@ -85,7 +85,7 @@ def validate_queries():
 
 def config_template():
     return {"version": VERSION, "model": MODEL, "base_url": "http://127.0.0.1:8000/v1",
-        "concurrency": 3, "context_length": 262144, "max_turns": 100,
+        "concurrency": 4, "context_length": 262144, "max_turns": 100,
         "per_call_max_tokens": 32768, "wall_clock_seconds": 3600,
         "api_max_retries": 1, "run_max_attempts": 1,
         "coerce_final_on_max_turns": False, "context_level": "level0",
@@ -294,7 +294,7 @@ def resource_identity(config):
 
 
 def verify_capacity_report(config):
-    """Bind the actual measured C3 workload before any cohort is admitted."""
+    """Bind the actual measured C4 workload before any cohort is admitted."""
     from strict_experiment import capacity_probe
     path = Path(config["capacity_report"])
     if not path.is_file():
@@ -303,8 +303,8 @@ def verify_capacity_report(config):
     payload = {key: value for key, value in report.items() if key != "report_sha256"}
     expected = {"version": capacity_probe.VERSION, "model": MODEL,
         "config_sha256": digest(config), "base_url": config["base_url"],
-        "context_tokens": config["context_length"], "question_concurrency": 3,
-        "resident_reranker_instances": 1, "reranker_leases": 3,
+        "context_tokens": config["context_length"], "question_concurrency": 4,
+        "resident_reranker_instances": 1, "reranker_leases": 4,
         "reranker_revision": PIN, "reranker_device": config["reranker_device"],
         "reranker_dtype": config["reranker_dtype"], "passed": True, "measured": True,
         "long_context_and_rerank_coexistence_passed": True,
@@ -317,7 +317,7 @@ def verify_capacity_report(config):
         raise RuntimeError("Required mixed/long capacity wave is missing")
     for row, (name, targets) in zip(results, capacity_probe.WAVES):
         if row.get("name") != name or row.get("input_token_targets") != list(targets) or not capacity_probe.wave_passed(row):
-            raise RuntimeError("Required real C3/reranker capacity wave did not pass")
+            raise RuntimeError("Required real C4/reranker capacity wave did not pass")
         for request, target in zip(row["llm_requests"], targets):
             actual = request.get("actual_tokenized_input_tokens")
             if type(actual) is not int or abs(actual - target) > 64 or not capacity_probe.validate_generation(request, actual):
@@ -363,7 +363,7 @@ def prepare(config):
         "question_runs": 200, "historical_results_reused": False,
         "selection": "all100 in original file order; pilot=first10; no outcome selection",
         "analysis_contract": {"version": "strict-qwen35-analysis-v1", "rubric_sha256": digest(rubric_document())},
-        "scheduling": "paired original question order; A then B; global C3",
+        "scheduling": "paired original question order; A then B; global C4",
         "terminal_policy": "immutable; natural errors count; only interrupted infrastructure may resume same checkpoint"}
     manifest = {**payload, "manifest_sha256": digest(payload)}
     for arm in ARMS:
@@ -692,7 +692,7 @@ def run(stage, *, resume_infrastructure=False):
                     validate_terminal(load(path), manifest, arm, query)
                     post_terminal_maintenance(manifest, arm, query)
         pending = [(arm, query) for query in selected for arm in ARMS if not terminal_path(arm, query["query_id"]).exists()]
-        # Submit only C3 at once. On an infrastructure failure, no queued new
+        # Submit only C4 at once. On an infrastructure failure, no queued new
         # question starts; active queries may finish their current admitted turn.
         iterator = iter(pending)
         completions = []

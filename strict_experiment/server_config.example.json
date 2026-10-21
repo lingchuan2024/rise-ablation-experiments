@@ -2,7 +2,7 @@
   "version": "official-rise-plus-rerank-qwen35-v1",
   "model": "Qwen3.5-35B-A3B",
   "base_url": "http://127.0.0.1:8000/v1",
-  "concurrency": 3,
+  "concurrency": 4,
   "context_length": 262144,
   "max_turns": 100,
   "per_call_max_tokens": 32768,
