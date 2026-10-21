@@ -1,0 +1,29 @@
+[project]
+name = "rise"
+version = "0.1.0"
+description = "RISE: Retrieving Interaction SpacE for agentic search (BrowseComp-Plus reproduction code)"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+dependencies = [
+    "bm25s>=0.3.9",
+    "pystemmer>=3.0.0",
+    "openai>=2.24.0",
+    "tiktoken>=0.8.0",
+    "pyarrow",
+    "pandas",
+    "datasets",
+    "huggingface-hub",
+    "python-dotenv",
+    "tqdm",
+    # BCP retrieval-agent baseline only: upstream-faithful snippet truncation
+    # via the Qwen/Qwen3-0.6B tokenizer (AutoTokenizer; no torch needed).
+    "transformers>=4.46.0",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/rise"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"

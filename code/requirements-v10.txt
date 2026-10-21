@@ -1,0 +1,5 @@
+# Optional local Qwen reranker; search and importing v10 need no neural packages.
+# Existing Hugging Face snapshots can run without network via local_files_only.
+torch>=2.2
+transformers>=4.57.3,<5
+huggingface-hub>=0.34

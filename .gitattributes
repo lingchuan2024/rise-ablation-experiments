@@ -1,0 +1,6 @@
+# Keep source and documentation consistent across development hosts.
+* text=auto eol=lf
+
+# These frozen fixture hashes bind their exact original byte sequences.
+/data/queries_100.jsonl -text
+/data/historical_v14_evaluation.json -text
