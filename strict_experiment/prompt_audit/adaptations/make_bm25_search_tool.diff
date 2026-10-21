@@ -1,0 +1,66 @@
+--- official/tools.py::make_bm25_search_tool
++++ shared-server/tools.py::make_bm25_search_tool
+@@ -8,6 +8,7 @@
+     k: int = 100,
+     top_n_preview: int = 10,
+     snippet_chars: int = 100,
++    on_search_results=None,
+ ) -> Callable[[dict], str]:
+     """Return a callable(args)->str that runs BM25 with one or more queries
+     and ACCUMULATES the UNION of each query's top-k matches into working_dir
+@@ -99,6 +100,9 @@
+                 rel = docid_to_relpath.get(str(docid))
+                 if not rel:
+                     continue
++                source = (corpus_resolved / rel).resolve()
++                if not source.is_relative_to(corpus_resolved) or not source.is_file():
++                    continue
+                 top.append((rel, score))
+                 all_relpaths.add(rel)
+             per_query_results.append(top)
+@@ -107,10 +111,14 @@
+         # (we accumulate; previous contents are kept).
+         n_new = 0
+         for rel in all_relpaths:
+-            src = corpus_resolved / rel
+-            if not src.exists():
++            # A filename map is data, not authority to read outside the corpus.
++            # Resolve symlinks as well as `..` before importing a document.
++            src = (corpus_resolved / rel).resolve()
++            if not src.is_relative_to(corpus_resolved) or not src.is_file():
+                 continue
+             dst = wd_resolved / rel
++            if not dst.resolve().is_relative_to(wd_resolved):
++                continue
+             if dst.exists():
+                 continue
+             dst.parent.mkdir(parents=True, exist_ok=True)
+@@ -122,6 +130,19 @@
+ 
+         # Compute new working_dir size (cheap walk; mini-corpus is small).
+         total_in_wd = sum(1 for _ in wd_resolved.rglob("*.txt"))
++
++        # v10 records each subquery's full imported top-1000, independently
++        # of the preview and of documents accumulated by earlier searches.
++        # With no callback the original output and behavior are unchanged.
++        reranker_sets = None
++        if on_search_results is not None:
++            imported_results = [
++                [(rel, score) for rel, score in top
++                 if (wd_resolved / rel).is_file()
++                 and (wd_resolved / rel).resolve().is_relative_to(wd_resolved)]
++                for top in per_query_results
++            ]
++            reranker_sets = on_search_results(queries, imported_results)
+ 
+         # Build per-query preview.
+         n_queries = len(queries)
+@@ -143,6 +164,8 @@
+                 f'({len(top) - n_already} new, {n_already} already in working dir); '
+                 f'showing top {len(preview)}:'
+             )
++            if reranker_sets is not None:
++                lines.append(f"  Reranker set: {reranker_sets[i - 1]}")
+             if not preview:
+                 lines.append("  (no matches)")
+                 continue

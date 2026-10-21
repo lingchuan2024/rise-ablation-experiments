@@ -4,3 +4,4 @@
 # These frozen fixture hashes bind their exact original byte sequences.
 /data/queries_100.jsonl -text
 /data/historical_v14_evaluation.json -text
+strict_experiment/prompt_audit/**/*.diff -whitespace

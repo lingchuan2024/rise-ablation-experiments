@@ -1,0 +1,61 @@
+{
+  "status": "offline_verified_waiting_for_qwen35_service",
+  "offline_preflight": {
+    "passed": true,
+    "live_ready": false,
+    "network_requests": 0,
+    "version": "official-rise-plus-rerank-qwen35-v1",
+    "arms": [
+      "A",
+      "B"
+    ],
+    "fixed100": 100,
+    "pilot_query_ids": [
+      70,
+      81,
+      96,
+      116,
+      122,
+      127,
+      132,
+      153,
+      156,
+      161
+    ],
+    "config_sha256": "eb2ebc9d5fafe63b9192ce1395cb2b5e2941701cf8c27893a589dfca016a565c",
+    "contract_sha256": {
+      "A": "72aa69302bca3796f6a05cb408c4ec7eed9230f766590bf8b86cce680c0eb67a",
+      "B": "981ecf7a06dc9dd36528a44cc4d3b3f06394b0b0c3a83c631887a9ae007a055a"
+    }
+  },
+  "tests": {
+    "passed": true,
+    "count": 54,
+    "command": "python -m unittest discover -s strict_experiment -p test_*.py -v",
+    "network": false,
+    "gpu": false,
+    "log_sha256": "9adef37787ee35293901816c865b41f4b6cccd0d672732186d9e3ab02b296f2d"
+  },
+  "source_freeze_sha256": "06a151b3e76f8936b47b94a94c891a2e4dd169e5495979c9ba253c63a3f8287e",
+  "formal_answers_generated": 0,
+  "live_preflight_passed": false,
+  "actual_run_manifest_created": false,
+  "server_observation": {
+    "target": "183.174.229.152:5102",
+    "checked_model_ports": [
+      8000,
+      8001,
+      8080,
+      30000
+    ],
+    "target_model_service_found": false,
+    "qwen35_35b_model_found_in_checked_cache_paths": false,
+    "gpu_memory_used_mib": [
+      42924,
+      42362,
+      42506,
+      41902
+    ],
+    "action": "no workload started; no existing process modified"
+  }
+}

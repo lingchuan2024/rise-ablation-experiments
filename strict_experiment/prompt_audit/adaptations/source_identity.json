@@ -1,0 +1,40 @@
+{
+  "policy": "identical existing server adapters in A and B; no tool behavior repair",
+  "functions": {
+    "make_read_tool": {
+      "equal": false,
+      "official_sha256": "8f2ce0d96f9724e79cad3079cfefdfac2b6dd324879de10e0c9911749fefaf08",
+      "shared_sha256": "cfab3e641a7bc48ee94f7e5dba7d4915d674e7e412de768b23356bc54b69795f"
+    },
+    "make_bm25_search_tool": {
+      "equal": false,
+      "official_sha256": "02b211e6a5706ed217e559bfb6ec96a49c37093ce3418501dea50e2fe7533ee7",
+      "shared_sha256": "7109e302bfa98c528a6bc5b7209c3b5a0ba12379643ac52e8c76b260796a684e"
+    },
+    "_read_snippet": {
+      "equal": true,
+      "official_sha256": "2a88ad89dceec8aa5c81022f8f73658228bdd75fa86965cd3626d0e8f8993601",
+      "shared_sha256": "2a88ad89dceec8aa5c81022f8f73658228bdd75fa86965cd3626d0e8f8993601"
+    },
+    "make_bash_tool": {
+      "equal": false,
+      "official_sha256": "4a5aea936d9fc5186a1e74bfd09d884519e2c45bff3fbb3cc08e0b7f5d2c3819",
+      "shared_sha256": "9582cd34bd4bc61a523607827ee881e88a4452239b426ec92d07c4d709fa30ac"
+    },
+    "_sandboxed_bash_command": {
+      "equal": false,
+      "official_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "shared_sha256": "c9434c9a8a79ce41374b8180e5fdc710ff6fc6cd36ba1f60a218ea0e804013a9"
+    }
+  },
+  "shared_source_sha256": {
+    "code/src/rise/agent.py": "66ea576e195a5e8a0d3fe499b752058780df8c923e1c40308e24946412661ade",
+    "code/src/rise/tools.py": "3f47d160c170e62382767ea737eec24b279ac3a508cf7dc670b633135b893f8e",
+    "code/src/rise/api_retry.py": "6f3b38319bc4c3f7c5c7ed8865830262fcf7b9141b9f073ae50efc055aa3f179",
+    "code/src/rise/local_vllm.py": "eeeb2dac069302500692356c83ea2f4c79ad67e125c148cfcc2cba32a7ddb93a",
+    "code/src/rise/turn_checkpoint.py": "557601826c0fc821ca7b53f60ddb87301a8dda6cf4d2dd0ce49db59e8c4d0996",
+    "code/src/rise/retrieval.py": "78751df2dc0d5aecdb3102cbec9be7e5a3c5893215dee6c8b8c50453509e3c28",
+    "server/shared_reranker.py": "390a347ffb7074e0a12dc231319d10f81fb83ecaab3be6489d5b2d6299357185",
+    "strict_experiment/runtime.py": "e42353b3302a0970b87979790aaa788506499a0c35c7d13792915362b3f8f264"
+  }
+}

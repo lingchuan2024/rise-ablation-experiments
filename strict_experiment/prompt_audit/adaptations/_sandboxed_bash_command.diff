@@ -1,0 +1,81 @@
+--- official/tools.py::_sandboxed_bash_command
++++ shared-server/tools.py::_sandboxed_bash_command
+@@ -0,0 +1,78 @@
++def _sandboxed_bash_command(working_dir: Path, command: str) -> list[str]:
++    """Build a fail-closed bash command for the current host platform.
++
++    On Linux, start from an empty mount namespace.  Only standard executable
++    and library directories and this query's mini-corpus are exposed.  The
++    mini-corpus is read-only; /tmp is a private writable tmpfs.  Do not bind
++    the host root or /home, which would expose unrelated files to the agent.
++    """
++    if sys.platform == "darwin":
++        return [
++            "/usr/bin/sandbox-exec", "-p", make_sandbox_profile(working_dir),
++            "/bin/bash", "-c", command,
++        ]
++    if not sys.platform.startswith("linux"):
++        raise RuntimeError(f"No bash sandbox is configured for {sys.platform}")
++
++    root = working_dir.resolve()
++    system_dirs = (
++        Path("/usr"), Path("/bin"), Path("/sbin"), Path("/lib"),
++        Path("/lib64"), Path("/lib32"), Path("/libx32"),
++    )
++    # A query workspace must not itself be one of the system mounts.  This
++    # also avoids trying to create directories inside a read-only mount.
++    if root == Path("/") or any(root == path or path in root.parents for path in system_dirs):
++        raise ValueError(f"Unsafe bash working directory: {root}")
++    if root == Path("/dev") or Path("/dev") in root.parents or root == Path("/proc") or Path("/proc") in root.parents:
++        raise ValueError(f"Unsafe bash working directory: {root}")
++
++    backend = os.environ.get("RISE_BASH_SANDBOX", "bubblewrap")
++    if backend == "docker":
++        if ":" in str(root) or "," in str(root):
++            raise ValueError("Unsupported delimiter in Docker workspace path")
++        return [
++            "/usr/bin/docker", "run", "--rm", "--pull=never",
++            "--name", "rise-bash-" + uuid.uuid4().hex,
++            "--label", "rise-sandbox=true", "--network=none", "--read-only",
++            "--cap-drop=ALL", "--security-opt=no-new-privileges:true",
++            "--pids-limit=128", "--memory=1g", "--cpus=2",
++            "--tmpfs", "/tmp:rw,nosuid,nodev,size=128m,mode=1777",
++            "--volume", f"{root}:{root}:ro", "--workdir", str(root),
++            "--env", "HOME=/tmp", "--env", "TMPDIR=/tmp", "--env", "LANG=C.UTF-8",
++            os.environ.get("RISE_DOCKER_IMAGE", "rise-bash:local"),
++            "/bin/bash", "-c", command,
++        ]
++    if backend != "bubblewrap":
++        raise ValueError(f"Unknown RISE bash sandbox: {backend}")
++
++    cmd = [
++        "/usr/bin/bwrap", "--die-with-parent", "--new-session",
++        "--unshare-net", "--unshare-pid", "--tmpfs", "/",
++    ]
++    for system_dir in system_dirs:
++        if system_dir.is_dir():
++            cmd.extend(("--ro-bind", str(system_dir), str(system_dir)))
++    # Shared servers may not have ripgrep installed system-wide.  A verified
++    # static rg binary can live in this project's bin/ directory.  Expose only
++    # that binary to the agent, read-only, outside the corpus workspace.
++    bundled_rg = Path(__file__).resolve().parents[2] / "bin" / "rg"
++    sandbox_path = "/usr/local/bin:/usr/bin:/bin"
++    if bundled_rg.is_file() and os.access(bundled_rg, os.X_OK):
++        cmd.extend(("--dir", "/opt", "--dir", "/opt/rise-tools",
++                    "--ro-bind", str(bundled_rg), "/opt/rise-tools/rg"))
++        sandbox_path = "/opt/rise-tools:" + sandbox_path
++    cmd.extend(("--dev", "/dev", "--proc", "/proc", "--tmpfs", "/tmp"))
++    # Bubblewrap creates empty parent directories so that the absolute
++    # workspace path still works inside the sandbox.  No parent is host-bound.
++    for parent in (*reversed(root.parents), root):
++        if parent not in (Path("/"), Path("/tmp")):
++            cmd.extend(("--dir", str(parent)))
++    cmd.extend(("--ro-bind", str(root), str(root)))
++    cmd.extend((
++        "--setenv", "HOME", "/tmp",
++        "--setenv", "TMPDIR", "/tmp",
++        "--setenv", "PATH", sandbox_path,
++        "--setenv", "LANG", "C.UTF-8",
++        "--chdir", str(root), "/bin/bash", "-c", command,
++    ))
++    return cmd

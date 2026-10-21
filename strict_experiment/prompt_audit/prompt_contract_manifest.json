@@ -1,0 +1,48 @@
+{
+  "version": "official-structured-plus-rerank-minimal-v1",
+  "official_repository": "https://github.com/texttron/RISE",
+  "official_commit": "32672b59ead8381decae7d412f05bb53d399946a",
+  "sources": {
+    "rise_agent.py": {
+      "git_blob_sha": "99c24fba40002415c9d3fb4011dcebdbcc1fac86",
+      "sha256": "b453abd3c9aa2d46f7e28be7a673f8f6c8710cb447424308b722c23f392f07b2"
+    },
+    "tools.py": {
+      "git_blob_sha": "8efb217df87b0611c83ba79fd371101cf96e05ef",
+      "sha256": "1754df3bcf6dbaf2cbaba7bdb4ab3ec28fca208b012e520347cfb5496bcbedaf"
+    }
+  },
+  "checks": {
+    "official_source_blobs_match": true,
+    "A_prompt_exactly_official": true,
+    "B_inverse_exactly_A": true,
+    "common_tool_definitions_equal": true,
+    "common_user_template_equal": true
+  },
+  "A": {
+    "system_prompt_sha256": "98167bd65463d001e0819917363e765a22c9fb842ecf7909d0e9e8d7aef92bc6",
+    "tool_specs_sha256": "026693b43a3b9392c153f24127159d0375df759a989d3fa54636cd23f9e5515f",
+    "tool_names": [
+      "search",
+      "bash",
+      "read"
+    ]
+  },
+  "B": {
+    "system_prompt_sha256": "bb605017783d5c53aa53ba5ac2948842694c15b2f8a7f98f70a4d4d5757293fc",
+    "tool_specs_sha256": "23b3e8c08214dec94a83f08fcf5f3e4968f4bafdc7c1922eaca231d72599347b",
+    "tool_names": [
+      "search",
+      "bash",
+      "read",
+      "rerank"
+    ]
+  },
+  "user_prompt_template_sha256": "6d1d40b7d38fa161ddaa08cf1196e9f529b1c82879c8ede6f20ec95556d61274",
+  "rerank_addition_sha256": "8748b4c684c3d585b88b5eb510945acf215ad75d263c501298bd8903ebf24927",
+  "runtime_feedback_policy": "official; no v13/v14 observational-feedback wrapper",
+  "existing_v14": {
+    "system_prompt_sha256": "9c8e97bcc2836371801ab34e2f20bb04a248d76a8281db51e5d0fc67aa980b2a",
+    "tool_specs_sha256": "513924447bd517fa54a5baaa4b4ac33a6666ddc2d3f0e975777fcb8fc27f7452"
+  }
+}

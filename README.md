@@ -1,4 +1,17 @@
-# v14 三项独立消融实验
+# 官方结构化 RISE：Qwen3.5 严格 rerank 增量实验
+
+本分支的新实验入口是 [strict_experiment/PROTOCOL.md](strict_experiment/PROTOCOL.md)：A 为官方结构化 RISE 原提示词和 search/bash/read，B 只增加独立 rerank 及必要说明。使用同一 Qwen3.5-35B-A3B 和固定 100 题，先运行前 10 题，再原样续跑到 100 题。以下旧 v14 三项实验资料保留为历史，不是本轮的运行配置或对照结果。
+
+- [官方 / v14 / 新 A、B 的提示词逐项差异与完整 diff](strict_experiment/prompt_audit/PROMPT_DIFF.md)
+- [旧 baseline 不能直接复用的审计](strict_experiment/BASELINE_REUSE_AUDIT.md)
+- [新实验配置、运行与不重跑约束](strict_experiment/PROTOCOL.md)
+- [新终答盲评与指标汇总](strict_experiment/ANALYSIS.md)
+
+当前仅完成独立代码和离线检查；尚无正式答案。指定 183 服务器上未找到可用的 Qwen3.5-35B-A3B 服务，GPU 被其他任务占用，等待可用计算资源后进行真实预检。不会使用 Qwen3.8 或旧 v14 结果代替本轮 A/B。
+
+---
+
+# 历史：v14 三项独立消融实验
 
 本目录从冻结 v14 的 `code/` 独立复制，运行三组各100题，共300次问题求解。完整 v14 对照复用历史100题结果；不新增第四组，不混入 v15 bash 修复。历史对照属于既有运行，报告中标注时间和运行环境差异。
 
