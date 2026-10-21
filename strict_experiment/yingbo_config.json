@@ -23,7 +23,7 @@
   "passage_index": "/root/data/rise-passage-index-128-32-20261010/runs/passage_index_128_32",
   "corpus_manifest": "/root/data/rise-official-rerank-qwen35-strict-20261021/reports/strict_qwen35/operations/corpus_receipt.json",
   "document_index_manifest": "/root/data/rise-official-rerank-qwen35-strict-20261021/reports/strict_qwen35/operations/document_index_receipt.json",
-  "capacity_report": "/root/data/rise-official-rerank-qwen35-strict-20261021/reports/strict_qwen35/operations/capacity_c3.json",
+  "capacity_report": "/root/data/rise-official-rerank-qwen35-strict-20261021/reports/strict_qwen35/operations/capacity_c3_attempt2.json",
   "rg_binary": "/root/data/rise-official-rerank-qwen35-strict-20261021/reports/strict_qwen35/operations/rg",
   "reranker_model": "Qwen/Qwen3-Reranker-0.6B",
   "reranker_revision": "6e9e69830b95c52b5fd889b7690dda3329508de3",

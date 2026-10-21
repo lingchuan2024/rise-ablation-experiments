@@ -30,7 +30,7 @@ python strict_experiment/capacity_probe.py --prepare-only --config reports/stric
 python strict_experiment/capacity_probe.py --execute --config reports/strict_qwen35_config.json --output /actual/reports/strict_capacity_report.json
 ```
 
-`--output` 必须与配置中的 `capacity_report` 路径一致。探针只用中性合成记录，共两波六次模型请求：先 `163840+65536+65536` 输入 token，再 `229056+163840+163840`，每次最多生成 128 token。每波与同一个真实 BF16 reranker 的 1000 个精确 128-token 段落评分交叠，三个 lease 共用单一模型。验证实际 tokenize/usage、模型身份、GPU 峰值和服务 running/queue 指标，记录长序列的并发准入、排队或抢占。性能探针的 `length` 停止单独标记，不是研究答题结果。
+`--output` 必须与配置中的 `capacity_report` 路径一致。探针只用中性合成记录，共两波六次模型请求：先 `163840+65536+65536` 输入 token，再 `229056+163840+163840`，每次最多生成 128 token。每波与同一个真实 BF16 reranker 的 1000 个精确 128-token 段落评分交叠，三个 lease 共用单一模型。v2 在屏障后等待实际 `/metrics` 的 `num_requests_running>0`，记录等待开始、真实准入时刻及 running/waiting 计数，随后才开始 rerank；等待上限为 60 秒或更短的请求 timeout。大请求到达 HTTP 层、仍在处理正文或 tokenizer 阶段都不能算引擎已经运行。没有观测到准入时明确失败，不执行评分；即使观测到准入，评分时段仍必须有独立 telemetry 实样本证明 LLM/rerank 交叠。验证实际 tokenize/usage、模型身份、GPU 峰值和服务 running/queue 指标，记录长序列的并发准入、排队或抢占。性能探针的 `length` 停止单独标记，不是研究答题结果。
 
 这只认证两种被测负载，不宣称三个完整 262k 历史可同时驻留，也不宣称实际生成了最坏 32768 token。`229056` 已预留正式输出预算、256 token margin 和 64 token 校准容差。容量报告绑定配置、实际服务配置和全部运行源码哈希，`prepare` 会拒绝缺失、失败或身份不匹配的报告。
 

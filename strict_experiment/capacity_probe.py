@@ -28,7 +28,7 @@ for directory in (ROOT, ROOT / "server", ROOT / "code/src"):
 from strict_experiment import runner
 import concurrency_probe as probe
 
-VERSION = "strict-qwen35-c3-shared-reranker-capacity-v1"
+VERSION = "strict-qwen35-c3-shared-reranker-capacity-v2"
 TOLERANCE = 64
 OUTPUT_CAP = 128
 WAVES = (("mixed", (163840, 65536, 65536)),
@@ -50,6 +50,8 @@ def plan(config):
         "token_calibration_tolerance": TOLERANCE,
         "waves": [{"name": name, "input_token_targets": list(targets)} for name, targets in WAVES],
         "max_generation_requests": 6, "max_calibration_tokenize_requests": 24,
+        "scheduler_admission_wait_limit_seconds": 60,
+        "rerank_start_rule": "Observe actual /metrics num_requests_running>0 within60seconds, then score; HTTP request start alone is insufficient.",
         "benchmark_questions_used": 0, "answer_quality_evaluated": False,
         "model_text_or_reasoning_persisted": False,
         "all_selected_concurrency_full262k_tested": False,
@@ -129,11 +131,77 @@ def overlap_samples(path, started, finished):
         "real_rerank_llm_overlap_verified": samples > 0}
 
 
+class AdmissionNotObserved(RuntimeError):
+    def __init__(self, metadata):
+        self.metadata = metadata
+        super().__init__("scheduler_admission_not_observed")
+
+
+def scheduler_counts(transport, timeout):
+    """A request reaching HTTP is not evidence that the engine admitted it."""
+    raw = transport.request(transport.root_url + "/metrics", timeout=timeout, raw=True)
+    running, waiting = [], []
+    for line in raw.splitlines():
+        match = probe.METRIC.match(line)
+        if not match:
+            continue
+        name = match.group(1)
+        if not name.endswith(("num_requests_running", "num_requests_waiting")):
+            continue
+        try:
+            value = float(match.group(3))
+        except ValueError:
+            continue
+        if not math.isfinite(value) or value < 0:
+            continue
+        (running if name.endswith("num_requests_running") else waiting).append(value)
+    return {"at_unix": time.time(), "running": sum(running) if running else None,
+        "waiting": sum(waiting) if waiting else None, "running_metric_present": bool(running)}
+
+
+def wait_for_scheduler_admission(transport, timeout):
+    requested = float(timeout)
+    if not math.isfinite(requested) or requested <= 0:
+        raise ValueError("Admission wait must be positive and finite")
+    limit = min(60.0, requested)
+    started, wall_started = time.monotonic(), time.time()
+    deadline, observations = started + limit, []
+    while time.monotonic() < deadline:
+        remaining = deadline - time.monotonic()
+        if remaining <= 0:
+            break
+        try:
+            row = scheduler_counts(transport, min(3.0, remaining))
+        except Exception as exc:
+            row = {"at_unix": time.time(), "running": None, "waiting": None,
+                "running_metric_present": False, "metrics_error_type": type(exc).__name__}
+        observations.append(row)
+        elapsed = time.monotonic() - started
+        if elapsed <= limit and row["running_metric_present"] and row["running"] > 0:
+            return {"scheduler_admission_observed": True,
+                "admission_wait_started_unix": wall_started,
+                "scheduler_admitted_at_unix": row["at_unix"],
+                "admission_wait_seconds": elapsed,
+                "admitted_num_requests_running": row["running"],
+                "admitted_num_requests_waiting": row["waiting"],
+                "admission_observations": observations}
+        remaining = deadline - time.monotonic()
+        if remaining > 0:
+            time.sleep(min(1.0, remaining))
+    raise AdmissionNotObserved({"scheduler_admission_observed": False,
+        "admission_wait_started_unix": wall_started, "scheduler_admitted_at_unix": None,
+        "admission_wait_seconds": time.monotonic() - started,
+        "admission_wait_limit_seconds": limit, "admission_observations": observations})
+
+
 def wave_passed(row):
     requests = row.get("llm_requests", [])
     neural = row.get("reranker_request", {})
     return (len(requests) == 3 and all(item.get("success") is True for item in requests)
         and neural.get("success") is True and neural.get("scores_count") == 1000
+        and neural.get("scheduler_admission_observed") is True
+        and isinstance(neural.get("admitted_num_requests_running"), (int, float))
+        and neural["admitted_num_requests_running"] > 0
         and row.get("all_three_requests_admitted_concurrently") is True
         and row.get("overlap", {}).get("real_rerank_llm_overlap_verified") is True)
 
@@ -196,20 +264,26 @@ def execute(config, output, *, timeout=1200, rerank_delay=2):
             torch.cuda.reset_peak_memory_stats(config["reranker_device"])
             def score():
                 barrier.wait(timeout=30)
-                if rerank_delay:
-                    time.sleep(rerank_delay)
-                neural = {"started_unix": time.time(), "success": False}
+                neural = {"started_unix": None, "score_started": False, "success": False}
                 try:
+                    neural.update(wait_for_scheduler_admission(transport, timeout))
+                    if rerank_delay:
+                        time.sleep(rerank_delay)
+                    neural["started_unix"] = time.time()
+                    neural["score_started"] = True
                     scores = leases[0].score(query, passages)
                     torch.cuda.synchronize(config["reranker_device"])
                     neural.update(scores_count=len(scores),
                         success=len(scores) == 1000 and all(math.isfinite(float(value)) for value in scores),
                         usage={key: value for key, value in leases[0].last_usage.items() if key != "sequence_lengths"})
+                except AdmissionNotObserved as exc:
+                    neural.update(exc.metadata, error_type="scheduler_admission_not_observed")
                 except Exception as exc:
                     neural.update(error_type=type(exc).__name__,
                         oom_detected="out of memory" in str(exc).lower() or "outofmemory" in str(exc).lower())
                 neural["finished_unix"] = time.time()
-                neural["elapsed_seconds"] = neural["finished_unix"] - neural["started_unix"]
+                neural["elapsed_seconds"] = (neural["finished_unix"] - neural["started_unix"]
+                    if neural["score_started"] else 0.0)
                 return neural
             started = time.monotonic()
             with ThreadPoolExecutor(max_workers=4) as executor:
@@ -217,7 +291,9 @@ def execute(config, output, *, timeout=1200, rerank_delay=2):
                            for messages, count, tag in prepared]
                 neural_future = executor.submit(score)
                 requests, neural = [future.result() for future in futures], neural_future.result()
-            overlap = overlap_samples(telemetry_path, neural["started_unix"], neural["finished_unix"])
+            overlap = (overlap_samples(telemetry_path, neural["started_unix"], neural["finished_unix"])
+                if neural["score_started"] else {"llm_running_samples_during_rerank": 0,
+                    "real_rerank_llm_overlap_verified": False})
             row = {"name": name, "input_token_targets": list(targets), "llm_requests": requests,
                 "reranker_request": neural, "overlap": overlap,
                 "all_three_requests_admitted_concurrently": max(item["started_unix"] for item in requests) < min(item["finished_unix"] for item in requests),
