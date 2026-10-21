@@ -469,6 +469,8 @@ def run_rise_agent(
         extras["no_bash"] = no_bash
         if extras.setdefault("ablation_version", "v14-ablations-v1") != "v14-ablations-v1":
             raise ValueError("Unsupported ablation version")
+        from .ablation_prompt import bind_search_paging_prompt_version
+        bind_search_paging_prompt_version(extras)
         if bm25_snippet_chars != 100 or read_default_limit != 2000:
             raise ValueError("v14 ablations preserve snippet_chars=100 and read_default_limit=2000")
     if independent_enabled:

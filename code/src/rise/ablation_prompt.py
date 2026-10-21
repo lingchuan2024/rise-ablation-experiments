@@ -10,6 +10,30 @@ from .tools import bm25_search_tool_spec
 
 
 ABLATION_PROMPT_VERSION = "v14-ablations-prompt-v1"
+SEARCH_PAGING_PROMPT_VERSION = "v14-search-paging-guidance-v2"
+SEARCH_PAGING_GUIDANCE = (
+    "Document-search pagination and tool choice:\n"
+    "The first ten snippets are only the first page of each subquery's ranked "
+    "documents. Read a clearly promising source directly. If the first page "
+    "looks relevant but provides too few useful leads or leaves the needed "
+    "evidence unresolved, prefer inspecting later-ranked snippets from that "
+    "search record before repeating a near-identical query or sweeping the "
+    "entire document pool with bash.\n"
+    "For example, if search returns {\"search_id\":\"S001.q1\",\"next_offset\":10}, "
+    "the next tool call is search({\"search_id\":\"S001.q1\",\"offset\":10}). "
+    "Those example values are illustrative: copy the actual returned search_id "
+    "and next_offset. Do not include queries in a page request. Each page "
+    "contains at most ten document-opening snippets in the original BM25 "
+    "order; follow the newly returned next_offset rather than restarting at "
+    "offset 0. Paging does not retrieve or import more documents.\n"
+    "Read promising files to verify their body evidence. Stop paging when "
+    "the required evidence is supported, later pages no longer add useful "
+    "leads, or next_offset is null. Refine the query when results are off-topic "
+    "or a different missing relationship needs checking; null exhausts only "
+    "this search record, not the corpus. New searches preserve earlier "
+    "search_ids. Paging is not required for every question: focused bash, "
+    "read and independent rerank remain available when appropriate.\n\n"
+)
 VARIANTS = {"search_paging", "auto_rerank", "no_bash"}
 _FINAL = (
     "When required facts are supported, answer. If evidence remains insufficient, "
@@ -25,15 +49,34 @@ def _variant(variant):
         raise ValueError(f"unknown ablation variant: {variant}")
 
 
+def bind_search_paging_prompt_version(extras):
+    """Bind A's guidance before row caching and again for direct agent calls."""
+    if extras.get("ablation_variant") == "search_paging":
+        version = extras.setdefault("search_paging_prompt_version", SEARCH_PAGING_PROMPT_VERSION)
+        if version != SEARCH_PAGING_PROMPT_VERSION:
+            raise ValueError("Unsupported search_paging_prompt_version")
+
+
 def ablation_search_tool_spec(variant):
     _variant(variant)
     spec = copy.deepcopy(bm25_search_tool_spec())
     fn = spec["function"]
     if variant == "search_paging":
         fn["description"] += (
-            " Each subquery returns a search_id and next_offset. To inspect later "
+            " Each subquery returns a search_id and next_offset. If its first "
+            "ten snippets are relevant but leave too few leads or missing "
+            "evidence, prefer a later page before repeating the same query or "
+            "a broad full-pool bash scan; read a promising source directly. "
+            "To inspect later "
             "originally ranked document snippets, call search with only search_id "
-            "and offset. Each page contains at most 10 documents from that fixed "
+            "and offset, copying the actual returned search_id and next_offset "
+            "as offset. For example, a return with search_id=S001.q1 and "
+            "next_offset=10 permits {\"search_id\":\"S001.q1\",\"offset\":10}. "
+            "Do not include queries in that request. Stop paging when evidence "
+            "is sufficient, later pages add no useful leads, or next_offset is "
+            "null; reformulate off-topic queries instead of paging blindly. "
+            "Paging is not required for every question. "
+            "Each page contains at most 10 documents from that fixed "
             "search record; paging does not retrieve or import documents. New "
             "searches do not invalidate these document-search records."
         )
@@ -125,15 +168,17 @@ def build_ablation_prompt(variant, *, document_guide="", read_default_limit=2000
     if variant == "search_paging":
         base = build_independent_rerank_prompt(
             document_guide=document_guide, read_default_limit=read_default_limit)
-        return base + (
-            "\n\nDocument-search pagination: search(queries) also returns each "
-            "subquery's search_id and next_offset. To view ranks 11–20, call "
-            "search with that search_id and offset=10, then follow next_offset. "
-            "Each page shows at most ten original document-opening snippets "
-            "in the original BM25 order; no new retrieval or import occurs. "
-            "New searches do not invalidate these search_ids. A null next_offset "
-            "means only that this search record is exhausted. Use only queries "
-            "for a new search, or only search_id/offset for a page."
+        base = base.replace("- bash(command, timeout?):", SEARCH_PAGING_GUIDANCE
+                            + "- bash(command, timeout?):", 1)
+        return base.replace(
+            "Choose search, bash, read or rerank according to the missing evidence. "
+            "You may use bash/read directly after search, rerank the cumulative "
+            "pool directly, or use bash to choose files and rerank that subset. ",
+            "Choose the next tool according to the evidence gap and the "
+            "pagination guidance above. Read a promising source directly, "
+            "inspect later snippets of a relevant search, use focused bash "
+            "for a known local question, rerank the pool or a selected subset, "
+            "or issue a complementary query as appropriate. ", 1
         )
     if variant == "auto_rerank":
         baseline = build_independent_rerank_prompt(read_default_limit=read_default_limit)

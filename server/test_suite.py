@@ -138,6 +138,10 @@ class EntrypointTests(unittest.TestCase):
         self.assertIn("--structured-docs", args)
         self.assertEqual(args[args.index("--model") + 1], suite.MODEL)
         self.assertEqual(args[args.index("--reranker-revision") + 1], suite.PIN)
+        self.assertEqual(Path(args[args.index("--out-root") + 1]).name, "search_paging_prompt_v2")
+        for variant in ("auto_rerank", "no_bash"):
+            other = self.entry.default_arguments(["--ablation-variant", variant, "--space-passage-index", "/index"])
+            self.assertEqual(Path(other[other.index("--out-root") + 1]).name, variant)
         with self.assertRaises(SystemExit):
             self.entry.default_arguments(["--no-independent-rerank", "--help"])
 
