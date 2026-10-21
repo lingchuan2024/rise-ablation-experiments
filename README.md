@@ -14,7 +14,7 @@
 
 ## 当前状态
 
-上面的 Qwen3.5/100题方案目前仅完成代码与本地验证。另提供按最新请求准备的 [Qwen3.8 Flash 服务器试跑](HOSTED_PILOT.md)：三个消融各取原题单前10题，共30次求解，总并发3，使用 hosted API。两套运行配置、清单和结果分别保存。
+上面的 Qwen3.5/100题方案目前仅完成代码与本地验证。按最新请求实施的 [Qwen3.8 Flash 服务器试跑](HOSTED_PILOT.md) 已通过真实预检并在服务器启动：三个消融各取原题单前10题，共30次求解，总并发3，使用 hosted API。运行代码固定为 `4a754b7d014f0d72004f3480f1da45a3d17107ae`；两套运行配置、清单和结果分别保存。下载后的终答与用量使用独立的[本地分析工具](ANALYZE_HOSTED_PILOT.md)核验，不能把启动回执当成全部完成证明；最终完成以服务器 `completion.json` 为准。
 
 Qwen3.5 正式运行仍需要目标主机上存续的本地模型服务、语料与索引、固定reranker缓存、Docker 环境，以及新的 C4 长上下文与reranker共存容量证据。旧批次容量报告不能作为新服务的通过回执。
 
@@ -91,7 +91,7 @@ python -m pytest -q tests ../server/test_suite.py \
 
 两个排除项依赖本目录不交付的旧 v10/v11 入口；三组新实验的 CLI、工具注册、断点恢复和运行封装均有测试覆盖。`baseline_snapshot/` 仅补齐原 v14 测试缺失的两份真实历史基线文件。
 
-`source_manifest.json` 记录 v14 来源、改动文件、题单和历史评估哈希；`reports/validation.json` 与 `reports/pytest.xml` 保存交付检查记录。当前未进行远程预检或正式模型评测。
+`source_manifest.json` 记录 v14 来源、改动文件、题单和历史评估哈希；`reports/validation.json` 与 `reports/pytest.xml` 保存上述本地交付检查记录。Qwen3.8 试跑另有独立的远程真实预检、启动回执和完成回执，不混入原Qwen3.5验证记录。
 
 ## GitHub 版本管理
 
