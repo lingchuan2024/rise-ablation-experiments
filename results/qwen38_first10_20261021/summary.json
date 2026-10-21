@@ -1,0 +1,245 @@
+{
+  "version": "qwen38-first10-completed-results-v1",
+  "run_commit": "4a754b7d014f0d72004f3480f1da45a3d17107ae",
+  "run_tag": "qwen38-first10-c3-20261021",
+  "manifest_sha256": "d21e2483789829ff36a3f775c3c266334791b0ba6d9f598a8b093592c7f178bf",
+  "model": "qwen3.8-flash",
+  "endpoint": "https://token-plan.maas.qianwenaiapi.com/compatible-mode/v1",
+  "query_ids": [
+    70,
+    81,
+    96,
+    116,
+    122,
+    127,
+    132,
+    153,
+    156,
+    161
+  ],
+  "question_runs": 30,
+  "global_max_concurrency": 3,
+  "max_turns_per_question": 100,
+  "wall_clock_limit_per_question_seconds": 3600,
+  "started_at_utc": "2026-10-21T08:11:16.824614+00:00",
+  "finished_at_utc": "2026-10-21T10:13:34.761508+00:00",
+  "suite_wall_seconds": 7337.936893939972,
+  "all_terminal_reasons_done": true,
+  "evaluation_method": "independent_arm_blinded_public_final_only",
+  "correctness_source": "new_review_bound_to_manifest_and_final_text_sha256",
+  "pricing_status": "not_configured",
+  "comparison_policy": "Only these three same-model, same-first10 arms; no causal comparison with historical Qwen3.5 v14.",
+  "preflight_usage_included": false,
+  "raw_trajectories_and_checkpoints_included": false,
+  "arms": {
+    "search_paging": {
+      "completed": 10,
+      "reviewed": 10,
+      "strict_correct": 8,
+      "strict_accuracy": 0.8,
+      "sensitivity": {
+        "provided_labels": 10,
+        "correct_with_provided_overrides": 9,
+        "changed_labels": 1,
+        "accuracy": 0.9,
+        "rule": "Use provided sensitivity_correct only where present; retain strict labels elsewhere."
+      },
+      "termination_counts": {
+        "done": 10
+      },
+      "mean_elapsed_seconds": 675.3820769786835,
+      "tool_and_reranker_totals": {
+        "turns": 187,
+        "elapsed_seconds": 6753.820769786835,
+        "model_search_calls": 57,
+        "model_bash_calls": 146,
+        "model_read_calls": 26,
+        "manual_rerank_calls": 5,
+        "retrieval_calls": 57,
+        "retrieval_queries": 180,
+        "runner_retrieval_query_counter": 180,
+        "search_page_calls": 0,
+        "auto_rerank_calls": 0,
+        "ranking_service_calls": 5,
+        "rerank_page_calls": 0,
+        "backend_scoring_calls": 5,
+        "backend_scored_passages": 3800,
+        "backend_input_tokens": 841116,
+        "backend_scoring_seconds": 51.82156887277961,
+        "backend_preparation_seconds": 91.5764250792563,
+        "search_failed_or_unregistered_calls": 0,
+        "model_tool_calls_total": 234,
+        "forbidden_tool_name_attempts": 0,
+        "runner_query_counter_delta": 0,
+        "query_counter_mismatch_rows": 0
+      },
+      "api_requests": 187,
+      "api_status_counts": {
+        "ok": 187
+      },
+      "known_api_tokens": {
+        "prompt_tokens": 9232581,
+        "cached_input_tokens": 8549632,
+        "uncached_input_tokens": 682949,
+        "output_tokens": 452516,
+        "reasoning_tokens": 430759,
+        "total_tokens": 9685097
+      },
+      "api_requests_without_usage": 0,
+      "api_token_fields_missing_records": {
+        "prompt_tokens": 0,
+        "cached_input_tokens": 0,
+        "uncached_input_tokens": 0,
+        "output_tokens": 0,
+        "reasoning_tokens": 0,
+        "total_tokens": 0
+      },
+      "cost": {
+        "status": "not_configured",
+        "amount": null,
+        "currency": null,
+        "note": "Placeholder row costs are ignored; unconfigured pricing does not mean free."
+      }
+    },
+    "auto_rerank": {
+      "completed": 10,
+      "reviewed": 10,
+      "strict_correct": 8,
+      "strict_accuracy": 0.8,
+      "sensitivity": {
+        "provided_labels": 10,
+        "correct_with_provided_overrides": 9,
+        "changed_labels": 1,
+        "accuracy": 0.9,
+        "rule": "Use provided sensitivity_correct only where present; retain strict labels elsewhere."
+      },
+      "termination_counts": {
+        "done": 10
+      },
+      "mean_elapsed_seconds": 389.9343682527542,
+      "tool_and_reranker_totals": {
+        "turns": 92,
+        "elapsed_seconds": 3899.343682527542,
+        "model_search_calls": 31,
+        "model_bash_calls": 72,
+        "model_read_calls": 20,
+        "manual_rerank_calls": 0,
+        "retrieval_calls": 31,
+        "retrieval_queries": 80,
+        "runner_retrieval_query_counter": 80,
+        "search_page_calls": 0,
+        "auto_rerank_calls": 80,
+        "ranking_service_calls": 80,
+        "rerank_page_calls": 0,
+        "backend_scoring_calls": 80,
+        "backend_scored_passages": 80000,
+        "backend_input_tokens": 17105054,
+        "backend_scoring_seconds": 755.3558839596808,
+        "backend_preparation_seconds": 1095.5461900793016,
+        "search_failed_or_unregistered_calls": 0,
+        "model_tool_calls_total": 123,
+        "forbidden_tool_name_attempts": 0,
+        "runner_query_counter_delta": 0,
+        "query_counter_mismatch_rows": 0
+      },
+      "api_requests": 93,
+      "api_status_counts": {
+        "ok": 92,
+        "error": 1
+      },
+      "known_api_tokens": {
+        "prompt_tokens": 3755798,
+        "cached_input_tokens": 3315712,
+        "uncached_input_tokens": 440086,
+        "output_tokens": 137601,
+        "reasoning_tokens": 125275,
+        "total_tokens": 3893399
+      },
+      "api_requests_without_usage": 1,
+      "api_token_fields_missing_records": {
+        "prompt_tokens": 1,
+        "cached_input_tokens": 1,
+        "uncached_input_tokens": 1,
+        "output_tokens": 1,
+        "reasoning_tokens": 1,
+        "total_tokens": 1
+      },
+      "cost": {
+        "status": "not_configured",
+        "amount": null,
+        "currency": null,
+        "note": "Placeholder row costs are ignored; unconfigured pricing does not mean free."
+      }
+    },
+    "no_bash": {
+      "completed": 10,
+      "reviewed": 10,
+      "strict_correct": 9,
+      "strict_accuracy": 0.9,
+      "sensitivity": {
+        "provided_labels": 10,
+        "correct_with_provided_overrides": 10,
+        "changed_labels": 1,
+        "accuracy": 1.0,
+        "rule": "Use provided sensitivity_correct only where present; retain strict labels elsewhere."
+      },
+      "termination_counts": {
+        "done": 10
+      },
+      "mean_elapsed_seconds": 421.1739242553711,
+      "tool_and_reranker_totals": {
+        "turns": 112,
+        "elapsed_seconds": 4211.739242553711,
+        "model_search_calls": 49,
+        "model_bash_calls": 0,
+        "model_read_calls": 61,
+        "manual_rerank_calls": 19,
+        "retrieval_calls": 49,
+        "retrieval_queries": 128,
+        "runner_retrieval_query_counter": 128,
+        "search_page_calls": 0,
+        "auto_rerank_calls": 0,
+        "ranking_service_calls": 19,
+        "rerank_page_calls": 0,
+        "backend_scoring_calls": 14,
+        "backend_scored_passages": 14000,
+        "backend_input_tokens": 3052552,
+        "backend_scoring_seconds": 130.10410008579493,
+        "backend_preparation_seconds": 179.7039013132453,
+        "search_failed_or_unregistered_calls": 0,
+        "model_tool_calls_total": 129,
+        "forbidden_tool_name_attempts": 0,
+        "runner_query_counter_delta": 0,
+        "query_counter_mismatch_rows": 0
+      },
+      "api_requests": 112,
+      "api_status_counts": {
+        "ok": 112
+      },
+      "known_api_tokens": {
+        "prompt_tokens": 3137460,
+        "cached_input_tokens": 2676224,
+        "uncached_input_tokens": 461236,
+        "output_tokens": 210824,
+        "reasoning_tokens": 198104,
+        "total_tokens": 3348284
+      },
+      "api_requests_without_usage": 0,
+      "api_token_fields_missing_records": {
+        "prompt_tokens": 0,
+        "cached_input_tokens": 0,
+        "uncached_input_tokens": 0,
+        "output_tokens": 0,
+        "reasoning_tokens": 0,
+        "total_tokens": 0
+      },
+      "cost": {
+        "status": "not_configured",
+        "amount": null,
+        "currency": null,
+        "note": "Placeholder row costs are ignored; unconfigured pricing does not mean free."
+      }
+    }
+  },
+  "reviewer": "Independent Codex review agent in the current session; not an external BCP judge"
+}

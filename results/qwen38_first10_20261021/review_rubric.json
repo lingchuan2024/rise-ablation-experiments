@@ -1,0 +1,107 @@
+{
+  "schema_version": 1,
+  "created_at_utc": "2026-10-21 08:47:14 UTC",
+  "review_method": "independent_arm_blinded_public_final_only",
+  "provenance": "规则已在首次公开终答盲审前于聊天中确定；本 JSON 文件于 created_at_utc 所示时间创建，不主张该文件在此前已存在。",
+  "denominator_per_arm": 10,
+  "common_rules": {
+    "target": "按最终公开答复中明确提交的答案判定，不读取隐藏推理、原始轨迹或 checkpoint，不复用历史逐题标签或程序占位判分。",
+    "no_final_correct": false,
+    "explicit_abstention_correct": false,
+    "no_final_or_abstention": "无最终答案、预算终止且未提交答案、明确弃答均计错；过程答案和工具证据不能替代最终答复。",
+    "equivalent_forms": [
+      "大小写差异",
+      "标点差异",
+      "作品标题冠词差异",
+      "州全名与通行缩写差异",
+      "不改变主答的附加作者、年份或位置说明"
+    ],
+    "completeness": "题目所问对象、完整人名及其他指定约束必须满足；多部分答案需完整。",
+    "competing_answers": "多个互斥候选且没有明确主答，不能仅因其中包含 gold 而判对。",
+    "clue_requirements": "题干中的其他日期、年龄和数量用于定位人物或作品，不要求逐一复述；本组仅 qid 122 直接询问年份，qid 156 为多部分答案。",
+    "evidence_vs_answer": "答案正确性与证据充分性分开评价；done、解释长度、工具证据或过程文字含有 gold 均不能单独作为正确依据。"
+  },
+  "questions": [
+    {
+      "qid": 70,
+      "required_answer": "Nikhoj Sangbad",
+      "criteria": [
+        "必须回答演员首部电视剧的名称，不能只回答演员姓名。"
+      ]
+    },
+    {
+      "qid": 81,
+      "required_answer": "Sam O'Brien",
+      "criteria": [
+        "作者的名字与姓氏均须完整；撇号形式差异可接受。"
+      ]
+    },
+    {
+      "qid": 96,
+      "required_answer": "Glass Furnace Way",
+      "criteria": [
+        "必须给出街道名称，不能仅回答所在郊区。"
+      ]
+    },
+    {
+      "qid": 116,
+      "required_answer": "Claude Berel Langmann",
+      "criteria": [
+        "主答须包含完整出生姓名 Claude Berel Langmann。",
+        "Beri 或 Berri 主答及缺少 Berel 均不满足冻结严格口径；主答的变体说明不能替代严格主答。"
+      ],
+      "strict_rule": "主答完整匹配 Claude Berel Langmann 才按严格口径计对。",
+      "sensitivity_rule": "来源中的全出生姓名拼写变体仅另做统一敏感性统计；例如 Beri 变体不计入严格正确率。"
+    },
+    {
+      "qid": 122,
+      "required_answer": "2016",
+      "criteria": [
+        "必须明确给出死亡年份 2016；仅回答人物姓名不能替代所问年份。"
+      ]
+    },
+    {
+      "qid": 127,
+      "required_answer": "Bruce Chapman",
+      "criteria": [
+        "必须回答被致谢提供评论者的完整人名，不能回答论文作者。"
+      ]
+    },
+    {
+      "qid": 132,
+      "required_answer": "World Of The Dream Merchants",
+      "criteria": [
+        "必须给出第三张专辑名称，不能仅回答乐队或成员；作品冠词差异可接受。"
+      ]
+    },
+    {
+      "qid": 153,
+      "required_answer": "Walter Allen",
+      "criteria": [
+        "必须回答后来不再列名的合伙人，不能回答留下的经营者或其妻子。"
+      ]
+    },
+    {
+      "qid": 156,
+      "required_answer": "The Great Blue Heron, Patient Hunter; Wheaton, Maryland",
+      "criteria": [
+        "最终答复须明确给齐文章标题、城市、州三个要素。",
+        "标题为 The Great Blue Heron, Patient Hunter；标题标点与冠词差异可接受。",
+        "城市为 Wheaton，州为 Maryland；MD 与 Maryland 等价。"
+      ],
+      "required_elements": {
+        "title": "The Great Blue Heron, Patient Hunter",
+        "city": "Wheaton",
+        "state": "Maryland",
+        "equivalent_state_abbreviation": "MD"
+      }
+    },
+    {
+      "qid": 161,
+      "required_answer": "Kune Rima",
+      "criteria": [
+        "必须给出歌曲名称，不能仅回答歌手或专辑。"
+      ]
+    }
+  ]
+}
