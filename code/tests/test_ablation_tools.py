@@ -5,6 +5,7 @@ import copy
 import hashlib
 import json
 from pathlib import Path
+import re
 import sys
 import tempfile
 from types import SimpleNamespace
@@ -85,7 +86,14 @@ class AblationToolTests(unittest.TestCase):
         first = tool({"queries": ["alpha"]})
         self.assertTrue(first.startswith("baseline first preview;"))
         self.assertIn('"next_offset":10', first)
-        second = tool({"search_id": "S001.q1", "offset": 10})
+        # The model-facing example must be an executable page request; use
+        # actual response values so examples cannot depend on fabricated IDs.
+        prompt = build_ablation_prompt("search_paging")
+        example = re.search(r'the next tool call is search\((\{[^}]+\})\)', prompt)
+        request = json.loads(example.group(1))
+        metadata = json.loads(first.split("Search pages: ", 1)[1])[0]
+        request.update(search_id=metadata["search_id"], offset=metadata["next_offset"])
+        second = tool(request)
         self.assertIn("11. [15.00] docs/doc10.txt", second)
         self.assertIn("20. [6.00] docs/doc19.txt", second)
         self.assertNotIn("docs/doc20.txt", second)

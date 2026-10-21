@@ -215,7 +215,8 @@ def main() -> None:
         if args.independent_rerank:
             args.out_root = args.out_root.with_name(args.out_root.name + "_v13")
         if args.ablation_variant:
-            args.out_root = args.out_root.with_name(args.out_root.name + "_" + args.ablation_variant)
+            suffix = "search_paging_prompt_v2" if args.ablation_variant == "search_paging" else args.ablation_variant
+            args.out_root = args.out_root.with_name(args.out_root.name + "_" + suffix)
     args.out_root = args.out_root.resolve()
     args.out_root.mkdir(parents=True, exist_ok=True)
     # NVIDIA's hosted Nemotron Super defaults to high reasoning.  This value
@@ -255,6 +256,8 @@ def main() -> None:
     if args.ablation_variant:
         run_config.extras["ablation_variant"] = args.ablation_variant
         run_config.extras["ablation_version"] = "v14-ablations-v1"
+        from rise.ablation_prompt import bind_search_paging_prompt_version
+        bind_search_paging_prompt_version(run_config.extras)
     # Preserve the baseline config identity when the optional tool is off.
     if args.reranker or args.space_reranker or args.independent_rerank:
         run_config.extras["reranker_loading_policy"] = RERANKER_LOADING_POLICY
@@ -642,6 +645,8 @@ def main() -> None:
     if args.ablation_variant:
         summary["config"].update(ablation_variant=args.ablation_variant,
                                  ablation_version="v14-ablations-v1")
+        if args.ablation_variant == "search_paging":
+            summary["config"]["search_paging_prompt_version"] = run_config.extras["search_paging_prompt_version"]
     out_path = args.out_root / "_summary.json"
     atomic_write_json(out_path, summary)
     a = summary["aggregate"]

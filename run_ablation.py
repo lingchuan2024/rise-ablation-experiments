@@ -45,7 +45,8 @@ def default_arguments(argv):
                 "--reranker-batch-size": "8"}
     variant = _option_value(arguments, "--ablation-variant")
     if variant in VARIANTS:
-        defaults["--out-root"] = str(ROOT / "runs" / variant)
+        output_name = "search_paging_prompt_v2" if variant == "search_paging" else variant
+        defaults["--out-root"] = str(ROOT / "runs" / output_name)
     for name, value in defaults.items():
         if not _has_option(arguments, name):
             arguments.extend([name, value])

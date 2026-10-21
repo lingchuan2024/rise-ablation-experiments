@@ -17,7 +17,8 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 sys.path.insert(0, str(ROOT / "tests"))
 
-from rise.trajectory import compute_run_config_hash
+from rise.trajectory import compute_run_config_hash, cached_row_is_reusable, SCHEMA_VERSION
+from rise.ablation_prompt import bind_search_paging_prompt_version, SEARCH_PAGING_PROMPT_VERSION
 from test_indexed_accumulated_space import build_raw_index, CheapBackend
 from test_reranker_tool import structured
 from test_v10_agent import response
@@ -235,6 +236,31 @@ class AblationAgentIntegrationTests(unittest.TestCase):
         configs = [self.config(variant) for variant in ("search_paging", "auto_rerank", "no_bash")]
         hashes = {compute_run_config_hash(config.to_hashable_dict()) for config in configs}
         self.assertEqual(len(hashes), 3)
+
+    def test_paging_guidance_version_blocks_old_rows_and_stale_direct_calls(self):
+        config = self.config()
+        old_hash = compute_run_config_hash(config.to_hashable_dict())
+        bind_search_paging_prompt_version(config.extras)
+        new_hash = compute_run_config_hash(config.to_hashable_dict())
+        self.assertNotEqual(old_hash, new_hash)
+        old_row = {"schema_version": SCHEMA_VERSION, "run_config_hash": old_hash}
+        self.assertFalse(cached_row_is_reusable(
+            old_row, expected_run_config_hash=new_hash)[0])
+        current_row = {**old_row, "run_config_hash": new_hash}
+        self.assertTrue(cached_row_is_reusable(
+            current_row, expected_run_config_hash=new_hash)[0])
+        self.assertEqual(config.extras["search_paging_prompt_version"], SEARCH_PAGING_PROMPT_VERSION)
+
+        config.extras["search_paging_prompt_version"] = "v14-search-paging-guidance-v1"
+        with self.assertRaisesRegex(ValueError, "search_paging_prompt_version"):
+            self.run_agent(config, CheapBackend(),
+                           lambda *_args, **_kwargs: self.fail("stale prompt must not reach the API"))
+
+        for variant in ("auto_rerank", "no_bash"):
+            other = self.config(variant)
+            before = copy.deepcopy(other.to_hashable_dict())
+            bind_search_paging_prompt_version(other.extras)
+            self.assertEqual(other.to_hashable_dict(), before)
 
 
 if __name__ == "__main__":
