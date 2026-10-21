@@ -16,6 +16,7 @@ import json
 import os
 from pathlib import Path, PurePosixPath
 import re
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -33,6 +34,7 @@ PIN = "6e9e69830b95c52b5fd889b7690dda3329508de3"
 DATASET_SHA = "129a2998335f3b238096c5e2d96a369f1cc690485094cd2df16e203ff90dd67c"
 ARMS = ("A", "B")
 _RECEIPT_CACHE = {}
+_CORPUS_RECEIPTS = {}
 
 
 def digest(value):
@@ -94,6 +96,7 @@ def config_template():
         "corpus": "/REQUIRED/structured_corpus", "passage_index": "/REQUIRED/passage_index_128_32",
         "corpus_manifest": "/REQUIRED/corpus_content_manifest.json",
         "document_index_manifest": "/REQUIRED/document_index_manifest.json",
+        "capacity_report": "/REQUIRED/strict_capacity_report.json",
         "rg_binary": "/REQUIRED/rg", "reranker_model": "Qwen/Qwen3-Reranker-0.6B",
         "reranker_revision": PIN, "reranker_device": "cuda:0", "reranker_dtype": "bfloat16",
         "model_identity": {"repo_id": "Qwen/Qwen3.5-35B-A3B", "revision": "REQUIRED_IMMUTABLE_REVISION",
@@ -151,7 +154,7 @@ def validate_config(config, *, actual_resources=False):
 
 def source_hashes():
     files = list((ROOT / "code").rglob("*.py")) + list((ROOT / "strict_experiment").rglob("*.py"))
-    files += [ROOT / "server/shared_reranker.py", ROOT / "server/runtime_guards.py"]
+    files += [ROOT / "server/shared_reranker.py", ROOT / "server/runtime_guards.py", ROOT / "server/concurrency_probe.py"]
     files += list((ROOT / "strict_experiment/upstream").rglob("*.json"))
     files += [DATASET]
     return {str(path.relative_to(ROOT)): file_sha(path) for path in sorted(set(files))}
@@ -205,7 +208,8 @@ def verify_resource_receipt(path, kind, *, expected_root=None, expected_paths=No
         paths.append(relative)
         metadata.append((relative, stat.st_dev, stat.st_ino, stat.st_size, stat.st_mtime_ns, stat.st_ctime_ns))
     actual = {source.relative_to(root).as_posix() for source in root.rglob("*") if source.is_file()}
-    if len(paths) != len(set(paths)) or set(paths) != actual or (expected_paths is not None and set(paths) != set(expected_paths)):
+    text_paths = {relative for relative in paths if relative.endswith(".txt")}
+    if len(paths) != len(set(paths)) or set(paths) != actual or (expected_paths is not None and text_paths != set(expected_paths)):
         raise RuntimeError("Resource receipt does not cover the exact resource file set: " + kind)
     cache_key = (str(Path(path).resolve()), file_sha(path), digest(metadata))
     if cache_key not in _RECEIPT_CACHE:
@@ -219,7 +223,8 @@ def verify_resource_receipt(path, kind, *, expected_root=None, expected_paths=No
         if after != metadata:
             raise RuntimeError("Resource changed while verifying its actual bytes")
         _RECEIPT_CACHE[cache_key] = True
-    return {"files": len(files), "content_sha256": receipt["content_sha256"], "actual_bytes_verified": True}
+    return {"files": len(files), "content_sha256": receipt["content_sha256"], "actual_bytes_verified": True,
+        "metadata_files": len(set(paths) - text_paths) if kind == "corpus" else 0}
 
 
 def verify_rg_binary(config):
@@ -259,6 +264,7 @@ def resource_identity(config):
             raise RuntimeError("Required resource directory missing: " + key)
     if not os.access(config["python"], os.X_OK) or not os.access(config["rg_binary"], os.X_OK):
         raise RuntimeError("Python and rg must be executable")
+    capacity = verify_capacity_report(config)
     model = config["model_identity"]
     for key in ("weights_manifest", "tokenizer_config", "service_config"):
         if not Path(model[key]).is_file():
@@ -283,7 +289,45 @@ def resource_identity(config):
         "passage_manifest_sha256": file_sha(passage_path), "mapped_documents": len(mapping),
         "passage_corpus_content_sha256": passage.get("corpus_content_sha256"),
         "passage_configuration_sha256": configuration.get("sha256"),
-        "actual_content_receipts": content, "actual_sandbox_rg_sha256": rg_sha256}
+        "actual_content_receipts": content, "actual_sandbox_rg_sha256": rg_sha256,
+        "capacity_report": capacity}
+
+
+def verify_capacity_report(config):
+    """Bind the actual measured C3 workload before any cohort is admitted."""
+    from strict_experiment import capacity_probe
+    path = Path(config["capacity_report"])
+    if not path.is_file():
+        raise RuntimeError("The actual service requires a measured capacity report before prepare")
+    report = load(path)
+    payload = {key: value for key, value in report.items() if key != "report_sha256"}
+    expected = {"version": capacity_probe.VERSION, "model": MODEL,
+        "config_sha256": digest(config), "base_url": config["base_url"],
+        "context_tokens": config["context_length"], "question_concurrency": 3,
+        "resident_reranker_instances": 1, "reranker_leases": 3,
+        "reranker_revision": PIN, "reranker_device": config["reranker_device"],
+        "reranker_dtype": config["reranker_dtype"], "passed": True, "measured": True,
+        "long_context_and_rerank_coexistence_passed": True,
+        "service_config_sha256": file_sha(config["model_identity"]["service_config"]),
+        "source_sha256": source_hashes(), "benchmark_questions_used": 0}
+    if any(report.get(key) != value for key, value in expected.items()) or digest(payload) != report.get("report_sha256"):
+        raise RuntimeError("Capacity report belongs to another config, source, service or failed workload")
+    results = report.get("results", [])
+    if len(results) != len(capacity_probe.WAVES):
+        raise RuntimeError("Required mixed/long capacity wave is missing")
+    for row, (name, targets) in zip(results, capacity_probe.WAVES):
+        if row.get("name") != name or row.get("input_token_targets") != list(targets) or not capacity_probe.wave_passed(row):
+            raise RuntimeError("Required real C3/reranker capacity wave did not pass")
+        for request, target in zip(row["llm_requests"], targets):
+            actual = request.get("actual_tokenized_input_tokens")
+            if type(actual) is not int or abs(actual - target) > 64 or not capacity_probe.validate_generation(request, actual):
+                raise RuntimeError("Capacity model identity or actual token workload differs")
+    telemetry = report.get("telemetry", {})
+    if telemetry.get("service_metrics_missing") is not False or not telemetry.get("sampled_peak_gpu_used_mib"):
+        raise RuntimeError("Actual capacity metrics/VRAM telemetry is missing")
+    return {"path": str(path.resolve()), "sha256": file_sha(path),
+        "report_sha256": report["report_sha256"], "passed": True,
+        "certification_scope": report["certification_scope"]}
 
 
 def offline_preflight(config=None):
@@ -346,6 +390,8 @@ def verify_manifest(*, resources=True):
 
 def verify_service(config):
     """Read the actual endpoint; no model alias or missing service is accepted."""
+    from strict_experiment.deployment_identity import verify_state
+    deployment = verify_state(config)
     url = config["base_url"].rstrip("/")
     request = Request(url + "/models", headers={"Accept": "application/json"})
     with urlopen(request, timeout=15) as stream:
@@ -364,7 +410,7 @@ def verify_service(config):
         tokenization = json.load(stream)
     if type(tokenization.get("count")) is not int or tokenization.get("max_model_len") != config["context_length"]:
         raise RuntimeError("The serving tokenizer/context budget does not match the frozen contract")
-    return {"reported_models": ids, "context_length": tokenization["max_model_len"],
+    return {"deployment_identity": deployment, "reported_models": ids, "context_length": tokenization["max_model_len"],
         "probe_prompt_tokens": tokenization["count"], "models_response_sha256": digest(models)}
 
 
@@ -393,6 +439,100 @@ def live_preflight():
 
 def terminal_path(arm, qid):
     return RUNS / arm / "_per_query" / f"qid_{qid}.json"
+
+
+def post_terminal_maintenance(manifest, arm, query):
+    """Release only finished new-run workspaces after saving a recovery map.
+
+    Never called while the Agent can still use its tools. Terminal answers,
+    traces, checkpoints and API ledgers remain unchanged and recoverable.
+    """
+    qid = query["query_id"]
+    terminal = validate_terminal(load(terminal_path(arm, qid)), manifest, arm, query)
+    output = (RUNS / arm).resolve()
+    working = output / "_working" / f"qid_{qid}"
+    derived = output / "_rerank_runtime" / f"qid_{qid}"
+    archive_path = output / "_maintenance/source_manifests" / f"qid_{qid}.json"
+    completed_path = output / "_maintenance/completed" / f"qid_{qid}.json"
+    if not working.exists() and not derived.exists() and not archive_path.exists():
+        return {"status": "nothing_to_clean"}
+    for path in (working, derived):
+        if path.is_symlink() or (path.exists() and (not path.is_dir() or path.resolve() != path)):
+            raise RuntimeError("Refusing to clean an aliased or unexpected query workspace")
+    identity = {"arm": arm, "query_id": qid, "manifest_sha256": manifest["manifest_sha256"],
+        "terminal_row_sha256": terminal["row_sha256"]}
+    if completed_path.exists():
+        completed = load(completed_path)
+        if any(completed.get(key) != value for key, value in identity.items()):
+            raise RuntimeError("A maintenance receipt belongs to another terminal")
+        if working.exists() or derived.exists():
+            raise RuntimeError("A cleaned workspace was recreated; preserve it for manual inspection")
+        return completed
+    started = time.monotonic()
+    config = manifest["config"]
+    corpus = Path(config["corpus"]).resolve()
+    receipt_path = Path(config["corpus_manifest"])
+    receipt_key = (str(receipt_path.resolve()), file_sha(receipt_path))
+    if receipt_key not in _CORPUS_RECEIPTS:
+        receipt = load(receipt_path)
+        if receipt.get("kind") != "corpus" or Path(receipt.get("root", "")).resolve() != corpus:
+            raise RuntimeError("Cleanup recovery receipt names another corpus")
+        _CORPUS_RECEIPTS[receipt_key] = {item["path"]: item for item in receipt["files"]}
+    sources = _CORPUS_RECEIPTS[receipt_key]
+
+    def current_files(directory, *, original):
+        result = []
+        if not directory.exists():
+            return result
+        for path in sorted(directory.rglob("*")):
+            if path.is_symlink():
+                raise RuntimeError("Refusing to clean a query directory containing a symlink")
+            if not path.is_file():
+                continue
+            relative = path.relative_to(directory).as_posix()
+            if original:
+                source = corpus / relative
+                if relative not in sources or not source.is_file() or not os.path.samefile(path, source):
+                    raise RuntimeError("Finished workspace contains an untracked or non-source file")
+                item = sources[relative]
+                if path.stat().st_size != item["size"]:
+                    raise RuntimeError("Finished workspace source size differs from its frozen receipt")
+                result.append({"path": relative, "source_path": str(source),
+                    "size": item["size"], "sha256": item["sha256"]})
+            else:
+                result.append({"path": relative, "size": path.stat().st_size, "sha256": file_sha(path)})
+        return result
+
+    now = {"source_files": current_files(working, original=True),
+        "derived_files": current_files(derived, original=False)}
+    if archive_path.exists():
+        archive = load(archive_path)
+        if any(archive.get(key) != value for key, value in identity.items()):
+            raise RuntimeError("Saved recovery map belongs to another terminal")
+        for key in now:
+            saved = {item["path"]: item for item in archive[key]}
+            if any(saved.get(item["path"]) != item for item in now[key]):
+                raise RuntimeError("Partly cleaned workspace differs from its saved recovery map")
+    else:
+        archive = {**identity, "version": "strict-terminal-workspace-recovery-v1",
+            "corpus_root": str(corpus), "corpus_receipt_sha256": receipt_key[1],
+            "source_config_sha256": manifest["config_sha256"], **now,
+            "recovery": "Source files can be re-hardlinked from the frozen corpus; derived files are regenerated from the checkpoint and fixed passage index.",
+            "original_source_hashes": "taken from the byte-verified frozen corpus receipt"}
+        atomic_json(archive_path, archive, immutable=True)
+    # Both the immutable terminal and the complete recovery map now exist.
+    # A failed/interrupted cleanup can resume using the unchanged saved map.
+    removed = []
+    for path in (working, derived):
+        if path.exists():
+            shutil.rmtree(path)
+            removed.append(str(path.relative_to(output)))
+    completed = {**identity, "status": "completed", "recovery_map_sha256": file_sha(archive_path),
+        "source_file_count": len(archive["source_files"]), "derived_file_count": len(archive["derived_files"]),
+        "removed_directories": removed, "maintenance_seconds": time.monotonic() - started,
+        "within_query_behavior_changed": False}
+    atomic_json(completed_path, completed, immutable=True)
+    return completed
 
 
 def validate_terminal(row, manifest, arm, query):
@@ -473,6 +613,7 @@ def run_one(manifest, arm, query, *, resume_infrastructure=False):
     path = terminal_path(arm, query["query_id"])
     if path.exists():
         validate_terminal(load(path), manifest, arm, query)
+        post_terminal_maintenance(manifest, arm, query)
         return {"arm": arm, "query_id": query["query_id"], "status": "reused_immutable_terminal"}
     output = RUNS / arm
     pause = output / "_infrastructure" / f"qid_{query['query_id']}.json"
@@ -516,6 +657,7 @@ def run_one(manifest, arm, query, *, resume_infrastructure=False):
         row["row_sha256"] = digest(row)
         validate_terminal(row, manifest, arm, query)
         atomic_json(path, row, immutable=True)
+        post_terminal_maintenance(manifest, arm, query)
         return {"arm": arm, "query_id": query["query_id"], "status": "terminal_saved", "terminated_by": row["terminated_by"]}
     except Exception as exc:
         # No exception text/headers are persisted. A failed infrastructure launch
@@ -548,6 +690,7 @@ def run(stage, *, resume_infrastructure=False):
                 path = terminal_path(arm, query["query_id"])
                 if path.exists():
                     validate_terminal(load(path), manifest, arm, query)
+                    post_terminal_maintenance(manifest, arm, query)
         pending = [(arm, query) for query in selected for arm in ARMS if not terminal_path(arm, query["query_id"]).exists()]
         # Submit only C3 at once. On an infrastructure failure, no queued new
         # question starts; active queries may finish their current admitted turn.

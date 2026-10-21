@@ -42,4 +42,8 @@ rerank 保留 v14 独立服务：累计已导入原文池或显式 file_paths �
 
 正式评分使用 manifest 预先冻结的统一 rubric，对新公开终答匿名重新评分；不得读取或复用历史 judge/is_correct。评分与每个 final SHA 绑定。报告 A/B 正确率、配对增减和 exact McNemar、轮次/耗时/model token，单列 rerank 调用、段数、输入 token、forward 次数、准备/评分时间与错误。模型输入含缓存，推理是输出子集，均不重复计数；缺失 usage 为未知下界，不记为免费。前 10 题仅检查执行和描述性结果，不据此选择提示词或运行预算。
 
-当前状态：离线准备；尚未绑定可用的 Qwen3.5-35B-A3B 服务，尚未开始生成正式答案。模板中的 `/REQUIRED/` 路径与模型 revision 必须用实际可核验资源填写，不能假定当前 183 服务器具备目标模型。
+实际运行资源：按用户选择使用英博云 `q3535bf`，A800 80GB；共同服务为本机 vLLM 0.17.0、BF16、max-num-seqs=3、gpu-memory-utilization=.90，为独立 reranker 留出显存。模型 14 个权重分片和 8 个推理元文件实测匹配官方 revision `59d61f3ce65a6d9863b86d2e96597125219dc754`，见 [来源证明](MODEL_PROVENANCE.json)。原 Docker 镜像 `sha256:4cca46f0b1841ae9708781b564f57bb0f296427b936cf5cd4af143329e0e06b1` 从持久备份恢复，镜像内 rg 15.1.0 字节哈希为 `ebeaf56f8a25e102e9419933423738b3a2a613a444fd749d695e15eba53f71f2`，没有替换二进制或改写命令。
+
+[实际公共配置](yingbo_config.json)在真实容量探针前固定；capacity_report 的路径提前确定，探针报告须匹配配置、源码和稳定服务身份，随后才能 prepare/live-preflight。真实服务进程 PID/启动时钟、命令、模型目录、模板、parser 和关键 vLLM 源码亦随清单核验。完成题目后保存可重建工作区的源文件哈希清单，再释放本轮工作区；原语料、题目轨迹和断点保留。清理只发生在自然终态保存之后，两组一致，不改变题内工具行为。
+
+当前状态：真实容量与执行预检准备；尚未开始生成正式答案。模板中的 `/REQUIRED/` 路径不作为真实资源使用。

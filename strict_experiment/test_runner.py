@@ -222,6 +222,87 @@ class RunnerContractsTest(unittest.TestCase):
         with self.assertRaisesRegex(RuntimeError, "Actual resource bytes differ"):
             runner.verify_resource_receipt(receipt, "model_weights", model_revision=revision)
 
+    def test_corpus_metadata_is_hashed_but_not_confused_with_retrieved_text_scope(self):
+        folder = Path(self.temporary.name) / "resource"
+        folder.mkdir(); (folder / "one.txt").write_text("doc")
+        (folder / "complete.json").write_text('{"ready":true}')
+        receipt = Path(self.temporary.name) / "receipt.json"
+        runner.write_resource_receipt("corpus", folder, receipt)
+        verified = runner.verify_resource_receipt(receipt, "corpus", expected_root=folder, expected_paths={"one.txt"})
+        self.assertEqual(verified["files"], 2)
+        self.assertEqual(verified["metadata_files"], 1)
+        (folder / "complete.json").write_text('{"ready":false}')
+        with self.assertRaises(RuntimeError):
+            runner.verify_resource_receipt(receipt, "corpus", expected_root=folder, expected_paths={"one.txt"})
+
+    def make_cleanup_workspace(self, arm="B"):
+        folder = Path(self.temporary.name)
+        corpus = folder / "corpus"; corpus.mkdir()
+        (corpus / "example.org").mkdir()
+        source = corpus / "example.org/document.txt"
+        source.write_text("FROZEN_SOURCE_BODY")
+        receipt = folder / "corpus_receipt.json"
+        runner.write_resource_receipt("corpus", corpus, receipt)
+        self.manifest["config"].update(corpus=str(corpus), corpus_manifest=str(receipt))
+        self.manifest["config_sha256"] = runner.digest(self.manifest["config"])
+        query = self.rows[0]
+        runner.run_one(self.manifest, arm, query)
+        output = runner.RUNS / arm
+        working = output / "_working/qid_70"
+        (working / "example.org").mkdir(parents=True)
+        os.link(source, working / "example.org/document.txt")
+        derived = output / "_rerank_runtime/qid_70"
+        derived.mkdir(parents=True); (derived / "derived_cache.json").write_text('{"cache":1}')
+        protected = []
+        for relative in ("_checkpoints/qid_70.json", "_traces/qid_70/single.json"):
+            path = output / relative
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text("PRIVATE_TRACE_STAYS")
+            protected.append(path)
+        return query, source, working, derived, protected
+
+    def test_only_terminal_workspaces_are_released_after_recovery_map_is_saved(self):
+        query, source, working, derived, protected = self.make_cleanup_workspace()
+        terminal_bytes = runner.terminal_path("B", 70).read_bytes()
+        receipt = runner.post_terminal_maintenance(self.manifest, "B", query)
+        self.assertEqual(receipt["status"], "completed")
+        self.assertEqual(receipt["source_file_count"], 1)
+        self.assertFalse(working.exists()); self.assertFalse(derived.exists())
+        self.assertEqual(source.read_text(), "FROZEN_SOURCE_BODY")
+        self.assertTrue(all(path.read_text() == "PRIVATE_TRACE_STAYS" for path in protected))
+        self.assertEqual(runner.terminal_path("B", 70).read_bytes(), terminal_bytes)
+        archive = runner.load(runner.RUNS / "B/_maintenance/source_manifests/qid_70.json")
+        self.assertEqual(archive["source_files"][0]["sha256"], runner.file_sha(source))
+        self.assertEqual(archive["source_files"][0]["source_path"], str(source.resolve()))
+        self.assertEqual(runner.post_terminal_maintenance(self.manifest, "B", query), receipt)
+
+    def test_cleanup_refuses_unfinished_or_untracked_workspaces(self):
+        query, source, working, derived, _ = self.make_cleanup_workspace()
+        (working / "unexpected.txt").write_text("not-a-corpus-hardlink")
+        with self.assertRaisesRegex(RuntimeError, "untracked or non-source"):
+            runner.post_terminal_maintenance(self.manifest, "B", query)
+        self.assertTrue(working.exists()); self.assertTrue(derived.exists()); self.assertTrue(source.exists())
+        runner.terminal_path("B", 70).unlink()
+        with self.assertRaises(FileNotFoundError):
+            runner.post_terminal_maintenance(self.manifest, "B", query)
+        self.assertTrue(working.exists())
+
+    def test_cleanup_interruption_resumes_without_rerunning_natural_terminal(self):
+        query, _, working, derived, _ = self.make_cleanup_workspace()
+        original_remove = runner.shutil.rmtree
+        def fail_on_runtime(path):
+            if path == derived.resolve():
+                raise OSError("simulated filesystem interruption")
+            return original_remove(path)
+        with mock.patch.object(runner.shutil, "rmtree", side_effect=fail_on_runtime):
+            with self.assertRaises(OSError): runner.post_terminal_maintenance(self.manifest, "B", query)
+        self.assertFalse(working.exists()); self.assertTrue(derived.exists())
+        calls_before = len(self.calls)
+        result = runner.run_one(self.manifest, "B", query, resume_infrastructure=True)
+        self.assertEqual(result["status"], "reused_immutable_terminal")
+        self.assertEqual(len(self.calls), calls_before)
+        self.assertFalse(derived.exists())
+
 
 if __name__ == "__main__":
     unittest.main()

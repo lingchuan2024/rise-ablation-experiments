@@ -21,9 +21,20 @@ python strict_experiment/runner.py write-resource-receipt --kind document_index 
 python strict_experiment/runner.py write-resource-receipt --kind model_weights --root /actual/model_snapshot --model-revision ACTUAL_40_CHARACTER_REVISION --output /actual/reports/model_receipt.json
 ```
 
-收据包括目录全集、每个文件的大小和 SHA256、全集内容哈希。冻结时检查实际文件字节，防止仅填写一张“已验证”收据。语料文件集合必须与 100195 文档的 filename map 完全一致，模型收据必须对应指定模型及同一 revision。重新检查时，只有同进程内文件 inode、大小、mtime、ctime 和收据都未变，才复用已完成的字节校验。`rg_binary` 必须是未经修改的沙箱真正使用的二进制：bubblewrap 的 `code/bin/rg` 优先，其次固定沙箱 PATH 中的系统 `rg`；Docker 则核验固定镜像内的二进制哈希。
+收据包括目录全集、每个文件的大小和 SHA256、全集内容哈希。冻结时检查实际文件字节，防止仅填写一张“已验证”收据。语料中的 `.txt` 文件集合必须与 100195 文档的 filename map 完全一致；额外的非 `.txt` 元数据也必须进入完整收据并验证字节，单独记录数量。模型收据必须对应指定模型及同一 revision。重新检查时，只有同进程内文件 inode、大小、mtime、ctime 和收据都未变，才复用已完成的字节校验。`rg_binary` 必须是未经修改的沙箱真正使用的二进制：bubblewrap 的 `code/bin/rg` 优先，其次固定沙箱 PATH 中的系统 `rg`；Docker 则核验固定镜像内的二进制哈希。
 
-资源和配置核实后冻结，再做真实服务、沙箱、工具和 reranker 预检：
+先由部署身份工具把实际 PID、启动 ticks、命令行、模型目录、parser、模板、关键 vLLM 源码和包版本的白名单收据写入 `service_config.actual_identity`。随后固定配置中的 `capacity_report` 新路径；服务配置此后不可再改。容量探针不会依赖待生成的容量报告：
+
+```bash
+python strict_experiment/capacity_probe.py --prepare-only --config reports/strict_qwen35_config.json
+python strict_experiment/capacity_probe.py --execute --config reports/strict_qwen35_config.json --output /actual/reports/strict_capacity_report.json
+```
+
+`--output` 必须与配置中的 `capacity_report` 路径一致。探针只用中性合成记录，共两波六次模型请求：先 `163840+65536+65536` 输入 token，再 `229056+163840+163840`，每次最多生成 128 token。每波与同一个真实 BF16 reranker 的 1000 个精确 128-token 段落评分交叠，三个 lease 共用单一模型。验证实际 tokenize/usage、模型身份、GPU 峰值和服务 running/queue 指标，记录长序列的并发准入、排队或抢占。性能探针的 `length` 停止单独标记，不是研究答题结果。
+
+这只认证两种被测负载，不宣称三个完整 262k 历史可同时驻留，也不宣称实际生成了最坏 32768 token。`229056` 已预留正式输出预算、256 token margin 和 64 token 校准容差。容量报告绑定配置、实际服务配置和全部运行源码哈希，`prepare` 会拒绝缺失、失败或身份不匹配的报告。
+
+容量通过后冻结资源和配置，再做真实服务、沙箱、工具和 reranker 预检：
 
 ```bash
 python strict_experiment/runner.py prepare --config reports/strict_qwen35_config.json
@@ -42,6 +53,8 @@ python strict_experiment/runner.py status
 ```
 
 配置和源码冻结在 `reports/strict_qwen35/run_manifest.json`，A/B 准备契约在相邻 `contracts/`。真正发送请求时保存完整提示词、工具和用户题目到 `runs/strict_qwen35/{A,B}/request_contracts/`，每次模型调用的身份、参数及用量在 `api_ledgers/`。题目终态位于 `_per_query/`，通过原子仅创建写入，禁止覆盖；评分结果另存，绑定终答 SHA，不改写终态。私有轨迹和断点保留在运行服务器，不进入 GitHub。
+
+每题终态已安全写入后，两组都执行相同的收尾维护：先把原文硬链接的路径、原始语料路径、冻结源 SHA 和派生文件清单写入不可覆盖的 `_maintenance/source_manifests/`，再释放该题 `_working/` 和 `_rerank_runtime/`，避免 200 题累计目录和派生缓存耗尽 inode。原始语料、终态、轨迹、断点、请求和 token 账本全部保留。该维护不发生在题目运行中；被中断的题目不清理；收尾中断可根据已保存清单继续清理，不能重跑终答。需要复查目录时可从冻结语料重新建立原文硬链接，派生缓存由断点及固定段落索引重建。
 
 基础设施中断需要先排查原因，随后使用 `run-all --resume-infrastructure` 或相应阶段的同名参数。已有自然终态始终直接复用；已有调用痕迹但断点丢失的题目禁止从头重跑。恢复时核验模型、题目、提示词、工具和运行配置身份，并沿用断点中的已消耗预算。资源、配置、提示词或源码变化均要求新建实验，不得续接原终态。
 

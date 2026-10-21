@@ -7,7 +7,7 @@
 - [新实验配置、运行与不重跑约束](strict_experiment/PROTOCOL.md)
 - [新终答盲评与指标汇总](strict_experiment/ANALYSIS.md)
 
-当前仅完成独立代码和离线检查；尚无正式答案。指定 183 服务器上未找到可用的 Qwen3.5-35B-A3B 服务，GPU 被其他任务占用，等待可用计算资源后进行真实预检。不会使用 Qwen3.8 或旧 v14 结果代替本轮 A/B。
+独立代码及离线检查已完成；用户已选择英博云并启动原 `q3535bf` 实例，Qwen3.5 服务和原 Docker 沙箱已恢复，正在完成真实容量与执行预检，尚无正式答案。[实际英博云配置](strict_experiment/yingbo_config.json)已单独保存。不会使用 Qwen3.8 或旧 v14 结果代替本轮 A/B。
 
 ---
 

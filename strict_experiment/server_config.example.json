@@ -23,6 +23,7 @@
   "passage_index": "/REQUIRED/passage_index_128_32",
   "corpus_manifest": "/REQUIRED/corpus_content_manifest.json",
   "document_index_manifest": "/REQUIRED/document_index_manifest.json",
+  "capacity_report": "/REQUIRED/strict_capacity_report.json",
   "rg_binary": "/REQUIRED/rg",
   "reranker_model": "Qwen/Qwen3-Reranker-0.6B",
   "reranker_revision": "6e9e69830b95c52b5fd889b7690dda3329508de3",
