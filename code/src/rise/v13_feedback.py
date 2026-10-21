@@ -19,6 +19,25 @@ _TRUNCATED = re.compile(r"\n\.\.\.\[truncated; \d+ chars cut from output\]$")
 _EMPTY = {"", "(command succeeded, no output)", "(no matches found)"}
 _VOLATILE_RERANK_FIELDS = {"feedback", "cache_hit", "preparation_seconds", "scoring_seconds"}
 _SEARCH_RECORD = re.compile(r"^([ \t]*Search record: )S\d+\.q\d+([ \t]*)$", re.MULTILINE)
+_SEARCH_PAGE = re.compile(r"^(Search pages?: )(.+)$", re.MULTILINE)
+
+
+def normalize_search_page_ids(result: str) -> str:
+    """Ignore generated pagination IDs only in the wrapper's metadata lines."""
+    def replace(match):
+        try:
+            value = json.loads(match.group(2))
+        except (TypeError, ValueError):
+            return match.group(0)
+        rows = value if isinstance(value, list) else [value]
+        for row in rows:
+            if not isinstance(row, dict) or not isinstance(row.get("search_id"), str):
+                return match.group(0)
+            if re.fullmatch(r"S\d+\.q\d+", row["search_id"]):
+                row["search_id"] = "<search-record-id>"
+        return match.group(1) + json.dumps(value, ensure_ascii=False, sort_keys=True,
+                                           separators=(",", ":"))
+    return _SEARCH_PAGE.sub(replace, result)
 
 
 def v13_bash_tool_spec(baseline_spec: dict) -> dict:
@@ -38,9 +57,11 @@ def _digest(value) -> str:
 
 
 class ProgressFeedback:
-    def __init__(self, *, pool_version_provider, log_path: Path) -> None:
+    def __init__(self, *, pool_version_provider, log_path: Path,
+                 search_fingerprint_normalizer=None) -> None:
         self.pool_version_provider = pool_version_provider
         self.log_path = log_path
+        self.search_fingerprint_normalizer = search_fingerprint_normalizer
         self._pool_version = None
         self._repeats: dict[str, int] = {}
         self._truncated_streak = 0
@@ -79,6 +100,8 @@ class ProgressFeedback:
         # pool version intact, and hash the exact raw result separately.
         evidence = (_SEARCH_RECORD.sub(r"\1<search-record-id>\2", result)
                     if name == "search" else result)
+        if name == "search" and self.search_fingerprint_normalizer is not None:
+            evidence = self.search_fingerprint_normalizer(evidence)
         if isinstance(parsed, dict):
             evidence = {key: value for key, value in parsed.items()
                         if key not in _VOLATILE_RERANK_FIELDS}

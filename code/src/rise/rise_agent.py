@@ -281,7 +281,7 @@ class RISERun:
     n_tool_calls: int = 0
     tool_call_breakdown: dict[str, int] = field(default_factory=dict)
     bash_kinds: dict[str, int] = field(default_factory=dict)
-    n_bm25_searches: int = 0     # # of search tool CALLS
+    n_bm25_searches: int = 0     # Actual retrieval calls; search pages are separate.
     n_bm25_queries: int = 0      # total # of QUERIES across all search calls
     n_bash_calls: int = 0
     n_read_calls: int = 0         # doc-mode `read` only
@@ -340,7 +340,7 @@ def _surfaced_relpaths_from_run(
 
     for t in agent_run.turns:
         for tc in t.tool_calls:
-            if tc.name in {"dci", "expand_source", "read", "rerank"}:
+            if tc.name in {"dci", "expand_source", "read", "rerank", "search"}:
                 try:
                     def visit(value):
                         if isinstance(value, dict):
@@ -457,12 +457,26 @@ def run_rise_agent(
     reranker_enabled = bool(extras.get("reranker_enabled", False))
     space_enabled = bool(extras.get("space_reranker_enabled", False))
     independent_enabled = bool(extras.get("independent_rerank_enabled", False))
+    ablation_variant = extras.get("ablation_variant")
+    if ablation_variant is not None:
+        if ablation_variant not in {"search_paging", "auto_rerank", "no_bash"}:
+            raise ValueError("Unknown v14 ablation variant")
+        if not independent_enabled:
+            raise ValueError("v14 ablations require independent rerank")
+        if no_bash and ablation_variant != "no_bash":
+            raise ValueError("Only the no_bash variant may remove bash")
+        no_bash = ablation_variant == "no_bash"
+        extras["no_bash"] = no_bash
+        if extras.setdefault("ablation_version", "v14-ablations-v1") != "v14-ablations-v1":
+            raise ValueError("Unsupported ablation version")
+        if bm25_snippet_chars != 100 or read_default_limit != 2000:
+            raise ValueError("v14 ablations preserve snippet_chars=100 and read_default_limit=2000")
     if independent_enabled:
         from .rerank_v13 import RERANK_RESPONSE_VERSION, RERANK_TOOL_VERSION
         from .v13_feedback import PROGRESS_FEEDBACK_VERSION
         if reranker_enabled or space_enabled:
             raise ValueError("v13 independent rerank cannot be combined with other reranker modes")
-        if no_bash or not enable_sandbox:
+        if (no_bash and ablation_variant != "no_bash") or not enable_sandbox:
             raise ValueError("v13 requires original-pool bash and its sandbox")
         if passage_mode or bm25_k != 1000 or bm25_top_n_preview != 10:
             raise ValueError("v13 requires document search top-1000 with top-10 preview")
@@ -538,6 +552,7 @@ def run_rise_agent(
     space_tools = None
     independent_rerank = None
     progress_feedback = None
+    ablation_search = None
     if reranker_enabled or space_enabled or independent_enabled:
         from .reranker_backend import QwenReranker
         from .reranker_tool import RerankerTool, reranker_tool_spec
@@ -609,10 +624,12 @@ def run_rise_agent(
                            else space_tools.manager.register_search if space_tools is not None
                            else reranker.register_search if reranker is not None else None),
     )
-    bash_fn = make_bash_tool(
-        working_dir, truncate_chars=bash_truncate_chars,
-        enable_sandbox=enable_sandbox,
-    )
+    bash_fn = None
+    if ablation_variant != "no_bash":
+        bash_fn = make_bash_tool(
+            working_dir, truncate_chars=bash_truncate_chars,
+            enable_sandbox=enable_sandbox,
+        )
 
     if independent_rerank is not None:
         from .rerank_v13 import rerank_tool_spec
@@ -624,7 +641,9 @@ def run_rise_agent(
             return output + "\nAccumulated original-document pool: " + json.dumps({
                 "pool_version": summary.get("pool_version", summary.get("space_version")),
                 "documents": summary.get("pool_documents"),
-                "notice": "bash/read use all imported original documents; rerank is independently available.",
+                "notice": ("read uses all imported original documents; rerank is independently available."
+                           if ablation_variant == "no_bash" else
+                           "bash/read use all imported original documents; rerank is independently available."),
             }, ensure_ascii=False)
         read_fn = make_read_tool(working_dir, default_limit=read_default_limit)
         feedback_path = (trace_path.parent / "tool_feedback.jsonl" if trace_path is not None
@@ -634,6 +653,9 @@ def run_rise_agent(
         progress_feedback = ProgressFeedback(
             pool_version_provider=lambda: independent_rerank.manager.space_version,
             log_path=feedback_path)
+        if ablation_variant == "search_paging":
+            from .v13_feedback import normalize_search_page_ids
+            progress_feedback.search_fingerprint_normalizer = normalize_search_page_ids
         tool_registry = {
             "search": progress_feedback.wrap("search", independent_search),
             "bash": progress_feedback.wrap("bash", bash_fn),
@@ -651,6 +673,39 @@ def run_rise_agent(
             document_guide = RISE_SYSTEM_PROMPT_STRUCTURED[start:end]
         system_prompt = build_independent_rerank_prompt(
             document_guide=document_guide, read_default_limit=read_default_limit)
+        if ablation_variant is not None:
+            from .ablation_tools import (
+                SearchPagingTool, AutoRerankSearchTool, WithoutBashResponse,
+            )
+            from .ablation_prompt import (
+                build_ablation_prompt, ablation_search_tool_spec,
+                ablation_read_tool_spec, ablation_rerank_tool_spec,
+            )
+            search_callable = independent_search
+            if ablation_variant == "search_paging":
+                ablation_search = SearchPagingTool(
+                    independent_search, independent_rerank,
+                    working_dir=working_dir, snippet_chars=bm25_snippet_chars)
+                search_callable = ablation_search
+            elif ablation_variant == "auto_rerank":
+                ablation_search = AutoRerankSearchTool(independent_search, independent_rerank)
+                search_callable = ablation_search
+            tool_registry = {"search": progress_feedback.wrap("search", search_callable)}
+            tool_specs = [ablation_search_tool_spec(ablation_variant)]
+            if not no_bash:
+                tool_registry["bash"] = progress_feedback.wrap("bash", bash_fn)
+                tool_specs.append(v13_bash_tool_spec(bash_tool_spec()))
+            tool_registry["read"] = read_fn
+            tool_specs.append(ablation_read_tool_spec(
+                ablation_variant, read_tool_spec(), read_default_limit=read_default_limit))
+            if ablation_variant != "auto_rerank":
+                rerank_callable = (WithoutBashResponse(independent_rerank)
+                                   if no_bash else independent_rerank)
+                tool_registry["rerank"] = progress_feedback.wrap("rerank", rerank_callable)
+                tool_specs.append(ablation_rerank_tool_spec(ablation_variant, rerank_tool_spec()))
+            system_prompt = build_ablation_prompt(
+                ablation_variant, document_guide=document_guide,
+                read_default_limit=read_default_limit)
     elif space_tools is not None:
         underlying_search = bm25_fn
         def space_search(args):
@@ -748,9 +803,14 @@ def run_rise_agent(
     trace_relpath_to_docid = {rel: did for did, rel in docid_to_relpath.items()}
     if independent_rerank is not None:
         def independent_tool_state():
-            return {"version": PROGRESS_FEEDBACK_VERSION,
+            state = {"version": PROGRESS_FEEDBACK_VERSION,
                     "rerank": independent_rerank.export_state(),
                     "feedback": progress_feedback.export_state()}
+            if ablation_variant is not None:
+                state["ablation_variant"] = ablation_variant
+                state["ablation_search"] = (ablation_search.export_state()
+                                             if ablation_search is not None else None)
+            return state
         def restore_independent_tool_state(state):
             if not isinstance(state, dict) or state.get("version") != PROGRESS_FEEDBACK_VERSION:
                 raise ValueError("Incompatible v13 independent-tool checkpoint state")
@@ -758,6 +818,11 @@ def run_rise_agent(
             # before checking the feedback counters' pool identity.
             independent_rerank.restore_state(state.get("rerank"))
             progress_feedback.restore_state(state.get("feedback"))
+            if ablation_variant is not None:
+                if state.get("ablation_variant") != ablation_variant:
+                    raise ValueError("Ablation checkpoint variant changed")
+                if ablation_search is not None:
+                    ablation_search.restore_state(state.get("ablation_search"))
     turn_checkpoint = None
     if turn_checkpoint_path is not None:
         digest = lambda value: hashlib.sha256(value.encode("utf-8")).hexdigest()
@@ -807,10 +872,16 @@ def run_rise_agent(
                                else space_tools.summary if space_tools is not None else reranker.summary)
         if progress_feedback is not None:
             out.reranker_summary["progress_feedback"] = progress_feedback.summary
+        if ablation_variant is not None:
+            out.reranker_summary["ablation_variant"] = ablation_variant
+            out.reranker_summary["ablation_search"] = (
+                ablation_search.summary if ablation_search is not None else {})
         if trace_path is not None:
             from .trajectory import atomic_write_json
             atomic_write_json(trace_path.parent / "reranker_summary.json", out.reranker_summary)
     out.n_bm25_searches = out.tool_call_breakdown.get("search", 0)
+    if ablation_search is not None:
+        out.n_bm25_searches = ablation_search.summary["retrieval_calls"]
     out.n_bash_calls = out.tool_call_breakdown.get("bash", 0)
     if space_tools is not None:
         out.n_bash_calls = out.reranker_summary["dci_command_calls"]
@@ -860,6 +931,9 @@ def run_rise_agent(
                 if tgt:
                     read_paths.append(tgt)
     out.bash_kinds = bash_kinds
+    if ablation_search is not None:
+        bm25_queries = [record["query"]
+                        for record in independent_rerank.manager._search_sets.values()]
     out.bm25_queries = bm25_queries
     out.n_bm25_queries = len(bm25_queries)
     out.read_paths = read_paths

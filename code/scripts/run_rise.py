@@ -94,6 +94,8 @@ def main() -> None:
                     help="Enable v11: rerank the accumulated document pool for an explicit DCI evidence goal, then sandbox exploration to its top-K passage view.")
     ap.add_argument("--independent-rerank", action=argparse.BooleanOptionalAction, default=False,
                     help="Enable v13: independent cumulative/subset passage rerank alongside bash/read on the accumulated original documents. Requires --space-passage-index and sandbox.")
+    ap.add_argument("--ablation-variant", choices=("search_paging", "auto_rerank", "no_bash"),
+                    default=None, help="One of the three independent v14 ablations; requires --independent-rerank.")
     ap.add_argument("--space-bm25-candidates", type=int, default=1000,
                     help="v11/v12 default BM25 candidate count. In v13 the model chooses bm25_candidates per rerank call.")
     ap.add_argument("--space-top-k", type=int, default=100,
@@ -151,6 +153,12 @@ def main() -> None:
                          "search + read — closer to a BCP retrieval-agent "
                          "setup without mini-corpus exploration.")
     args = ap.parse_args()
+    if args.ablation_variant and not args.independent_rerank:
+        ap.error("--ablation-variant requires --independent-rerank")
+    if args.ablation_variant == "no_bash":
+        args.no_bash = True
+    elif args.ablation_variant and args.no_bash:
+        ap.error("--no-bash is only compatible with the no_bash ablation")
     if args.api_max_retries < 1:
         ap.error("--api-max-retries must be at least 1")
     if args.per_call_max_tokens < 1:
@@ -162,8 +170,8 @@ def main() -> None:
     if args.independent_rerank:
         if args.reranker or args.space_reranker:
             ap.error("--independent-rerank cannot be combined with --reranker or --space-reranker")
-        if args.no_bash or args.no_sandbox:
-            ap.error("--independent-rerank requires bash and sandbox; --no-bash/--no-sandbox are unavailable")
+        if args.no_sandbox or (args.no_bash and args.ablation_variant != "no_bash"):
+            ap.error("--independent-rerank requires sandbox; --no-bash is available only in the no_bash ablation")
         if args.space_passage_index is None:
             ap.error("--independent-rerank requires --space-passage-index")
         if args.reranker_model != "Qwen/Qwen3-Reranker-0.6B":
@@ -206,6 +214,8 @@ def main() -> None:
             args.out_root = args.out_root.with_name(args.out_root.name + ("_v12" if args.space_passage_index else "_v11"))
         if args.independent_rerank:
             args.out_root = args.out_root.with_name(args.out_root.name + "_v13")
+        if args.ablation_variant:
+            args.out_root = args.out_root.with_name(args.out_root.name + "_" + args.ablation_variant)
     args.out_root = args.out_root.resolve()
     args.out_root.mkdir(parents=True, exist_ok=True)
     # NVIDIA's hosted Nemotron Super defaults to high reasoning.  This value
@@ -242,6 +252,9 @@ def main() -> None:
         structured_doc_mode=bool(args.structured_docs),
         no_bash=bool(args.no_bash),
     )
+    if args.ablation_variant:
+        run_config.extras["ablation_variant"] = args.ablation_variant
+        run_config.extras["ablation_version"] = "v14-ablations-v1"
     # Preserve the baseline config identity when the optional tool is off.
     if args.reranker or args.space_reranker or args.independent_rerank:
         run_config.extras["reranker_loading_policy"] = RERANKER_LOADING_POLICY
@@ -626,11 +639,17 @@ def main() -> None:
             for key in ("rerank_calls", "scoring_calls", "ranking_cache_hits",
                         "scored_passages", "forward_calls", "completed_forward_calls",
                         "input_tokens", "scoring_seconds", "tool_errors")}
+    if args.ablation_variant:
+        summary["config"].update(ablation_variant=args.ablation_variant,
+                                 ablation_version="v14-ablations-v1")
     out_path = args.out_root / "_summary.json"
     atomic_write_json(out_path, summary)
     a = summary["aggregate"]
     print()
-    print(f"(judge pending — run: scripts/judge.py --run-dir {args.out_root} --judge-model <MODEL>)")
+    if args.ablation_variant:
+        print("(score pending: review public finals against frozen gold using the v14 strict rubric)")
+    else:
+        print(f"(judge pending — run: scripts/judge.py --run-dir {args.out_root} --judge-model <MODEL>)")
     print(f"n: {a['n']}  mean turns: {a['mean_n_turns']:.1f}")
     print(f"mean search-calls / total queries / bash / read:  {a['mean_n_bm25_searches']:.1f} / {a['mean_n_bm25_queries']:.1f} / {a['mean_n_bash_calls']:.1f} / {a['mean_n_read_calls']:.1f}")
     if args.passage_mode:
