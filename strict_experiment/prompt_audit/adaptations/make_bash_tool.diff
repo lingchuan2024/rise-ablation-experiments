@@ -1,0 +1,115 @@
+--- official/tools.py::make_bash_tool
++++ shared-server/tools.py::make_bash_tool
+@@ -32,7 +32,6 @@
+       verbatim port of Pi's `truncateTail`. Used by `dci_native` to match
+       the Pi-based DCI baseline byte-for-byte.
+     """
+-    profile = make_sandbox_profile(mini_corpus_dir) if enable_sandbox else None
+     mc_resolved = mini_corpus_dir.resolve()
+     pi_tail_mode = max_output_lines is not None or max_output_bytes is not None
+     _max_lines = max_output_lines if max_output_lines is not None else 2000
+@@ -56,9 +55,32 @@
+         timeout_s = max(1.0, min(timeout_s, HARD_TIMEOUT_S))
+ 
+         if enable_sandbox:
+-            cmd = ["/usr/bin/sandbox-exec", "-p", profile, "/bin/bash", "-c", command]
++            cmd = _sandboxed_bash_command(mc_resolved, command)
++            # Clear credentials before starting the shell.  Bubblewrap 0.2.1
++            # (used on the target server) has no --clearenv option, so the
++            # subprocess environment is the portable place to enforce this.
++            if sys.platform == "darwin":
++                sandbox_env = {
++                    "HOME": "/private/tmp",
++                    "TMPDIR": os.environ.get("TMPDIR", "/private/tmp"),
++                    "PATH": "/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin",
++                    "LANG": "en_US.UTF-8",
++                }
++            else:
++                sandbox_env = {
++                    "HOME": "/tmp",
++                    "TMPDIR": "/tmp",
++                    "PATH": "/usr/local/bin:/usr/bin:/bin",
++                    "LANG": "C.UTF-8",
++                }
+         else:
+             cmd = ["/bin/bash", "-c", command]
++            sandbox_env = None
++
++        if cmd[:2] == ["/usr/bin/docker", "run"] and os.environ.get("DOCKER_HOST"):
++            # Platform daemon socket belongs to the trusted CLI only. It is
++            # neither mounted nor forwarded as an environment variable into bash.
++            sandbox_env["DOCKER_HOST"] = os.environ["DOCKER_HOST"]
+ 
+         # Use Popen + start_new_session + os.killpg instead of
+         # subprocess.run(timeout=…). The latter only SIGKILLs the immediate
+@@ -69,38 +91,45 @@
+         import signal as _signal
+         proc = None
+         try:
+-            proc = subprocess.Popen(
+-                cmd,
+-                cwd=str(mc_resolved),
+-                stdout=subprocess.PIPE,
+-                stderr=subprocess.PIPE,
+-                text=True,
+-                start_new_session=True,
+-            )
+-            try:
+-                stdout_b, stderr_b = proc.communicate(timeout=timeout_s)
+-            except subprocess.TimeoutExpired:
++            if cmd[:2] == ["/usr/bin/docker", "run"]:
++                proc = _run_docker_bash(cmd, mc_resolved, timeout_s, sandbox_env)
++                stdout_b, stderr_b = proc.stdout, proc.stderr
++            else:
++                proc = subprocess.Popen(
++                    cmd,
++                    cwd=str(mc_resolved),
++                    stdout=subprocess.PIPE,
++                    stderr=subprocess.PIPE,
++                    text=True,
++                    start_new_session=True,
++                    env=sandbox_env,
++                )
+                 try:
+-                    os.killpg(proc.pid, _signal.SIGKILL)
+-                except (ProcessLookupError, PermissionError):
+-                    pass
+-                try:
+-                    proc.communicate(timeout=5)
++                    stdout_b, stderr_b = proc.communicate(timeout=timeout_s)
+                 except subprocess.TimeoutExpired:
+-                    pass
+-                return (
+-                    f"Error: bash subprocess timed out after {timeout_s:.0f}s "
+-                    f"(SIGKILL'd). Likely catastrophic regex backtracking or an "
+-                    f"infinite loop. Try a simpler search: avoid PCRE2 multi-"
+-                    f"lookahead `(?=...)` and `rg --pcre2`; prefer plain regex "
+-                    f"or multiple narrower searches."
+-                )
++                    try:
++                        os.killpg(proc.pid, _signal.SIGKILL)
++                    except (ProcessLookupError, PermissionError):
++                        pass
++                    try:
++                        proc.communicate(timeout=5)
++                    except subprocess.TimeoutExpired:
++                        pass
++                    return (
++                        f"Error: bash subprocess timed out after {timeout_s:.0f}s "
++                        f"(SIGKILL'd). Likely catastrophic regex backtracking or an "
++                        f"infinite loop. Try a simpler search: avoid PCRE2 multi-"
++                        f"lookahead `(?=...)` and `rg --pcre2`; prefer plain regex "
++                        f"or multiple narrower searches."
++                    )
++        except subprocess.TimeoutExpired:
++            return f"Error: bash subprocess timed out after {timeout_s:.0f}s; Docker sandbox removed."
+         except FileNotFoundError as e:
+             return f"Error: failed to spawn bash: {e}"
+         except Exception as e:
+             return f"Error: bash subprocess exception: {type(e).__name__}: {e}"
+         finally:
+-            if proc is not None:
++            if proc is not None and hasattr(proc, "pid"):
+                 try:
+                     os.killpg(proc.pid, _signal.SIGKILL)
+                 except (ProcessLookupError, PermissionError):

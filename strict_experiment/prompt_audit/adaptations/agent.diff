@@ -1,0 +1,612 @@
+--- official/agent.py
++++ shared-server/agent.py
+@@ -12,15 +12,20 @@
+ from __future__ import annotations
+ 
+ import json
++import math
++import os
++import re
++import tempfile
+ import time
+ from dataclasses import dataclass, field
+ from pathlib import Path
+ from typing import Any, Callable
+ 
+-from openai import OpenAI
++from openai import BadRequestError, OpenAI
+ 
+ from .api_retry import (
+     chat_with_retry,
++    RequestDeadlineExceeded,
+     extract_cached_tokens,
+     extract_reasoning_tokens,
+     extract_responses_usage,
+@@ -28,11 +33,36 @@
+     is_responses_api_model,
+     responses_with_retry,
+ )
++from .local_vllm import ContextBudgetError, complete_response_category, extract_reasoning, is_local_qwen
+ from .dci_artifacts import estimate_cost
++from .nvidia_key_pool import redact_nvidia_credentials
++from .turn_checkpoint import TurnCheckpoint
+ from .trajectory import SCHEMA_VERSION
+ 
+ 
+ Tool = Callable[[dict], str]
++
++
++_TOOL_ERROR_LINE_RE = re.compile(r"(?m)^[ \t]*Error:")
++
++
++def _tool_returned_error(result: str) -> str:
++    """Flag an error string returned by a tool without an exception.
++
++    Some tools report ordinary failures (such as a missing read path) in
++    their response text. The payload must still be sent to the model as-is.
++    """
++    if _TOOL_ERROR_LINE_RE.search(result):
++        return "tool_returned_error"
++    try:
++        payload = json.loads(result)
++        if isinstance(payload, dict) and (
++            payload.get("status") == "error" or payload.get("command_status") == "error"
++        ):
++            return "tool_returned_error"
++    except (ValueError, TypeError):
++        pass
++    return ""
+ 
+ 
+ @dataclass
+@@ -61,6 +91,9 @@
+     completion_tokens: int = 0
+     reasoning_tokens: int = 0
+     cost_usd: float = 0.0
++    response_category: str = ""
++    api_metadata: dict[str, Any] = field(default_factory=dict)
++    raw_tool_calls: list[dict[str, Any]] = field(default_factory=list)
+ 
+ 
+ @dataclass
+@@ -69,7 +102,7 @@
+     system_prompt: str
+     user_prompt: str
+     final_answer: str = ""
+-    terminated_reason: str = ""  # done | max_turns | coerced_max_turns | coerce_failed | api_error
++    terminated_reason: str = ""  # done | output_truncated | max_turns | coerced_max_turns | coerce_failed | context_limit | api_error | incomplete_response | content_filter | wall_clock_timeout
+     error: str = ""
+     turns: list[TurnRecord] = field(default_factory=list)
+     total_prompt_tokens: int = 0
+@@ -87,6 +120,48 @@
+     n_tool_results_truncated: int = 0
+ 
+ 
++def _run_from_checkpoint(data: dict[str, Any]) -> AgentRun:
++    values = dict(data)
++    turns = values.pop("turns")
++    run = AgentRun(**values)
++    run.turns = []
++    for saved in turns:
++        turn_values = dict(saved)
++        calls = turn_values.pop("tool_calls")
++        turn = TurnRecord(**turn_values)
++        turn.tool_calls = [ToolCallRecord(**call) for call in calls]
++        run.turns.append(turn)
++    return run
++
++
++_MAX_CONTEXT_LENGTH_RE = re.compile(r"\b(?:maximum|max)\s+context\s+length\b", re.IGNORECASE)
++
++
++def _is_context_limit_error(exc: Exception) -> bool:
++    """Identify the deterministic 400 caused by an overlong chat history.
++
++    Other bad requests and transient provider failures retain the ordinary
++    API-error path, so only a stated context limit becomes a terminal run.
++    """
++    if isinstance(exc, ContextBudgetError):
++        return True
++    if not isinstance(exc, BadRequestError) or exc.status_code != 400:
++        return False
++    body = exc.body
++    details = body.get("error", body) if isinstance(body, dict) else {}
++    if not isinstance(details, dict):
++        details = {}
++    indicators = (
++        details.get("code"), details.get("type"), exc.code,
++        details.get("message"), str(exc),
++    )
++    return any(
++        "context_length_exceeded" in str(value).lower()
++        or _MAX_CONTEXT_LENGTH_RE.search(str(value))
++        for value in indicators if value is not None
++    )
++
++
+ class Agent:
+     """Single-threaded tool-calling agent.
+ 
+@@ -114,6 +189,7 @@
+         per_call_max_tokens: int = 32000,
+         temperature: float = 0.7,
+         max_retries: int = 5,
++        stream_nvidia: bool = False,
+         coerce_final_on_max_turns: bool = True,
+         coerce_message: str | None = None,
+         wall_clock_timeout_sec: float = 120 * 60,  # 2 hours per agent run
+@@ -132,6 +208,7 @@
+         self.per_call_max_tokens = per_call_max_tokens
+         self.temperature = temperature
+         self.max_retries = max_retries
++        self.stream_nvidia = stream_nvidia
+         self.wall_clock_timeout_sec = wall_clock_timeout_sec
+         self.coerce_final_on_max_turns = coerce_final_on_max_turns
+         self.coerce_message = coerce_message or self.DEFAULT_COERCE_MSG
+@@ -153,6 +230,40 @@
+         if run is not None:
+             run.n_tool_results_truncated += 1
+         return text[: cs.max_tool_result_chars] + f"\n[...truncated, {omitted} chars omitted]"
++
++    def _save_incomplete_local(self, run: AgentRun, response: Any, *, coerced: bool = False) -> None:
++        """Keep failed local generation and its actual usage before stopping."""
++        choices = getattr(response, "choices", None) or []
++        choice = choices[0] if choices else None
++        message = getattr(choice, "message", None)
++        usage = getattr(response, "usage", None)
++        cached = extract_cached_tokens(usage)
++        prompt = max(0, int(getattr(usage, "prompt_tokens", 0) or 0) - cached)
++        output = int(getattr(usage, "completion_tokens", 0) or 0)
++        cost = estimate_cost({"input_tokens": prompt, "cached_input_tokens": cached,
++                              "output_tokens": output}, self.model)
++        category = complete_response_category(response)
++        turn = TurnRecord(
++            turn=len(run.turns), content=getattr(message, "content", None) or "",
++            reasoning_content=extract_reasoning(message) if message is not None else "",
++            finish_reason=("coerced/" if coerced else "") + str(getattr(choice, "finish_reason", None) or ""),
++            prompt_tokens=prompt, cached_prompt_tokens=cached, completion_tokens=output,
++            reasoning_tokens=extract_reasoning_tokens(usage), cost_usd=cost,
++            response_category=category, api_metadata=getattr(response, "_rise_api_metadata", {}) or {},
++            raw_tool_calls=[call.model_dump() if hasattr(call, "model_dump") else {
++                "id": getattr(call, "id", None), "type": getattr(call, "type", None),
++                "function": {"name": getattr(getattr(call, "function", None), "name", None),
++                             "arguments": getattr(getattr(call, "function", None), "arguments", None)},
++            } for call in getattr(message, "tool_calls", None) or []],
++        )
++        run.turns.append(turn)
++        run.total_prompt_tokens += prompt
++        run.total_cached_prompt_tokens += cached
++        run.total_completion_tokens += output
++        run.total_reasoning_tokens += turn.reasoning_tokens
++        run.total_cost_usd += cost
++        run.terminated_reason = category if category in {"output_truncated", "wall_clock_timeout", "content_filter"} else "incomplete_response"
++        run.error = f"Qwen response was not complete: {category}"
+ 
+     def _maybe_micro_compact_responses(
+         self,
+@@ -226,12 +337,15 @@
+         user_prompt: str,
+         trace_path: Path | None = None,
+         trace_relpath_to_docid: dict[str, str] | None = None,
++        turn_checkpoint: TurnCheckpoint | None = None,
+     ) -> AgentRun:
+         # gpt-5 / o-series → Responses API (reasoning summary visible,
+         # previous_response_id chains server-side reasoning state across turns,
+         # explicit prompt_cache_key). All other providers (DeepSeek, Mimo) stay
+         # on chat.completions.
+         if is_responses_api_model(self.model):
++            if turn_checkpoint is not None:
++                raise ValueError("Per-turn checkpoints currently support chat completions only")
+             # gpt-5 / o-series use the Responses API (reasoning summary visible,
+             # previous_response_id chains server-side reasoning state across
+             # turns, explicit prompt_cache_key).
+@@ -253,19 +367,57 @@
+             user_prompt=user_prompt,
+         )
+         t0 = time.time()
++        started_monotonic = time.monotonic()
+ 
+         messages: list[dict] = [
+             {"role": "system", "content": system_prompt},
+             {"role": "user", "content": user_prompt},
+         ]
++        local_qwen = is_local_qwen(self.model)
++        terminal_reasons = {"done", "output_truncated", "coerced_max_turns", "context_limit"}
++        if local_qwen:
++            terminal_reasons.update({"incomplete_response", "content_filter", "wall_clock_timeout"})
++        state = turn_checkpoint.load() if turn_checkpoint is not None else None
++        elapsed_before = 0.0
++        if state is not None:
++            run = _run_from_checkpoint(state["run"])
++            if (run.model != self.model or run.system_prompt != system_prompt
++                    or run.user_prompt != user_prompt):
++                raise ValueError("Checkpoint model or prompts do not match this run")
++            messages = state["messages"]
++            coerced_turn = bool(
++                run.terminated_reason in terminal_reasons
++                and run.turns and run.turns[-1].finish_reason.startswith("coerced/")
++            )
++            if (len(messages) < 2 or messages[0] != {"role": "system", "content": system_prompt}
++                    or messages[1] != {"role": "user", "content": user_prompt}
++                    or len(run.turns) > self.max_turns + int(coerced_turn)):
++                raise ValueError("Checkpoint message history or turn count is invalid")
++            elapsed_before = float(state["elapsed_seconds"])
++            if not math.isfinite(elapsed_before) or elapsed_before < 0:
++                raise ValueError("Checkpoint elapsed time is invalid")
++            turn_checkpoint.restore_workspace(state)
++            if run.terminated_reason in terminal_reasons:
++                run.elapsed_seconds = elapsed_before
++                if trace_path is not None:
++                    _dump_trace(run, trace_path, relpath_to_docid=trace_relpath_to_docid)
++                return run
++            run.terminated_reason = ""
++            run.error = ""
++
++        def save_checkpoint() -> None:
++            if turn_checkpoint is not None:
++                turn_checkpoint.save(run, messages, elapsed_before + time.time() - t0)
+ 
+         terminated = False
+-        for turn_idx in range(self.max_turns):
++        api_deadline = started_monotonic + max(0, self.wall_clock_timeout_sec - elapsed_before)
++        for turn_idx in range(len(run.turns), self.max_turns):
+             # Wall-clock cap: bound the worst case (a single query shouldn't
+             # ever take longer than `wall_clock_timeout_sec`). If exceeded
+             # before the next LLM call, break out and let the coerce path
+             # below try to produce a final answer from what we have.
+-            if (time.time() - t0) > self.wall_clock_timeout_sec:
++            if ((elapsed_before + time.time() - t0) > self.wall_clock_timeout_sec
++                    or (local_qwen and time.monotonic() >= api_deadline)):
+                 run.terminated_reason = "wall_clock_timeout"
+                 break
+             kwargs: dict[str, Any] = {
+@@ -274,15 +426,31 @@
+                 "max_tokens": self.per_call_max_tokens,
+                 "temperature": self.temperature,
+                 "max_retries": self.max_retries,
++                "stream_nvidia": self.stream_nvidia,
+             }
+             if self.tool_specs:
+                 kwargs["tools"] = self.tool_specs
+                 kwargs["tool_choice"] = "auto"
++            if local_qwen:
++                kwargs["deadline"] = api_deadline
+             try:
+-                response = chat_with_retry(self.client, **kwargs)
++                response = chat_with_retry(self.client, diagnostic_path=(Path(trace_path).with_suffix(".api.jsonl") if trace_path is not None and is_local_qwen(self.model) else None), **kwargs)
++            except RequestDeadlineExceeded as e:
++                run.terminated_reason = "wall_clock_timeout"
++                run.error = str(e)
++                save_checkpoint()
++                terminated = True
++                break
+             except Exception as e:
+-                run.terminated_reason = "api_error"
+-                run.error = f"{type(e).__name__}: {str(e)[:300]}"
++                run.terminated_reason = "context_limit" if _is_context_limit_error(e) else "api_error"
++                run.error = f"{type(e).__name__}: {redact_nvidia_credentials(str(e))[:300]}"
++                save_checkpoint()
++                terminated = True
++                break
++
++            if local_qwen and complete_response_category(response) not in {"content", "tool_calls"}:
++                self._save_incomplete_local(run, response)
++                save_checkpoint()
+                 terminated = True
+                 break
+ 
+@@ -290,7 +458,7 @@
+             msg = choice.message
+             content = msg.content or ""
+             tool_calls = list(msg.tool_calls or [])
+-            reasoning_content = (getattr(msg, "reasoning_content", "") or "")
++            reasoning_content = extract_reasoning(msg)
+ 
+             usage = response.usage
+             prompt_t = int(getattr(usage, "prompt_tokens", 0) or 0) if usage else 0
+@@ -318,6 +486,9 @@
+                 completion_tokens=comp_t,
+                 reasoning_tokens=reason_t,
+                 cost_usd=turn_cost,
++                response_category=complete_response_category(response) if local_qwen else "",
++                api_metadata=getattr(response, "_rise_api_metadata", {}) or {},
++                raw_tool_calls=[tc.model_dump() for tc in tool_calls] if local_qwen else [],
+             )
+             run.total_prompt_tokens += turn.prompt_tokens
+             run.total_cached_prompt_tokens += turn.cached_prompt_tokens
+@@ -346,14 +517,30 @@
+                     messages.pop()
+                     turn.content = "(empty — length-truncated, retrying)"
+                     run.turns.append(turn)
++                    save_checkpoint()
+                     continue
++                if (choice.finish_reason or "").lower() == "length":
++                    # Visible text can still be an incomplete answer when the
++                    # provider exhausts the output budget. Keep the text in
++                    # this turn for audit, but do not score it as a completed
++                    # final response.
++                    run.terminated_reason = "output_truncated"
++                    run.turns.append(turn)
++                    save_checkpoint()
++                    terminated = True
++                    break
+                 run.final_answer = content
+                 run.terminated_reason = "done"
+                 run.turns.append(turn)
++                save_checkpoint()
+                 terminated = True
+                 break
+ 
+             for tc in tool_calls:
++                if local_qwen and time.monotonic() >= api_deadline:
++                    run.terminated_reason = "wall_clock_timeout"
++                    terminated = True
++                    break
+                 name = tc.function.name
+                 try:
+                     args = json.loads(tc.function.arguments or "{}")
+@@ -382,9 +569,9 @@
+                     tts = time.time()
+                     try:
+                         result = tool_fn(args)
+-                        err = ""
++                        err = _tool_returned_error(result)
+                     except Exception as e:
+-                        result = f"Error: tool {name!r} raised {type(e).__name__}: {str(e)[:300]}"
++                        result = f"Error: tool {name!r} raised {type(e).__name__}: {redact_nvidia_credentials(str(e))[:300]}"
+                         err = f"{type(e).__name__}"
+                     duration = time.time() - tts
+ 
+@@ -405,15 +592,29 @@
+                 messages.append({"role": "tool", "tool_call_id": tc.id, "content": result})
+ 
+             run.turns.append(turn)
++            save_checkpoint()
++
++            if terminated:
++                break
+ 
+         if not terminated:
+             # If we broke out for wall-clock, keep that reason; otherwise it's max_turns.
+-            if run.terminated_reason != "wall_clock_timeout":
++            if local_qwen and time.monotonic() >= api_deadline:
++                run.terminated_reason = "wall_clock_timeout"
++            elif run.terminated_reason != "wall_clock_timeout":
+                 run.terminated_reason = "max_turns"
+-            if self.coerce_final_on_max_turns:
+-                self._coerce_final_answer(run, messages)
+-
+-        run.elapsed_seconds = time.time() - t0
++            if self.coerce_final_on_max_turns and (not local_qwen or time.monotonic() < api_deadline):
++                if local_qwen:
++                    self._coerce_final_answer(run, messages, deadline=api_deadline,
++                                              diagnostic_path=Path(trace_path).with_suffix(".api.jsonl") if trace_path is not None else None)
++                else:
++                    self._coerce_final_answer(run, messages)
++                if run.terminated_reason in terminal_reasons:
++                    save_checkpoint()
++            if local_qwen and run.terminated_reason == "wall_clock_timeout":
++                save_checkpoint()
++
++        run.elapsed_seconds = elapsed_before + time.time() - t0
+ 
+         if trace_path is not None:
+             _dump_trace(run, trace_path, relpath_to_docid=trace_relpath_to_docid)
+@@ -513,7 +714,7 @@
+                 response = responses_with_retry(self.client, **kwargs)
+             except Exception as e:
+                 run.terminated_reason = "api_error"
+-                run.error = f"{type(e).__name__}: {str(e)[:300]}"
++                run.error = f"{type(e).__name__}: {redact_nvidia_credentials(str(e))[:300]}"
+                 terminated = True
+                 break
+ 
+@@ -639,9 +840,9 @@
+                     tts = time.time()
+                     try:
+                         result = tool_fn(args)
+-                        err = ""
++                        err = _tool_returned_error(result)
+                     except Exception as e:
+-                        result = f"Error: tool {name!r} raised {type(e).__name__}: {str(e)[:300]}"
++                        result = f"Error: tool {name!r} raised {type(e).__name__}: {redact_nvidia_credentials(str(e))[:300]}"
+                         err = f"{type(e).__name__}"
+                     duration = time.time() - tts
+ 
+@@ -720,7 +921,7 @@
+             response = responses_with_retry(self.client, **kwargs)
+         except Exception as e:
+             run.terminated_reason = "coerce_failed"
+-            run.error = f"coerce: {type(e).__name__}: {str(e)[:300]}"
++            run.error = f"coerce: {type(e).__name__}: {redact_nvidia_credentials(str(e))[:300]}"
+             return
+ 
+         text_parts: list[str] = []
+@@ -770,14 +971,16 @@
+         run.final_answer = content
+         run.terminated_reason = "coerced_max_turns"
+ 
+-    def _coerce_final_answer(self, run: AgentRun, messages: list[dict]) -> None:
++    def _coerce_final_answer(self, run: AgentRun, messages: list[dict], *,
++                             deadline: float | None = None, diagnostic_path: Path | None = None) -> None:
+         """Inject a 'budget exhausted, finalize now' user message and run one
+         more LLM call WITHOUT tools, so the model is forced to emit a text
+         answer based on the evidence it has already gathered.
+ 
+         Records the coerce turn in run.turns so it appears in the trace, and
+-        sets terminated_reason to 'coerced_max_turns' on success (or
+-        'coerce_failed' on API error).
++        sets terminated_reason to 'coerced_max_turns' on success,
++        'output_truncated' on a length-limited response, or 'coerce_failed'
++        on API error.
+         """
+         messages.append({"role": "user", "content": self.coerce_message})
+         try:
+@@ -788,16 +991,30 @@
+                 max_tokens=self.per_call_max_tokens,
+                 temperature=self.temperature,
+                 max_retries=self.max_retries,
++                stream_nvidia=self.stream_nvidia,
++                deadline=deadline,
++                diagnostic_path=diagnostic_path,
+             )
++        except RequestDeadlineExceeded as e:
++            run.terminated_reason = "wall_clock_timeout"
++            run.error = str(e)
++            return
+         except Exception as e:
+             run.terminated_reason = "coerce_failed"
+-            run.error = f"coerce: {type(e).__name__}: {str(e)[:300]}"
++            run.error = f"coerce: {type(e).__name__}: {redact_nvidia_credentials(str(e))[:300]}"
++            return
++
++        if is_local_qwen(self.model) and complete_response_category(response) != "content":
++            self._save_incomplete_local(run, response, coerced=True)
++            if complete_response_category(response) == "tool_calls":
++                run.terminated_reason = "incomplete_response"
++                run.error = "Qwen returned tools on a forced-answer request"
+             return
+ 
+         choice = response.choices[0]
+         msg = choice.message
+         content = msg.content or ""
+-        reasoning_content = (getattr(msg, "reasoning_content", "") or "")
++        reasoning_content = extract_reasoning(msg)
+         usage = response.usage
+         prompt_t = int(getattr(usage, "prompt_tokens", 0) or 0) if usage else 0
+         cache_t = extract_cached_tokens(usage)
+@@ -818,6 +1035,8 @@
+             content=content,
+             reasoning_content=reasoning_content,
+             finish_reason=f"coerced/{choice.finish_reason or ''}",
++            response_category=complete_response_category(response) if is_local_qwen(self.model) else "",
++            api_metadata=getattr(response, "_rise_api_metadata", {}) or {},
+             prompt_tokens=non_cached_in,
+             cached_prompt_tokens=cache_t,
+             completion_tokens=comp_t,
+@@ -831,8 +1050,11 @@
+         run.total_reasoning_tokens += turn.reasoning_tokens
+         run.total_cost_usd += turn_cost
+ 
+-        run.final_answer = content
+-        run.terminated_reason = "coerced_max_turns"
++        if (choice.finish_reason or "").lower() == "length":
++            run.terminated_reason = "output_truncated"
++        else:
++            run.final_answer = content
++            run.terminated_reason = "coerced_max_turns"
+ 
+ 
+ import re as _re
+@@ -903,7 +1125,9 @@
+     the strict corpus docids when ``relpath_to_docid`` is supplied — paths
+     that don't resolve (e.g. a malformed `read` arg) are OMITTED from
+     ``result_docids`` rather than mixing path strings in alongside docids.
+-    Bash output is preserved verbatim (already truncated by the bash tool).
++    The complete payload sent to the model is preserved for every tool,
++    including search and read. A trace can therefore grow substantially
++    with many calls or large read results.
+     """
+     name = c.name
+     base = {
+@@ -915,10 +1139,9 @@
+         "result_unresolved_paths": [],  # paths that couldn't be mapped to a docid
+         "result_summary": "",
+         "result_chars": c.result_chars,
+-        "result_text": "",
+-        # First 200 chars of the payload sent to the model — always
+-        # populated, even when result_text is empty by design (search /
+-        # read clear result_text since docs are recoverable from docids).
++        "result_text": c.result,
++        # First 200 chars are kept for quick browsing without loading the
++        # complete payload. result_text is the exact text sent to the model.
+         "result_text_preview": c.result_text_preview,
+         "result_truncated": c.truncated,
+         "duration_seconds": c.duration_seconds,
+@@ -955,6 +1178,44 @@
+             "",
+         )
+         base["result_summary"] = first_nonempty[:300]
++    elif name == "reranker":
++        try:
++            payload = json.loads(c.result)
++            relpaths = list(dict.fromkeys(item["file_path"] for item in payload.get("items", [])))
++            base["result_paths"] = relpaths
++            resolved, unresolved = _to_docids(relpaths)
++            base["result_docids"] = resolved
++            base["result_unresolved_paths"] = unresolved
++            base["result_summary"] = (
++                f"reranker {payload.get('set_id', '')}: "
++                f"{payload.get('scored_passages', 0)} scored, {len(payload.get('items', []))} shown"
++            )
++        except (ValueError, KeyError, TypeError):
++            base["result_summary"] = c.result[:300]
++    elif name in ("dci", "expand_source") or (name == "read" and "passage_id" in c.args):
++        try:
++            payload = json.loads(c.result)
++            sources = list(payload.get("items", [])) + list(payload.get("surfaced_passages", []))
++            for key in ("passage", "source", "receipt"):
++                if isinstance(payload.get(key), dict):
++                    sources.append(payload[key])
++            relpaths = list(dict.fromkeys(
++                value for item in sources if isinstance(item, dict)
++                for value in [item.get("source_file_path") or item.get("file_path")]
++                if isinstance(value, str) and value
++            ))
++            base["result_paths"] = relpaths
++            resolved, unresolved = _to_docids(relpaths)
++            base["result_docids"] = resolved
++            base["result_unresolved_paths"] = unresolved
++            base["space_metadata"] = {key: payload[key] for key in (
++                "status", "view_id", "space_version", "goal_query", "candidates",
++                "top_k", "pool_documents", "scored_passages", "cache_hit",
++                "trigger_reason", "command_executed", "char_start", "char_end"
++            ) if key in payload}
++            base["result_summary"] = f"{name} {payload.get('status', '')}: {payload.get('view_id', '')}"
++        except (ValueError, KeyError, TypeError):
++            base["result_summary"] = c.result[:300]
+     elif name in ("read", "read_doc"):
+         fp = ""
+         if isinstance(c.args, dict):
+@@ -998,13 +1259,11 @@
+                 base["result_unresolved_paths"] = unresolved
+         base["result_summary"] = f"read_passage {tgt!r}: {c.result_chars} chars"
+     elif name == "bash":
+-        # bash output is small (truncated to 2-4k by the tool); keep verbatim.
+-        base["result_text"] = c.result
++        # bash output is small (truncated to 2-4k by the tool).
+         cmd = (c.args.get("command") or "").strip() if isinstance(c.args, dict) else ""
+         base["result_summary"] = f"bash {cmd[:80]}: {c.result_chars} chars"
+     else:
+-        # Unknown tool — keep result verbatim so nothing is silently lost.
+-        base["result_text"] = c.result
++        # Unknown tool — keep its summary and the verbatim result above.
+         base["result_summary"] = f"{name}: {c.result_chars} chars"
+     return base
+ 
+@@ -1041,6 +1300,9 @@
+                 "finish_reason": t.finish_reason,
+                 "content": t.content,
+                 "reasoning_content": t.reasoning_content,
++                "response_category": t.response_category,
++                "api_metadata": t.api_metadata,
++                "raw_tool_calls": t.raw_tool_calls,
+                 "tokens": {
+                     "prompt": t.prompt_tokens,
+                     "cached_prompt": t.cached_prompt_tokens,
+@@ -1053,4 +1315,14 @@
+             for t in run.turns
+         ],
+     }
+-    trace_path.write_text(json.dumps(out, indent=2, ensure_ascii=False), encoding="utf-8")
++    # Full read/search payloads may contain source text. Write the trace
++    # atomically with restrictive permissions, including on replacement of
++    # an older trace that may have been created with broader permissions.
++    fd, temp_name = tempfile.mkstemp(prefix=f".{trace_path.name}.", dir=trace_path.parent)
++    try:
++        with os.fdopen(fd, "w", encoding="utf-8") as handle:
++            json.dump(out, handle, indent=2, ensure_ascii=False)
++        os.replace(temp_name, trace_path)
++    finally:
++        if os.path.exists(temp_name):
++            os.unlink(temp_name)

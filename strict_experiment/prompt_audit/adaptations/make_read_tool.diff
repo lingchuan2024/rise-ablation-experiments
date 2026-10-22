@@ -1,0 +1,11 @@
+--- official/tools.py::make_read_tool
++++ shared-server/tools.py::make_read_tool
+@@ -35,7 +35,7 @@
+             if candidate.is_absolute()
+             else (root_resolved / candidate).resolve()
+         )
+-        if not str(target).startswith(str(root_resolved)):
++        if not target.is_relative_to(root_resolved):
+             return f"Error: path {rel!r} escapes the corpus root."
+         if not target.exists():
+             return (
