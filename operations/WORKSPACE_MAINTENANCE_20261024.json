@@ -486,6 +486,52 @@
       "observed_free_inodes": 71228,
       "observed_free_bytes": 92960768000,
       "batch_post_observed_unix": 1792791437.3141353
+    },
+    {
+      "arm": "auto_rerank",
+      "query_id": 775,
+      "backup_directory": "reports/strict_recovery_v1/workspace_backups/auto_rerank_qid775_20261024_0540",
+      "archive": {
+        "bytes": 272028523,
+        "sha256": "31aa366ba6ab5c3b99339bb9e1ccfd516a5b0529d60bb84865a1c12f0b676c3b"
+      },
+      "receipt_file_sha256": "cee019ffda9193da3f1ef451630d1bdd055528b81e5201e7f5a297436cead0d3",
+      "receipt_bytes": 1656,
+      "local_full_archive_verified": true,
+      "acknowledgement_sha256": "18469bf25167eb14197ae5459cd6698bf3daff32a6d8a6e51e6615801dc19c20",
+      "deletion_sha256": "38bd9c20156f2ecc7009886e40acdf03806077fc8423a90e038a2b5a7766bb1f",
+      "files_removed": 11668,
+      "directories_removed": 5084,
+      "finished_unix": 1792791819.495434,
+      "compact_artifacts_preserved": true,
+      "post_worker_identity_matches": true,
+      "post_phase": "running_auto80",
+      "observed_free_inodes": 71711,
+      "observed_free_bytes": 92445442048,
+      "batch_post_observed_unix": 1792792018.7610824
+    },
+    {
+      "arm": "auto_rerank",
+      "query_id": 742,
+      "backup_directory": "reports/strict_recovery_v1/workspace_backups/auto_rerank_qid742_20261024_0544",
+      "archive": {
+        "bytes": 211269121,
+        "sha256": "5192aac6b9ac044490de77cf82fbe56a1594c247611eef42a2a021680a29e9f5"
+      },
+      "receipt_file_sha256": "09c12e8525d84e19507ba9c3beb7332a4516d480c7a2e212bd07f575a6943e22",
+      "receipt_bytes": 1654,
+      "local_full_archive_verified": true,
+      "acknowledgement_sha256": "0d5e1f2d2ddc5eb8a2ea30736161bd9e80d6792270552607e9eea8ea923f0944",
+      "deletion_sha256": "d5e56ac12531b7c79c7c6e7acea2d2876a63bb806b4e73982971538ae1137cd7",
+      "files_removed": 6672,
+      "directories_removed": 3594,
+      "finished_unix": 1792791977.4604468,
+      "compact_artifacts_preserved": true,
+      "post_worker_identity_matches": true,
+      "post_phase": "running_auto80",
+      "observed_free_inodes": 71711,
+      "observed_free_bytes": 92445442048,
+      "batch_post_observed_unix": 1792792018.7610824
     }
   ],
   "raw_artifacts_committed": false
