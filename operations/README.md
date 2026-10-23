@@ -39,8 +39,9 @@ python operations/auto20_snapshot.py --root EXTRACT_ROOT verify \
   --control-root LOCAL_CONTROL_ROOT
 ```
 
-Only the returned `ready_for_shutdown: true` confirms a usable local copy.
-The verifier checks the archive, every recorded file, frozen source identity,
+Require the exporter's `ready_for_shutdown: true` and the local verifier's
+`verified: true`, `terminal_rows: 20`, `fresh_review_finals: 40` and
+`archive_bytes_verified: true`. The verifier checks the archive, every recorded file, frozen source identity,
 20 terminal/request/ledger/trace/checkpoint anchors, public control identity,
 and the anonymous 40-answer packet. It preserves the original server paths
 and manifest bytes rather than rewriting provenance to fit the local machine.

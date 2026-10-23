@@ -45,7 +45,7 @@ def inspect_query(output, qid):
                 value = ""
             chars = call.get("result_chars", len(value))
             lengths[name].append(chars)
-            if call.get("truncated"):
+            if call.get("result_truncated"):
                 truncated[name] += 1
             if call.get("error"):
                 errors.append({"turn": turn.get("turn", index), "tool": name,
