@@ -201,5 +201,14 @@
       "ready_for_shutdown": false,
       "working_contents_preserved_on_server": true
     }
+  },
+  "storage_remediation": {
+    "status": "inode_capacity_restored",
+    "record": "STORAGE_CLEANUP_20261023.json",
+    "available_inodes": 68910,
+    "file_creation_and_fsync_passed": true,
+    "current_incident_artifacts_unchanged": true,
+    "worker_restarted": false,
+    "continuation_status": "pending interrupted-query recovery assessment; storage cleanup did not reset any budgets"
   }
 }
