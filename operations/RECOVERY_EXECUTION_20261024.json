@@ -1,0 +1,79 @@
+{
+  "version": "strict-recovery-execution-record-v1",
+  "status": "prepared_for_review_not_started",
+  "recorded_unix": 1792772064.350712,
+  "model": "Qwen3.5-35B-A3B",
+  "concurrency": 4,
+  "frozen_experiment_commit": "9be44bb383a4d11e345f9abd96f972dddeed7e10",
+  "frozen_source_files": 135,
+  "original_continuation_manifest_sha256": "0d82c408352829635682ae80b4361f9de43b9b2bb8ef322439afdb50f56ab3da",
+  "recovery_plan_file_sha256": "c26698f9a32e2d864cb7a694fc0ca0140babc5f5e5f2c4dd5d19094224bfd0bb",
+  "protocol_amendment": true,
+  "natural_terminals_reused": [
+    278,
+    280,
+    288
+  ],
+  "already_returned_final_recovered": 310,
+  "observed_final_file_sha256": "4e72c7fc133f2961562fc6ca1131ae2019298ec015c3848f91b17031e3b83465",
+  "restart_remaining_budget": [
+    {
+      "query_id": 293,
+      "calls_charged": 23,
+      "elapsed_seconds_charged": 1713,
+      "remaining_max_turns": 77,
+      "remaining_wall_clock_seconds": 1887,
+      "known_input_tokens": 574007,
+      "known_output_tokens": 5740,
+      "possible_inflight_call_upper_bound": 1
+    },
+    {
+      "query_id": 317,
+      "calls_charged": 8,
+      "elapsed_seconds_charged": 991,
+      "remaining_max_turns": 92,
+      "remaining_wall_clock_seconds": 2609,
+      "known_input_tokens": 84225,
+      "known_output_tokens": 908,
+      "possible_inflight_call_upper_bound": 1
+    },
+    {
+      "query_id": 366,
+      "calls_charged": 2,
+      "elapsed_seconds_charged": 872,
+      "remaining_max_turns": 98,
+      "remaining_wall_clock_seconds": 2728,
+      "known_input_tokens": 1909,
+      "known_output_tokens": 287,
+      "possible_inflight_call_upper_bound": 1
+    }
+  ],
+  "new_solver_invocations_planned": 96,
+  "new_outcomes_planned": 97,
+  "existing_automatic_first20_reused": 20,
+  "historical_control100_reused": true,
+  "stage_order": [
+    "automatic_remaining80_resolved_including_references_and_recovery",
+    "snippet_paging_first20"
+  ],
+  "completion_expected": {
+    "target_coverage": 100,
+    "validated_natural_terminals_including_reused3": 99,
+    "materialized_observed_final": 1,
+    "merged_automatic_questions": 100,
+    "search_paging_questions": 20,
+    "public_final_records_with_control": 220
+  },
+  "solver_settings_changed": "Only the three explicitly marked recovery attempts have reduced max_turns and wall_clock_seconds; model, prompts, tools, sampling, per-call output cap, candidate pools and C4 are unchanged. No score-based choice is used.",
+  "analysis_policy": "Report recovery exceptions and all known prior usage; unknown in-flight usage remains an upper-bound uncertainty. Do not label the amended result as an unchanged single-attempt protocol. Include paired sensitivity results excluding the four interrupted question IDs.",
+  "storage_admission": {
+    "min_free_inodes": 40000,
+    "min_free_bytes": 10737418240,
+    "pause_new_dispatch_only": true,
+    "statvfs_matches_observed_df_inode_counts": true,
+    "all_possible_independent_quotas_excluded": false
+  },
+  "private_trajectory_files_committed": false,
+  "worker_started": false,
+  "shutdown_performed": false
+}
