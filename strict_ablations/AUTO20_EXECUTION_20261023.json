@@ -66,7 +66,13 @@
     "returned_passages": 2200,
     "returned_passages_with_changed_bm25_to_neural_rank": 2122,
     "returned_passages_with_passage_bm25_rank_beyond10": 1711,
-    "scope": "Returned passage ranks only; does not measure relevance or causal answer improvement"
+    "scope": "Returned passage ranks only; does not measure relevance or causal answer improvement",
+    "ordinary_tool_errors_semantics": "Nonempty wrapper exception fields only; not shell command success. See conformance audit for 15 visible shell argument/path errors.",
+    "conformance_audit": "AUTO20_CONFORMANCE_20261023.json",
+    "observed_shell_argument_or_path_errors": 15,
+    "read_calls_with_line_truncation_despite_false_flag": 5,
+    "read_lines_truncated": 35,
+    "bash_calls_truncated": 133
   },
   "fresh_evaluation": {
     "finals": 40,

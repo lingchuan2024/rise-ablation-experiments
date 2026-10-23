@@ -1,0 +1,267 @@
+{
+  "version": "auto20-conformance-audit-v1",
+  "generated_at_utc": "2026-10-23T13:57:44.575736+00:00",
+  "experiment_source_commit": "9be44bb383a4d11e345f9abd96f972dddeed7e10",
+  "manifest_sha256": "67b4ff0f8f1a9d25583ad77ab150f919dec078aa34c824126648d88433ee1384",
+  "conclusion": "No execution deviation found in audited scope; reporting corrections and evidence limitations remain. This is not proof that every decision or answer is correct.",
+  "audit_scope": {
+    "questions_checked": 20,
+    "semantically_reviewed_questions": 10,
+    "raw_hidden_reasoning_read": false,
+    "opaque_history_hash_comparison": true,
+    "public_projection_recomputed_and_equal": true,
+    "snapshot_reverification_passed": true,
+    "external_model_requests": 0,
+    "server_started": false,
+    "frozen_experiment_code_changed": false,
+    "scores_changed": false
+  },
+  "source_evidence_sha256": {
+    "auto20_snapshot.tar.gz": "55bf0687172693c72492a789b9cae353d99435d830144e21fdc23f56437fc79e",
+    "snapshot_receipt.json": "f19a9789a3697e7c08919c12a5af5edd3986d94f80de12083a63c530ba925dd9",
+    "public_tool_trajectories.json": "e954745a0b2ce5b92af7185c1e24d86630ab12583f0d309eab1eae5ccce04454",
+    "audit_scope.json": "b497acb88ae1241aa04bfe4f163c768bc072927200bcdff108e44a21842060c8",
+    "audit_contracts.json": "192d5b8889face4dd99d7e810793e929fca28f39ac5d4b28c2421cc669a086ca",
+    "audit_samples.json": "aec15af523566e5c0813c8ad951239aa4e3421d89b5fd70e7f828b68a3071f4f"
+  },
+  "request_and_budget_checks": {
+    "queries": 20,
+    "actual_api_attempts": 672,
+    "successful_api_calls": 670,
+    "terminal_counts": {
+      "done": 16,
+      "wall_clock_timeout": 4
+    },
+    "peak_concurrent_actual_model_requests": 4,
+    "peak_question_interval_overlap_lower_bound": 4,
+    "actual_contract_sha256": "22bb4c56cccbbb8a5ca8867a88cdd72e985c67dc5303717991caf955168978d1",
+    "max_prompt_tokens": 132572,
+    "max_completion_tokens": 1273,
+    "missing_usage_attempts": 2,
+    "question_ids_match_first20": true,
+    "static_config_matches_reused_control": true,
+    "source_file_count": 135
+  },
+  "scope_checks": {
+    "stats": {
+      "search_calls": 78,
+      "search_output_truncated": 0,
+      "passages": 2200,
+      "passage_chars": 1137285,
+      "short_final_chunk": 38,
+      "atomic_queries": 220,
+      "history_cache_hits": 0,
+      "document_scope_entries": 220000,
+      "cached_rankings_compared": 48,
+      "questions": 20,
+      "workspace_documents_sum": 121293,
+      "overlap_token_counts": {
+        "0": 123,
+        "31": 1,
+        "32": 2076
+      },
+      "cached_candidate_sets_checked": 48,
+      "cached_scored_candidates_checked": 48000,
+      "queries_with_strip_difference": 0,
+      "returned_top10_score_orders_checked": 220,
+      "cached_top100_order_checks": 48,
+      "cached_top100_passages_checked": 4800
+    },
+    "violations": [],
+    "each_query_matches_original": true,
+    "each_scope_exactly_own_document_match_set": true,
+    "M": 1000,
+    "K": 100,
+    "offset": 0,
+    "limit": 10,
+    "separate_rerank_tool_available": false,
+    "pagination_handles_exposed": false,
+    "workspace_equals_cumulative_document_union": true,
+    "reranker_identity_consistent": true
+  },
+  "reporting_corrections": {
+    "error_semantics": {
+      "tool_wrapper_exception_fields_nonempty": 0,
+      "automatic_rerank_errors": 0,
+      "stderr_commands": 18,
+      "manually_confirmed_shell_argument_or_path_errors": 15,
+      "head_pipe_sigpipe_not_classified_as_error": 2,
+      "binary_match_notice_not_classified_as_error": 1,
+      "other_exit123_calls_with_matches": 2,
+      "note": "A zero wrapper error counter does not mean every shell command succeeded. Stderr suppressed by model commands cannot be exhaustively classified from visible outputs."
+    },
+    "truncation_semantics": {
+      "bash_calls_truncated": 133,
+      "read_calls_with_line_truncation": 5,
+      "read_lines_truncated": 35,
+      "omitted_read_characters": 78422,
+      "all_affected_read_flags_false": true,
+      "evidence": [
+        {
+          "query_id": 81,
+          "turn_zero_based": 13,
+          "call_in_turn": 0,
+          "recorded_result_truncated": false,
+          "truncated_lines": 9,
+          "omitted_chars": 42306
+        },
+        {
+          "query_id": 127,
+          "turn_zero_based": 11,
+          "call_in_turn": 0,
+          "recorded_result_truncated": false,
+          "truncated_lines": 1,
+          "omitted_chars": 524
+        },
+        {
+          "query_id": 228,
+          "turn_zero_based": 34,
+          "call_in_turn": 0,
+          "recorded_result_truncated": false,
+          "truncated_lines": 2,
+          "omitted_chars": 4644
+        },
+        {
+          "query_id": 245,
+          "turn_zero_based": 1,
+          "call_in_turn": 0,
+          "recorded_result_truncated": false,
+          "truncated_lines": 2,
+          "omitted_chars": 1107
+        },
+        {
+          "query_id": 256,
+          "turn_zero_based": 14,
+          "call_in_turn": 0,
+          "recorded_result_truncated": false,
+          "truncated_lines": 21,
+          "omitted_chars": 29841
+        }
+      ],
+      "cause": "Shared Agent marker detection does not match the read tool marker ...[line truncated; N chars]. Count markers in existing outputs; preserve original trace bytes and the frozen runtime."
+    }
+  },
+  "sample_observations": [
+    {
+      "query_id": 70,
+      "turns_zero_based": [
+        9,
+        12,
+        15,
+        19
+      ],
+      "finding": "Unsupported rg --include argument; natural model tool-use error."
+    },
+    {
+      "query_id": 81,
+      "turns_zero_based": [
+        45,
+        46
+      ],
+      "finding": "Model first called shell builtin read incorrectly, then used actual read tool successfully."
+    },
+    {
+      "query_id": 116,
+      "turns_zero_based": [
+        9
+      ],
+      "finding": "Read body L28/L44 spells the name Beri while the fixed gold uses Berel. Source/gold conflict; not reranker text modification. Preserve frozen score pending separate dataset adjudication."
+    },
+    {
+      "query_id": 193,
+      "turns_zero_based": [
+        2,
+        3,
+        5,
+        12,
+        13,
+        17,
+        54
+      ],
+      "finding": "Model guessed /workspace, which was an empty container directory; no outside evidence acquired."
+    },
+    {
+      "query_id": 245,
+      "turns_zero_based": [
+        2,
+        20
+      ],
+      "finding": "Relevant paper author appeared in body evidence, but final selected a different paper author. Model entity-matching failure."
+    },
+    {
+      "query_ids": [
+        153,
+        209
+      ],
+      "turns_zero_based": {
+        "153": [
+          42,
+          43,
+          44
+        ],
+        "209": [
+          22,
+          24
+        ]
+      },
+      "finding": "Answer evidence also came from allowed cumulative-pool bash. A correct answer does not prove a causal top10 reranking benefit."
+    },
+    {
+      "query_ids": [
+        132,
+        228
+      ],
+      "finding": "Some first reads jump directly to body coordinates rather than always reading TOC first. Model behavior; search interface also explicitly permits read_args."
+    }
+  ],
+  "natural_terminals_and_timing": [
+    {
+      "kind": "natural_terminal",
+      "query_ids": [
+        81,
+        127,
+        156,
+        239
+      ],
+      "detail": "All four wall-clock terminals have empty finals; no coercion or following retry. elapsed exceeds3600 by6.3–20.5seconds because deadline admission and checkpoint serialization are inherited from the control runtime."
+    },
+    {
+      "kind": "accounting_limit",
+      "query_ids": [
+        127,
+        156
+      ],
+      "detail": "Final APITimeoutError attempt has no usage. Count reported tokens as recorded usage, not complete cost. Each error is last attempt and no retry follows."
+    },
+    {
+      "kind": "verification_limit",
+      "detail": "Question overlap inferred from firstAPI through last response is a lower bound; actual scheduler is frozen ThreadPoolExecutor(max_workers=4), initial four starts overlap and replacement starts follow completion. No separate all-question lifecycle event ledger exists."
+    }
+  ],
+  "chunking": {
+    "frozen_configuration": {
+      "passage_tokens": 128,
+      "overlap_tokens": 32
+    },
+    "observed": "All returned passages are 1..128 tokens. Actual overlap is32 for2076 passages,0 for123 and31 for1. These values are compatible with the shared frozen chunker first-chunk and Unicode-safe boundary rules; source body boundaries were not individually reconstructed from the omitted corpus.",
+    "unicode_boundary_example": [
+      {
+        "qid": 70,
+        "query": "Sangsaptak Bengali novel Hindu Muslim",
+        "file_path": "www.goodreads.com/15996871.txt",
+        "token_count": 126,
+        "overlap_tokens": 31
+      }
+    ],
+    "source": "code/src/rise/reranker_tool.py:136, 180-203"
+  },
+  "limitations": [
+    "All 220 scope lists/query/parameters are bound to immutable checkpoint service history and public outputs. Only final pool-version rankings remain cached: exact full-text comparison covers cached rankings only; all 2200 public passages have exact char-span length and consistent returned ranks.",
+    "Corpus and numeric passage index are intentionally excluded from the archive. Cannot recompute document BM25 top1000 or scope-local passage BM25 top1000 offline without those frozen external data; source identity validation at export passed.",
+    "Historical control and one stochastic trajectory per question; timing includes changing service contention and deployment epoch.",
+    "This treatment changes timing, query/scope/parameter choice, complete-passage presentation and independent-tool availability together; not isolated neural reranker on/off.",
+    "Semantic review covers ten representative correct, incorrect and timed-out cases; metadata/interface checks cover all twenty.",
+    "Successful model token usage is recorded; two final API timeouts have no usage and unknown consumption remains unknown."
+  ],
+  "private_artifacts_published": false
+}
