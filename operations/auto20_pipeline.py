@@ -26,6 +26,11 @@ def main():
         print(json.dumps(value), flush=True)
 
     try:
+        if not (suite.reports / "run_manifest.json").exists():
+            state("prepare")
+            config = json.loads((ROOT / "operations/auto20_config.json").read_text())
+            service = json.loads((ROOT / "operations/service_launch.json").read_text())
+            suite.prepare(config, service_pid=service["pid"])
         state("live_preflight")
         suite.live_preflight()
         state("running_auto20")
