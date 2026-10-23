@@ -1,7 +1,7 @@
 {
   "experiment": "strict-continuation-auto80-paging20-v1",
-  "status_at_recording": "live_preflight",
-  "recorded_at_utc": "2026-10-23T14:43:32.584494+00:00",
+  "status_at_recording": "running_auto80",
+  "recorded_at_utc": "2026-10-23T14:49:08.570248+00:00",
   "frozen_experiment_commit": "9be44bb383a4d11e345f9abd96f972dddeed7e10",
   "administrative_runner_commit": "ca95a5b",
   "administrative_snapshot_commit": "c2075e9",
@@ -143,5 +143,25 @@
   "local_startup_screenshot_sha256": "296d9b19b91bfa80899c0f6951042b413624f8f1783883e7e257268f54aad859",
   "completion_policy": "Verify100 new natural terminals, stage receipts, exited worker and idle lock; download and independently verify complete compact snapshot; then normally shut down q3535bf while preserving disk/results.",
   "result_evaluation_status": "not_evaluated",
-  "raw_private_artifacts_committed": false
+  "raw_private_artifacts_committed": false,
+  "formal_started_at_utc": "2026-10-23T14:47:46.311230+00:00",
+  "observed_active_auto_query_ids": [
+    278,
+    280,
+    288,
+    293
+  ],
+  "observed_auto_terminals": 0,
+  "observed_paging_terminals": 0,
+  "observed_active_request_contracts": 4,
+  "observed_active_api_ledgers": 4,
+  "preflight": {
+    "passed": true,
+    "cohort_questions_used": 0,
+    "probe_passed": {
+      "auto_rerank": true,
+      "search_paging": true
+    },
+    "receipt_sha256": "96fcb1a8e5f6f0f4cb3c46790c9bba51cd0c1b17cfd1cc470f22d6b286515366"
+  }
 }
