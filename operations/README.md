@@ -17,6 +17,12 @@ validates all80 automatic terminals before starting paging, and saves
 `auto80_completion.json`, `paging20_completion.json`, `phase_state.json` and
 `continuation_completion.json` under `reports/strict_continue_v1/`.
 
+For a prepared manifest, `pipeline --config CONFIG --service-pid ACTUAL_PID`
+skips preparation and performs live preflight followed by both stages in one
+process. This shares the verified resource cache; any failed preflight exits
+before formal questions run. The 2026-10-23 launch uses this entry point, with
+its administrative record in `CONTINUATION_EXECUTION_20261023.json`.
+
 The new manifest also freezes the administrative scheduler's own SHA. Natural
 terminal failures remain final; infrastructure recovery uses the unchanged
 checkpoint and cumulative budget rules with explicit `--resume-infrastructure`.
