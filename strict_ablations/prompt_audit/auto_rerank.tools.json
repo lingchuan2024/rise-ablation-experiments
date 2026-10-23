@@ -1,0 +1,70 @@
+[
+  {
+    "type": "function",
+    "function": {
+      "name": "search",
+      "description": "Search the corpus with one or more queries simultaneously. The top matching documents (union across all queries) are added to your working directory; documents already there from earlier searches are kept (the working directory accumulates evidence across this session). Each query imports its own top-1000 document match set into the working directory, which accumulates across turns. The system automatically selects up to M=1000 body passages by passage BM25 within that query's own document match set, applies the neural reranker to those candidates using that unchanged search query, retains up to K=100 passages and returns the first ten complete passages. Passages have 128 tokens with 32-token overlap. Documents accumulated from other queries are outside that query's ranking scope unless they also belong to its own match set. Each item includes file_path, the complete text of the passage, BM25 and reranker ranks/scores, source coordinates and read_args. Pass an item's actual returned read_args object to read to inspect the passage in its original document context; read_args uses the existing zero-based line offset and line limit. Relevance scores are ranking signals, not verification of facts. This search has no result-pagination interface or independently callable rerank tool. Use bash/read to explore beyond the returned passages. Pass multiple complementary queries in one call. Specific distinctive terms (rare phrases, proper nouns, distinctive number/date combinations) tend to give the best results.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "queries": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "One or more search queries."
+          }
+        },
+        "required": [
+          "queries"
+        ]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "bash",
+      "description": "Run a bash command in the current working directory. Useful for searching with `rg`, `grep`, listing with `ls`, `find`, or reading with `cat`, `head`. Output is truncated; use focused patterns and flags like `-l` to keep results manageable.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "command": {
+            "type": "string",
+            "description": "Bash command to run."
+          }
+        },
+        "required": [
+          "command"
+        ]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "read",
+      "description": "Read a file by path with optional line offset and limit. Returns numbered lines. The default limit (2000) is usually sufficient to read most documents in one call — prefer that to small limits, since the first 50-100 lines of many documents are navigation/template chrome, not content.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "file_path": {
+            "type": "string",
+            "description": "Path relative to the working directory."
+          },
+          "offset": {
+            "type": "integer",
+            "description": "Line number to start reading from (0-indexed). Default 0."
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Maximum number of lines to read. Default 2000; prefer the default unless you have a specific reason to read only a slice."
+          }
+        },
+        "required": [
+          "file_path"
+        ]
+      }
+    }
+  }
+]

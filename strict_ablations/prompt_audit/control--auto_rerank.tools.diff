@@ -1,0 +1,68 @@
+--- control.tools
++++ auto_rerank.tools
+@@ -1,7 +1,7 @@
+ [
+   {
+     "function": {
+-      "description": "Search the corpus with one or more queries simultaneously. The top matching documents (union across all queries) are added to your working directory; documents already there from earlier searches are kept (the working directory accumulates evidence across this session). Returns a per-query top-10 preview with file paths and short snippets, and the new total working-directory size. Pass multiple complementary queries in one call. Specific distinctive terms (rare phrases, proper nouns, distinctive number/date combinations) tend to give the best results.",
++      "description": "Search the corpus with one or more queries simultaneously. The top matching documents (union across all queries) are added to your working directory; documents already there from earlier searches are kept (the working directory accumulates evidence across this session). Each query imports its own top-1000 document match set into the working directory, which accumulates across turns. The system automatically selects up to M=1000 body passages by passage BM25 within that query's own document match set, applies the neural reranker to those candidates using that unchanged search query, retains up to K=100 passages and returns the first ten complete passages. Passages have 128 tokens with 32-token overlap. Documents accumulated from other queries are outside that query's ranking scope unless they also belong to its own match set. Each item includes file_path, the complete text of the passage, BM25 and reranker ranks/scores, source coordinates and read_args. Pass an item's actual returned read_args object to read to inspect the passage in its original document context; read_args uses the existing zero-based line offset and line limit. Relevance scores are ranking signals, not verification of facts. This search has no result-pagination interface or independently callable rerank tool. Use bash/read to explore beyond the returned passages. Pass multiple complementary queries in one call. Specific distinctive terms (rare phrases, proper nouns, distinctive number/date combinations) tend to give the best results.",
+       "name": "search",
+       "parameters": {
+         "properties": {
+@@ -66,56 +66,5 @@
+       }
+     },
+     "type": "function"
+-  },
+-  {
+-    "function": {
+-      "description": "Find relevant original-body passages for your explicit evidence goal. Choose query, imported file subset, BM25 candidate count, retained count and output size yourself. Omitted files means the whole accumulated pool; [] means an empty scope. Returns source paths and read/bash coordinates, without restricting bash/read. For paging, supply result_id instead of query/file_paths/bm25_candidates; top_k, offset and limit can change without rescoring. Scores are relevance rankings, not verification of facts.",
+-      "name": "rerank",
+-      "parameters": {
+-        "additionalProperties": false,
+-        "properties": {
+-          "bm25_candidates": {
+-            "description": "M: number of scope-local BM25 passages sent to the neural reranker; default 1000, adjustable per call.",
+-            "minimum": 1,
+-            "type": "integer"
+-          },
+-          "file_paths": {
+-            "description": "Optional list of already imported relative source paths, such as files selected with bash; omitted or null means the accumulated pool.",
+-            "items": {
+-              "type": "string"
+-            },
+-            "type": [
+-              "array",
+-              "null"
+-            ]
+-          },
+-          "limit": {
+-            "description": "Number of complete passages to return on this page; default 10, adjustable per call.",
+-            "minimum": 1,
+-            "type": "integer"
+-          },
+-          "offset": {
+-            "description": "Zero-based offset into the retained ranking; default 0.",
+-            "minimum": 0,
+-            "type": "integer"
+-          },
+-          "query": {
+-            "description": "Explicit fact or relationship to verify, including known entity names; required for a new ranking.",
+-            "type": "string"
+-          },
+-          "result_id": {
+-            "description": "Tool-returned current ranking ID for pagination; mutually exclusive with query/file_paths/bm25_candidates.",
+-            "type": "string"
+-          },
+-          "top_k": {
+-            "description": "K: retain up to this many ranked passages; K <= M. Default min(100,M), or the first request's K on a result page.",
+-            "minimum": 1,
+-            "type": "integer"
+-          }
+-        },
+-        "type": "object"
+-      }
+-    },
+-    "type": "function"
+   }
+ ]

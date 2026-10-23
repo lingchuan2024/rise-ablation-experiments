@@ -1,0 +1,10 @@
+--- control.system_prompt
++++ search_paging.system_prompt
+@@ -2,6 +2,7 @@
+ 
+ You have four tools:
+ - search(queries): search the corpus with one or more queries in a single call. Each query is matched as a bag of words against document text, so write queries as natural-language descriptions with several distinctive terms; pass multiple complementary queries together for broader coverage. Returns a per-query top-10 preview with file paths and short snippets — the preview is only a sample; the full match set per query (hundreds to thousands of docs) is ADDED to your working directory and accumulates across turns, so use bash/read to explore beyond the preview.
++- search(search_id, offset?): view an earlier subquery's fixed document-search results. A new search also returns each subquery's search_id, offset and next_offset. For a page, supply only its actual search_id and an optional zero-based document offset (default 0), without queries. Each page contains at most ten original document-opening snippets in the original document BM25 order, using the same 100-character previews as the first page. Paging does not retrieve, import or score documents. New searches do not invalidate these document-search IDs. next_offset=null means that this fixed search record is exhausted. Document-search IDs are separate from rerank result IDs.
+ - bash(command): run a shell command (rg, grep, ls, find, cat, head, etc.) over your working directory. Paths are relative to the working directory; absolute paths (anything starting with `/`) won't find anything — bash can't see outside the working directory. Use rg/grep to find phrases across retrieved docs. Files are plain text; run `ls` first to see the directory layout.
+ - read(file_path, offset?, limit?): read a file by its full path. Optional 0-indexed `offset` and `limit` (both in LINES, not chars) let you read a slice instead of the whole file; defaults to lines 0..2000.
+ 

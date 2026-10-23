@@ -1,0 +1,67 @@
+{
+  "version": "strict-b100-minimal-ablations-v1",
+  "control": "control",
+  "arms": [
+    "search_paging",
+    "auto_rerank",
+    "no_bash"
+  ],
+  "based_on": "strict_experiment.strict_prompt:B",
+  "frozen_contract_version": "official-structured-plus-rerank-minimal-v1",
+  "frozen_B_contract_sha256": "981ecf7a06dc9dd36528a44cc4d3b3f06394b0b0c3a83c631887a9ae007a055a",
+  "checks": {
+    "frozen_B100_inputs_pinned": true,
+    "control_inputs_exactly_frozen_B": true,
+    "all_prompt_edits_reversible": true,
+    "all_tool_edits_reversible": true,
+    "common_read_spec_unchanged": true,
+    "common_user_template_unchanged": true,
+    "no_bash_unavailable_references_removed": true
+  },
+  "contracts": {
+    "control": {
+      "system_prompt_sha256": "bb605017783d5c53aa53ba5ac2948842694c15b2f8a7f98f70a4d4d5757293fc",
+      "tool_specs_sha256": "23b3e8c08214dec94a83f08fcf5f3e4968f4bafdc7c1922eaca231d72599347b",
+      "contract_sha256": "7131f79b3431bf24b0dd5d19225540428518ae3faac587b3b6f258390e102860",
+      "tool_names": [
+        "search",
+        "bash",
+        "read",
+        "rerank"
+      ]
+    },
+    "search_paging": {
+      "system_prompt_sha256": "8fcf88cb4ab87475b256ed2e8f8408c59f11f69a3eb220e5db5fe8ff342cb91a",
+      "tool_specs_sha256": "f8c3e1a27038b72602113d8bd69e9f8fcdbe72af7cfeeaf012082fb1562e39ed",
+      "contract_sha256": "918ae2286493c9e022ed2887f40f7745f4cc7a8b043c05ef9834fd10d0362142",
+      "tool_names": [
+        "search",
+        "bash",
+        "read",
+        "rerank"
+      ]
+    },
+    "auto_rerank": {
+      "system_prompt_sha256": "22f23a31d65d8d1d90e7e58568c1701cc2d996ed51775d9301eeb7a5645a11b1",
+      "tool_specs_sha256": "55b2b3768d34114c9c2bbc56227c6b7bbb499adf7c6abc493e448dd3f6890c81",
+      "contract_sha256": "22bb4c56cccbbb8a5ca8867a88cdd72e985c67dc5303717991caf955168978d1",
+      "tool_names": [
+        "search",
+        "bash",
+        "read"
+      ]
+    },
+    "no_bash": {
+      "system_prompt_sha256": "5793b8c511858072198f941cdf15c027339b664196e55118a0b03e6635b5dff5",
+      "tool_specs_sha256": "25090cde3d38f4a2391730edf8e4cbbac5d8939b6df17848b495dadcd6b03e3f",
+      "contract_sha256": "e9ed046be4d2203d4a248caecc9f2f95060612ca49deb320fee05342d2ab2cff",
+      "tool_names": [
+        "search",
+        "read",
+        "rerank"
+      ]
+    }
+  },
+  "user_prompt_template_sha256": "6d1d40b7d38fa161ddaa08cf1196e9f529b1c82879c8ede6f20ec95556d61274",
+  "runtime_feedback_policy": "frozen strict B; no v13/v14 observational-feedback wrapper"
+}

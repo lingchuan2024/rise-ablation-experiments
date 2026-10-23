@@ -1,0 +1,35 @@
+--- control.tools
++++ search_paging.tools
+@@ -1,21 +1,28 @@
+ [
+   {
+     "function": {
+-      "description": "Search the corpus with one or more queries simultaneously. The top matching documents (union across all queries) are added to your working directory; documents already there from earlier searches are kept (the working directory accumulates evidence across this session). Returns a per-query top-10 preview with file paths and short snippets, and the new total working-directory size. Pass multiple complementary queries in one call. Specific distinctive terms (rare phrases, proper nouns, distinctive number/date combinations) tend to give the best results.",
++      "description": "Search the corpus with one or more queries simultaneously. The top matching documents (union across all queries) are added to your working directory; documents already there from earlier searches are kept (the working directory accumulates evidence across this session). Returns a per-query top-10 preview with file paths and short snippets, and the new total working-directory size. Pass multiple complementary queries in one call. Specific distinctive terms (rare phrases, proper nouns, distinctive number/date combinations) tend to give the best results. New searches also return each subquery's search_id, offset and next_offset. A page call accepts only an actual returned search_id and optional zero-based offset (default 0), without queries. Each page contains at most ten original document-opening snippets in the original document BM25 order, with the same 100-character previews as the first page. Paging does not retrieve, import or score documents. Later searches do not invalidate these document-search IDs; next_offset=null means this fixed record is exhausted. These IDs are separate from rerank result IDs.",
+       "name": "search",
+       "parameters": {
+         "properties": {
++          "offset": {
++            "description": "Zero-based document offset for search_id; default 0, at most ten documents per page.",
++            "minimum": 0,
++            "type": "integer"
++          },
+           "queries": {
+             "description": "One or more search queries.",
+             "items": {
+               "type": "string"
+             },
+             "type": "array"
++          },
++          "search_id": {
++            "description": "Actual document-search ID returned by search. Use without queries.",
++            "type": "string"
+           }
+         },
+-        "required": [
+-          "queries"
+-        ],
++        "required": [],
+         "type": "object"
+       }
+     },
