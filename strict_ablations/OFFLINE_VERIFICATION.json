@@ -1,11 +1,11 @@
 {
   "version": "strict-ablations-offline-verification-v1",
-  "verified_at_utc": "2026-10-23T04:16:55.836936+00:00",
-  "scope": "code, offline contracts, real local BM25/read/Agent fixtures with mocked inference; no new benchmark execution",
+  "verified_at_utc": "2026-10-23T04:51:12.308339+00:00",
+  "scope": "current three-arm and isolated automatic20 code; offline fixtures; no benchmark solver calls by these checks",
   "test_groups": [
     {
       "command": "python -m unittest discover -s strict_ablations -p 'test_*.py' -q",
-      "passed": 90,
+      "passed": 110,
       "failed": 0,
       "skipped": 0
     },
@@ -22,7 +22,7 @@
       "skipped": 0
     }
   ],
-  "total_passed": 175,
+  "total_passed": 195,
   "legacy_source_files_unchanged": 116,
   "legacy_source_matches_frozen_B100": true,
   "source_sha256": {
@@ -145,13 +145,17 @@
     "strict_ablations/__init__.py": "a7daeb0b9c225f0cc740b21ccce8f9d09d91d0518dd30703917629d4db380415",
     "strict_ablations/analyze.py": "4ab2176e9fed336b073efd6c1a717a27f11281db3225cebe4f2f91c09a95d6a1",
     "strict_ablations/artifacts.py": "0497dcf862087d36842e848ddc380d64e0ffd10392162edb954aaf9bf3ea31f2",
+    "strict_ablations/auto20.py": "54ec95aa553b8fb2099f2356da98912bdf2c69c34a6a611673fb7612b5d4b594",
+    "strict_ablations/auto20_analysis.py": "6677a5604f3b35d6e597012631faae709e17e9f8d4331e6a507694ed621adabd",
     "strict_ablations/control.py": "85f98540d557045b586538993f06b6db70f98a422c7e127ecc6bafe36bfcd40f",
     "strict_ablations/deployment.py": "dcbc7af42327baed820dd320029422705bf9765ebc08d8cb7ad7f9206d99dbdd",
     "strict_ablations/prompt.py": "11b843c9913deeb5267fbff006cd1e8400caa8933b16457a8cc00925d97218b9",
-    "strict_ablations/runner.py": "7ad6cc70e3fc45c120ba1b1bb0dd204dba8e17c395d27067c5622f9a1afd3c88",
+    "strict_ablations/runner.py": "8a435192f4b643bdd9f5a07f8aa41f50d464f529cf55bf6fcbeb3f3272f136dc",
     "strict_ablations/runtime.py": "0e8fdffeaa560c16d1f57e49f1b99b583015ea49a377512f43f9de2bcaf21a7e",
     "strict_ablations/test_analyze.py": "13f51efadc2cb516c1d2f31bbd022a804341fe7c2fe16e6a07d69246952c1fc8",
     "strict_ablations/test_artifacts.py": "11326bc438277842b4ff1a70c9dc4a91ab007f4d57fe144321118b9e63ff1caf",
+    "strict_ablations/test_auto20.py": "0a35b326ae4a670e21fcc9837db24f1880718a435e8670b4e87a90113dd6a9d8",
+    "strict_ablations/test_auto20_analysis.py": "fc8c89e7b1f28c7cce94775cec381d5c662ef16546ceb88f842b2b5acb5f11eb",
     "strict_ablations/test_control.py": "911b33af1757acc7c26f30925bd9049069ec895da90663f44bd80255a2dd7d0b",
     "strict_ablations/test_deployment.py": "c031eef13448436f24a3ba1ec6030cef319486e9251aca4cb1158342db78d2ed",
     "strict_ablations/test_prompt.py": "132f4031ef0d2f8415eeeb9299f23befa15b05f7c0c55c5a662c29e0524378a0",
@@ -231,12 +235,10 @@
     "live_ready": false,
     "model_requests": 0,
     "arms": [
-      "search_paging",
-      "auto_rerank",
-      "no_bash"
+      "auto_rerank"
     ],
-    "new_question_runs": 300,
-    "reused_control_questions": 100,
+    "new_question_runs": 20,
+    "reused_control_questions": 20,
     "fixed100": 100,
     "pilot_query_ids": [
       70,
@@ -248,7 +250,17 @@
       132,
       153,
       156,
-      161
+      161,
+      193,
+      209,
+      228,
+      229,
+      239,
+      245,
+      246,
+      251,
+      256,
+      270
     ],
     "prompt_checks": {
       "version": "strict-b100-minimal-ablations-v1",
@@ -326,16 +338,52 @@
       "cohort_sha256": "129a2998335f3b238096c5e2d96a369f1cc690485094cd2df16e203ff90dd67c",
       "contract_sha256": "981ecf7a06dc9dd36528a44cc4d3b3f06394b0b0c3a83c631887a9ae007a055a",
       "config_sha256": "4066e6ae83c5427924a3eb3577eb5c5621a4372b5be673852667b64fe8433c1a"
+    },
+    "pilot_version": "strict-auto20-pilot-v1",
+    "question_runs": 20,
+    "selected_query_ids": [
+      70,
+      81,
+      96,
+      116,
+      122,
+      127,
+      132,
+      153,
+      156,
+      161,
+      193,
+      209,
+      228,
+      229,
+      239,
+      245,
+      246,
+      251,
+      256,
+      270
+    ],
+    "scheduling": "original first20 order; automatic-rerank only; shared global C4",
+    "execution_plan": {
+      "version": "strict-auto20-pilot-v1",
+      "arms": [
+        "auto_rerank"
+      ],
+      "selection": "first20_in_frozen_fixed100_order",
+      "question_runs": 20,
+      "control_policy": "reuse_matching_B100_public_finals; no control requests",
+      "stage": "exploratory_pilot"
     }
   },
   "new_solver_question_runs_executed": 0,
   "live_ready": false,
   "external_model_requests": 0,
-  "model_server_started": false,
   "remaining_live_checks": [
     "Explicit current service PID and unchanged frozen resource/capacity provenance",
     "New-suite live sandbox, read, neural reranker and native tool-call preflight",
     "First ten questions per new arm: execution-integrity gate only",
     "Three new arms at fixed100; fresh blind review of all400 public finals"
-  ]
+  ],
+  "model_server_started_by_offline_verification": false,
+  "server_experiment_separate_from_offline_verification": true
 }

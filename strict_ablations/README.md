@@ -2,7 +2,13 @@
 
 本目录交付提示词、工具接口、独立运行封装、冻结对照复用检查、部署epoch和统一盲评代码。**本轮三组共300次求解（其中30次为pilot）尚未运行，没有新的准确率结果。** 离线通过不等于当前服务器已通过本轮live preflight。
 
-离线验证共175项通过（新套件90、冻结strict流程75、原工具10）；旧116个冻结源码文件与B100身份完全相同。可查[验证记录](OFFLINE_VERIFICATION.json)及[逐组提示词差异](prompt_audit/PROMPT_DIFF.md)。
+离线验证共195项通过（新套件110、冻结strict流程75、原工具10）；旧116个冻结源码文件与B100身份完全相同。可查[验证记录](OFFLINE_VERIFICATION.json)及[逐组提示词差异](prompt_audit/PROMPT_DIFF.md)。
+
+## 单独试跑自动重排20题
+
+`python -m strict_ablations.auto20 --root OUTPUT_ROOT` 提供 `template`、`offline-preflight`、`prepare --config CFG --service-pid PID`、`live-preflight`、`run20` 和 `status`。它只运行冻结题单的前20题，使用同一自动重排契约、模型、预算及C4；输出隔离在 `reports/strict_auto20_v1/` 和 `runs/strict_auto20_v1/`，不会调度其他组或control。它是探索性试跑，不标记三组100题实验已完成。
+
+使用 `strict_ablations.auto20_analysis` 的 `export/import/summarize`，将20份新终答与B100同题20份终答组成40份匿名包后统一重新评分。终态与原始请求、账本、trace及checkpoint均须先通过完整性核验。自动重排预检还必须确认真实神经评分的次数和段数均为正。
 
 ## 研究对象与对照
 

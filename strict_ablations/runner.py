@@ -71,10 +71,22 @@ def same_static_resources(current, baseline):
 
 
 class Suite:
+    directory = DIRECTORY
+    probe_arms = ARMS
+
     def __init__(self, root=None):
         self.root = Path(root or ROOT).resolve()
-        self.reports = self.root / "reports" / DIRECTORY
-        self.runs = self.root / "runs" / DIRECTORY
+        self.reports = self.root / "reports" / self.directory
+        self.runs = self.root / "runs" / self.directory
+
+    def execution_scope(self, rows):
+        return {"question_runs": 300, "reused_control_questions": 100,
+                "pilot_query_ids": [r["query_id"] for r in rows[:10]],
+                "scheduling": "original question order; three fixed arms; shared global C4"}
+
+    def analysis_contract(self):
+        from strict_ablations import analyze
+        return {"version": analyze.VERSION, "rubric_sha256": digest(analyze.rubric_document())}
 
     def control_bundle(self, manifest):
         bundle = verify_control_bundle(manifest["control_root"], common_config=manifest["config"])
@@ -120,7 +132,6 @@ class Suite:
         current = shared.resource_identity(common)
         same_static_resources(current, control_manifest["resource_identity"])
         epoch = deployment.prepare_epoch(common, current, pid=service_pid)
-        from strict_ablations import analyze
         rows = shared.validate_queries()
         payload = {"version": SUITE_VERSION, "prompt_version": VERSION,
             "config": copy.deepcopy(common), "config_sha256": digest(common),
@@ -130,13 +141,10 @@ class Suite:
             "contracts": {arm: build_contract(arm) for arm in ARMS},
             "cohort_sha256": shared.DATASET_SHA,
             "query_ids": [r["query_id"] for r in rows],
-            "pilot_query_ids": [r["query_id"] for r in rows[:10]],
             "source_sha256": source_hashes(), "resource_identity": current,
             "initial_service_epoch_sha256": epoch["epoch_sha256"],
-            "question_runs": 300, "reused_control_questions": 100,
-            "analysis_contract": {"version": analyze.VERSION,
-                                  "rubric_sha256": digest(analyze.rubric_document())},
-            "scheduling": "original question order; three fixed arms; shared global C4",
+            **self.execution_scope(rows),
+            "analysis_contract": self.analysis_contract(),
             "terminal_policy": "immutable; all natural failures included; same-checkpoint infrastructure resume only",
             "causal_scope": "historical B100 control; matched static resources/config; process epochs are separate",
             "auto_rerank_scope": "coupled retrieval/rerank policy; not an isolated neural-ranking ablation"}
@@ -194,8 +202,7 @@ class Suite:
         if (initial.get("epoch_sha256") != manifest["initial_service_epoch_sha256"] or
                 digest({k: v for k, v in initial.items() if k != "epoch_sha256"}) != initial["epoch_sha256"]):
             raise RuntimeError("Frozen initial process epoch is missing")
-        from strict_ablations import analyze
-        if manifest["analysis_contract"] != {"version": analyze.VERSION, "rubric_sha256": digest(analyze.rubric_document())}:
+        if manifest["analysis_contract"] != self.analysis_contract():
             raise RuntimeError("Scoring rules changed after freeze")
         if resources and shared.resource_identity(manifest["config"]) != manifest["resource_identity"]:
             raise RuntimeError("Frozen live resources/service/capacity changed")
@@ -440,7 +447,7 @@ class Suite:
         health = runtime.health_state(config, self.reports)
         report, pools = {}, []
         with tempfile.TemporaryDirectory(prefix="surface-", dir=probe_root) as directory:
-            for arm in ARMS:
+            for arm in self.probe_arms:
                 work = Path(directory) / arm; work.mkdir()
                 service = runtime.make_service(config, work, Path(directory) / (arm + "-rerank"), mapping, health=health)
                 surface = runtime.build_tools(arm, config=config, searcher=searcher, doc_ids=docids,
@@ -467,7 +474,10 @@ class Suite:
                         raise RuntimeError("Snippet paging performed retrieval/scoring")
                 elif arm == "auto_rerank":
                     result = json.loads(output)
-                    if result.get("status") != "ok" or "rerank" in surface or surface.summary["automatic_rerank_calls"] != 1:
+                    if (result.get("status") != "ok" or "rerank" in surface or
+                            surface.summary["automatic_rerank_calls"] != 1 or
+                            service.summary.get("scoring_calls", 0) < 1 or
+                            service.summary.get("scored_passages", 0) < 1):
                         raise RuntimeError("Automatic search surface failed")
                 elif "bash" in surface:
                     raise RuntimeError("Removed bash capability was registered")
