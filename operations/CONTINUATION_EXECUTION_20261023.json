@@ -1,7 +1,7 @@
 {
   "experiment": "strict-continuation-auto80-paging20-v1",
-  "status_at_recording": "running_auto80",
-  "recorded_at_utc": "2026-10-23T14:49:08.570248+00:00",
+  "status_at_recording": "infrastructure_interrupted_worker_exited",
+  "recorded_at_utc": "2026-10-23T15:18:10.054809+00:00",
   "frozen_experiment_commit": "9be44bb383a4d11e345f9abd96f972dddeed7e10",
   "administrative_runner_commit": "ca95a5b",
   "administrative_snapshot_commit": "c2075e9",
@@ -145,16 +145,9 @@
   "result_evaluation_status": "not_evaluated",
   "raw_private_artifacts_committed": false,
   "formal_started_at_utc": "2026-10-23T14:47:46.311230+00:00",
-  "observed_active_auto_query_ids": [
-    278,
-    280,
-    288,
-    293
-  ],
-  "observed_auto_terminals": 0,
+  "observed_active_auto_query_ids": [],
+  "observed_auto_terminals": 3,
   "observed_paging_terminals": 0,
-  "observed_active_request_contracts": 4,
-  "observed_active_api_ledgers": 4,
   "preflight": {
     "passed": true,
     "cohort_questions_used": 0,
@@ -163,5 +156,50 @@
       "search_paging": true
     },
     "receipt_sha256": "96fcb1a8e5f6f0f4cb3c46790c9bba51cd0c1b17cfd1cc470f22d6b286515366"
+  },
+  "infrastructure_incident": {
+    "detected_at_utc": "2026-10-23T15:11:25.826034+00:00",
+    "cause": "inode quota exhausted",
+    "inodes_total": 838860,
+    "inodes_used": 838860,
+    "inodes_free": 0,
+    "byte_space_available_approximately_gib": 90,
+    "error": "OSError errno122 Disk quota exceeded while creating checkpoint temporary file",
+    "first_reported_checkpoint_query_id": 317,
+    "phase_state_write_failed": true,
+    "phase_state_was_stale": "running_auto80",
+    "terminal_query_ids": [
+      278,
+      280,
+      288
+    ],
+    "interrupted_query_ids": [
+      293,
+      310,
+      317,
+      366
+    ],
+    "missing_checkpoint_query_ids": [
+      366
+    ],
+    "worker_exited": true,
+    "worker_lock_idle": true,
+    "vllm_identity_verified_alive": true,
+    "cgroup_oom_kills": 0,
+    "worker_restarted": false,
+    "natural_terminals_rerun": false,
+    "experiment_configuration_changed": false,
+    "shutdown_performed": false,
+    "continuation_blocked_by": "storage inode quota and incomplete checkpoint/accounting evidence; no fresh-budget retry",
+    "partial_backup": {
+      "verified": true,
+      "archive_bytes": 21152158,
+      "archive_sha256": "245c3ab0844e6795d69cd9168aab28d1b72ef6bf04c871aa87b142838d4afe28",
+      "file_count": 50,
+      "working_inventory_count": 29493,
+      "complete_experiment_backup": false,
+      "ready_for_shutdown": false,
+      "working_contents_preserved_on_server": true
+    }
   }
 }
