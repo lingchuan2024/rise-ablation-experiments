@@ -1,4 +1,63 @@
-# Completion-based shutdown
+# Automatic-rerank 20-question run
+
+`auto20_pipeline.py` is an administrative driver outside the frozen runtime.
+It performs prepare, live preflight and `run20` in one process, using the
+existing configuration and service-launch receipt. It does not launch a
+second worker, reset budgets, rerun natural terminal results or schedule the
+other ablations. The frozen common configuration uses four concurrent
+questions. An instantaneous vLLM request count below four is expected when
+some questions are executing retrieval, reranking or file tools.
+
+`auto20_audit.py --root ARTIFACT_ROOT` reads saved tool metadata only. It
+reports checkpoints, terminal results, ordinary tool errors, automatic
+reranking and actual scoring counts. It neither evaluates answers nor
+inspects hidden reasoning. Checkpoints describe completed turns; a newly
+started question may have a request contract but no checkpoint yet.
+
+After the pipeline reports completion and releases its worker lock, export
+a new, exclusive snapshot directory:
+
+```bash
+python operations/auto20_snapshot.py --root ARTIFACT_ROOT export \
+  --output-dir ARTIFACT_ROOT/reports/strict_auto20_v1/snapshots/UNIQUE_NAME \
+  --operation-file operations/service_launch.json \
+  --operation-file operations/worker_launch.json \
+  --operation-file operations/code_deployment.json \
+  --operation-file operations/docker_image_restored.json \
+  --operation-file operations/first_prepare_interruption.json \
+  --operation-file operations/vllm_auto20.log
+```
+
+Download both `auto20_snapshot.tar.gz` and its separate
+`snapshot_receipt.json`. Safely extract the archive to a new local directory
+and verify it against the unchanged local source checkout and frozen public
+control bundle:
+
+```bash
+python operations/auto20_snapshot.py --root EXTRACT_ROOT verify \
+  --receipt DOWNLOADED_RECEIPT --archive DOWNLOADED_ARCHIVE \
+  --control-root LOCAL_CONTROL_ROOT
+```
+
+Only the returned `ready_for_shutdown: true` confirms a usable local copy.
+The verifier checks the archive, every recorded file, frozen source identity,
+20 terminal/request/ledger/trace/checkpoint anchors, public control identity,
+and the anonymous 40-answer packet. It preserves the original server paths
+and manifest bytes rather than rewriting provenance to fit the local machine.
+After also confirming the worker has exited and no unrelated compute is
+running, normally power off the instance and visually verify that it is off;
+keep persistent storage and results.
+
+Grade all 40 public finals freshly under the frozen rubric while keeping
+`private40.json` out of reviewers' context. Use `load_verified_snapshot` to
+load rows, cohort and manifest offline, followed by
+`strict_ablations.auto20_analysis.import_reviews`, `load_labels` and
+`summarize`. This avoids restarting the server merely because the original
+manifest contains absolute server paths. Keep raw traces and the private
+mapping in ignored artifact directories; publish aggregate results and
+provenance separately.
+
+# B100 completion-based shutdown
 
 Run `python operations/strict_qwen35_check_completion.py` from the independent
 experiment checkout on its server. This administrative script is outside the
