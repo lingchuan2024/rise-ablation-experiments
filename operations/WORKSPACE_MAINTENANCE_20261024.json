@@ -1,0 +1,32 @@
+{
+  "version": "recovery-workspace-maintenance-summary-v1",
+  "namespace": "strict_recovery_v1",
+  "administrative_script_sha256": "f50a9fd4d53fdf34d1b4bd752a902cabd6d292bdbf28a2af5155de94868fbf81",
+  "frozen_experiment_commit": "9be44bb383a4d11e345f9abd96f972dddeed7e10",
+  "model_or_solver_settings_changed": false,
+  "entries": [
+    {
+      "arm": "auto_rerank",
+      "query_id": 486,
+      "backup_directory": "reports/strict_recovery_v1/workspace_backups/auto_rerank_qid486_20261024_0323",
+      "archive": {
+        "sha256": "628e3e78ba4fd0c45a24bc7ad471c6703a44816b245ed9371a4f34bac37481c4",
+        "bytes": 251322586
+      },
+      "receipt_file_sha256": "216670e7bdc4568401b498747f49a47c3cfde0f5a23efc198d70be96a235a471",
+      "receipt_bytes": 1656,
+      "local_full_archive_verified": true,
+      "acknowledgement_sha256": "456314ca855abcd46ec10556af8fa199dc8de4ad9cc7013264a8e3f03ab79963",
+      "deletion_sha256": "8bd37dc855b754e9c7bf8ab262816b38da32f22e59a8551c4ecdda9a7711d79b",
+      "files_removed": 11299,
+      "directories_removed": 5254,
+      "finished_unix": 1792783591.139909,
+      "compact_artifacts_preserved": true,
+      "post_worker_identity_matches": true,
+      "post_phase": "running_auto80",
+      "observed_free_inodes": 77544,
+      "observed_free_bytes": 96997773312
+    }
+  ],
+  "raw_artifacts_committed": false
+}
