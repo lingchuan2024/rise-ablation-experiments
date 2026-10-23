@@ -1,3 +1,30 @@
+# Continue automatic remaining80, then snippet paging first20
+
+`continuation_suite.py` is an administrative scheduler for the 2026-10-23
+follow-up. It preserves all 135 frozen solver/tool source files and the exact
+common configuration. Its isolated `strict_continue_v1` namespace admits only
+`auto_rerank` on fixed100[20:] followed by `search_paging` on fixed100[:20].
+The existing automatic20 is verified as an immutable external reference,
+including its original manifest, completion receipt and102 artifact files;
+neither those20 nor the historical B100 control are solved again.
+
+Prepare a new output root with a new serving epoch and a configuration from
+`template --control-root CONTROL_ROOT --reuse-auto20-root OLD_AUTO20_ROOT`.
+Run `prepare --config CONFIG --service-pid ACTUAL_PID`, then `live-preflight`,
+then `run`, all with `--root NEW_ROOT` before the subcommand. The run holds its
+own worker lock and the old automatic20 lock, schedules at most four questions,
+validates all80 automatic terminals before starting paging, and saves
+`auto80_completion.json`, `paging20_completion.json`, `phase_state.json` and
+`continuation_completion.json` under `reports/strict_continue_v1/`.
+
+The new manifest also freezes the administrative scheduler's own SHA. Natural
+terminal failures remain final; infrastructure recovery uses the unchanged
+checkpoint and cumulative budget rules with explicit `--resume-infrastructure`.
+Known atomic-write temporary files may coexist with committed artifacts but
+are neither terminals nor a substitute for checkpoint/ledger evidence. The
+snapshot exporter must exclude them. This follow-up does not mark the separate
+three-arm100 suite complete or alter prompts to improve scores.
+
 # Automatic-rerank 20-question run
 
 `auto20_pipeline.py` is an administrative driver outside the frozen runtime.
