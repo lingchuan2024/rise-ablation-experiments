@@ -1,0 +1,622 @@
+{
+  "version": "strict-auto20-analysis-v1",
+  "manifest_sha256": "67b4ff0f8f1a9d25583ad77ab150f919dec078aa34c824126648d88433ee1384",
+  "config_sha256": "4066e6ae83c5427924a3eb3577eb5c5621a4372b5be673852667b64fe8433c1a",
+  "cohort_sha256": "129a2998335f3b238096c5e2d96a369f1cc690485094cd2df16e203ff90dd67c",
+  "control_reference_sha256": "0332d8033ab5dc7f3a54642259226d7fc752f4f203950adb51a8094a67733a68",
+  "rubric_sha256": "a6c7407daa1934ad3aaa251d412307dc21b8eef36ac1679acd1e53473c92bb12",
+  "generated_at_utc": "2026-10-23T08:08:42.169814+00:00",
+  "model": "Qwen3.5-35B-A3B",
+  "questions_per_arm": 20,
+  "freshly_reviewed_finals": 40,
+  "control_policy": "Frozen B100 same-question finals reused; all forty finals freshly reviewed together",
+  "arms": {
+    "control": {
+      "n": 20,
+      "correct": 11,
+      "accuracy": 0.55,
+      "accuracy_percent": 55.0,
+      "termination_counts": {
+        "wall_clock_timeout": 7,
+        "done": 12,
+        "max_turns": 1
+      },
+      "empty_public_finals": 8,
+      "metrics": {
+        "api_attempts": {
+          "recorded": 20,
+          "missing_rows": 0,
+          "known_sum": 1265,
+          "mean": 63.25,
+          "median": 71.0
+        },
+        "api_attempts_without_usage": {
+          "recorded": 20,
+          "missing_rows": 0,
+          "known_sum": 7,
+          "mean": 0.35,
+          "median": 0.0
+        },
+        "api_successful_calls": {
+          "recorded": 20,
+          "missing_rows": 0,
+          "known_sum": 1258,
+          "mean": 62.9,
+          "median": 70.0
+        },
+        "automatic_empty_scopes": {
+          "recorded": 20,
+          "missing_rows": 0,
+          "known_sum": 0,
+          "mean": 0,
+          "median": 0.0
+        },
+        "automatic_rerank_calls": {
+          "recorded": 20,
+          "missing_rows": 0,
+          "known_sum": 0,
+          "mean": 0,
+          "median": 0.0
+        },
+        "automatic_rerank_errors": {
+          "recorded": 20,
+          "missing_rows": 0,
+          "known_sum": 0,
+          "mean": 0,
+          "median": 0.0
+        },
+        "cached_input_tokens": {
+          "recorded": 20,
+          "missing_rows": 0,
+          "known_sum": 0,
+          "mean": 0,
+          "median": 0.0
+        },
+        "combined_model_and_reranker_input_tokens": {
+          "recorded": 20,
+          "missing_rows": 0,
+          "known_sum": 57334469,
+          "mean": 2866723.45,
+          "median": 3092412.0
+        },
+        "elapsed_seconds": {
+          "recorded": 20,
+          "missing_rows": 0,
+          "known_sum": 48086.574112176895,
+          "mean": 2404.3287056088448,
+          "median": 2241.28731572628
+        },
+        "independent_rerank_page_calls": {
+          "recorded": 20,
+          "missing_rows": 0,
+          "known_sum": 0,
+          "mean": 0,
+          "median": 0.0
+        },
+        "input_tokens": {
+          "recorded": 20,
+          "missing_rows": 0,
+          "known_sum": 55669194,
+          "mean": 2783459.7,
+          "median": 3092412.0
+        },
+        "manual_rerank_calls": {
+          "recorded": 20,
+          "missing_rows": 0,
+          "known_sum": 10,
+          "mean": 0.5,
+          "median": 0.0
+        },
+        "model_total_tokens": {
+          "recorded": 20,
+          "missing_rows": 0,
+          "known_sum": 55880185,
+          "mean": 2794009.25,
+          "median": 3104302.0
+        },
+        "n_turns": {
+          "recorded": 20,
+          "missing_rows": 0,
+          "known_sum": 1258,
+          "mean": 62.9,
+          "median": 70.0
+        },
+        "output_tokens": {
+          "recorded": 20,
+          "missing_rows": 0,
+          "known_sum": 210991,
+          "mean": 10549.55,
+          "median": 11063.5
+        },
+        "preparation_seconds": {
+          "recorded": 20,
+          "missing_rows": 0,
+          "known_sum": 97.306226067245,
+          "mean": 4.86531130336225,
+          "median": 0.0
+        },
+        "reasoning_tokens": {
+          "recorded": 20,
+          "missing_rows": 0,
+          "known_sum": 0,
+          "mean": 0,
+          "median": 0.0
+        },
+        "rerank_calls": {
+          "recorded": 20,
+          "missing_rows": 0,
+          "known_sum": 10,
+          "mean": 0.5,
+          "median": 0.0
+        },
+        "reranker_input_tokens": {
+          "recorded": 20,
+          "missing_rows": 0,
+          "known_sum": 1665275,
+          "mean": 83263.75,
+          "median": 0.0
+        },
+        "retrieval_calls": {
+          "recorded": 0,
+          "missing_rows": 20,
+          "known_sum": null,
+          "mean": null,
+          "median": null
+        },
+        "retrieval_queries": {
+          "recorded": 0,
+          "missing_rows": 20,
+          "known_sum": null,
+          "mean": null,
+          "median": null
+        },
+        "scored_passages": {
+          "recorded": 20,
+          "missing_rows": 0,
+          "known_sum": 7300,
+          "mean": 365,
+          "median": 0.0
+        },
+        "scoring_calls": {
+          "recorded": 20,
+          "missing_rows": 0,
+          "known_sum": 10,
+          "mean": 0.5,
+          "median": 0.0
+        },
+        "scoring_seconds": {
+          "recorded": 20,
+          "missing_rows": 0,
+          "known_sum": 58.86669196933508,
+          "mean": 2.943334598466754,
+          "median": 0.0
+        },
+        "search_invocations": {
+          "recorded": 0,
+          "missing_rows": 20,
+          "known_sum": null,
+          "mean": null,
+          "median": null
+        },
+        "search_page_calls": {
+          "recorded": 20,
+          "missing_rows": 0,
+          "known_sum": 0,
+          "mean": 0,
+          "median": 0.0
+        }
+      }
+    },
+    "auto_rerank": {
+      "n": 20,
+      "correct": 13,
+      "accuracy": 0.65,
+      "accuracy_percent": 65.0,
+      "termination_counts": {
+        "done": 16,
+        "wall_clock_timeout": 4
+      },
+      "empty_public_finals": 4,
+      "metrics": {
+        "api_attempts": {
+          "recorded": 20,
+          "missing_rows": 0,
+          "known_sum": 672,
+          "mean": 33.6,
+          "median": 29.0
+        },
+        "api_attempts_without_usage": {
+          "recorded": 20,
+          "missing_rows": 0,
+          "known_sum": 2,
+          "mean": 0.1,
+          "median": 0.0
+        },
+        "api_successful_calls": {
+          "recorded": 20,
+          "missing_rows": 0,
+          "known_sum": 670,
+          "mean": 33.5,
+          "median": 29.0
+        },
+        "automatic_empty_scopes": {
+          "recorded": 20,
+          "missing_rows": 0,
+          "known_sum": 0,
+          "mean": 0,
+          "median": 0.0
+        },
+        "automatic_rerank_calls": {
+          "recorded": 20,
+          "missing_rows": 0,
+          "known_sum": 220,
+          "mean": 11,
+          "median": 10.5
+        },
+        "automatic_rerank_errors": {
+          "recorded": 20,
+          "missing_rows": 0,
+          "known_sum": 0,
+          "mean": 0,
+          "median": 0.0
+        },
+        "cached_input_tokens": {
+          "recorded": 20,
+          "missing_rows": 0,
+          "known_sum": 0,
+          "mean": 0,
+          "median": 0.0
+        },
+        "combined_model_and_reranker_input_tokens": {
+          "recorded": 20,
+          "missing_rows": 0,
+          "known_sum": 82005387,
+          "mean": 4100269.35,
+          "median": 3594081.0
+        },
+        "elapsed_seconds": {
+          "recorded": 20,
+          "missing_rows": 0,
+          "known_sum": 36597.97835898399,
+          "mean": 1829.8989179491996,
+          "median": 1514.2513755559921
+        },
+        "independent_rerank_page_calls": {
+          "recorded": 20,
+          "missing_rows": 0,
+          "known_sum": 0,
+          "mean": 0,
+          "median": 0.0
+        },
+        "input_tokens": {
+          "recorded": 20,
+          "missing_rows": 0,
+          "known_sum": 35480932,
+          "mean": 1774046.6,
+          "median": 1246952.5
+        },
+        "manual_rerank_calls": {
+          "recorded": 20,
+          "missing_rows": 0,
+          "known_sum": 0,
+          "mean": 0,
+          "median": 0.0
+        },
+        "model_total_tokens": {
+          "recorded": 20,
+          "missing_rows": 0,
+          "known_sum": 35602692,
+          "mean": 1780134.6,
+          "median": 1252958.5
+        },
+        "n_turns": {
+          "recorded": 20,
+          "missing_rows": 0,
+          "known_sum": 670,
+          "mean": 33.5,
+          "median": 29.0
+        },
+        "output_tokens": {
+          "recorded": 20,
+          "missing_rows": 0,
+          "known_sum": 121760,
+          "mean": 6088,
+          "median": 6295.0
+        },
+        "preparation_seconds": {
+          "recorded": 20,
+          "missing_rows": 0,
+          "known_sum": 2266.701697975397,
+          "mean": 113.33508489876985,
+          "median": 96.42713040858507
+        },
+        "reasoning_tokens": {
+          "recorded": 20,
+          "missing_rows": 0,
+          "known_sum": 0,
+          "mean": 0,
+          "median": 0.0
+        },
+        "rerank_calls": {
+          "recorded": 20,
+          "missing_rows": 0,
+          "known_sum": 220,
+          "mean": 11,
+          "median": 10.5
+        },
+        "reranker_input_tokens": {
+          "recorded": 20,
+          "missing_rows": 0,
+          "known_sum": 46524455,
+          "mean": 2326222.75,
+          "median": 2246525.0
+        },
+        "retrieval_calls": {
+          "recorded": 20,
+          "missing_rows": 0,
+          "known_sum": 78,
+          "mean": 3.9,
+          "median": 4.0
+        },
+        "retrieval_queries": {
+          "recorded": 20,
+          "missing_rows": 0,
+          "known_sum": 220,
+          "mean": 11,
+          "median": 10.5
+        },
+        "scored_passages": {
+          "recorded": 20,
+          "missing_rows": 0,
+          "known_sum": 220000,
+          "mean": 11000,
+          "median": 10500.0
+        },
+        "scoring_calls": {
+          "recorded": 20,
+          "missing_rows": 0,
+          "known_sum": 220,
+          "mean": 11,
+          "median": 10.5
+        },
+        "scoring_seconds": {
+          "recorded": 20,
+          "missing_rows": 0,
+          "known_sum": 1528.9621857888997,
+          "mean": 76.44810928944499,
+          "median": 68.0645504873246
+        },
+        "search_invocations": {
+          "recorded": 20,
+          "missing_rows": 0,
+          "known_sum": 78,
+          "mean": 3.9,
+          "median": 4.0
+        },
+        "search_page_calls": {
+          "recorded": 20,
+          "missing_rows": 0,
+          "known_sum": 0,
+          "mean": 0,
+          "median": 0.0
+        }
+      }
+    }
+  },
+  "limitations": [
+    "Exploratory first-twenty-question pilot; no full100 accuracy claim or prompt selection based on scores.",
+    "Historical control and one stochastic trajectory per question do not establish every answer change was caused by the intervention.",
+    "The automatic arm jointly changes timing, query/scope/parameter selection, search output and independent-tool access; it is not a neural-model-only ablation.",
+    "Elapsed time includes contention; preparation/scoring times are components, not additional elapsed time.",
+    "Unknown API usage stays unknown; no monetary tariff or free-cost assumption is introduced."
+  ],
+  "token_semantics": "Input includes cached input; reasoning is part of output; total=input+output. Reranker input is separate.",
+  "call_semantics": "Service calls, real scoring calls, scored passages, automatic calls and manual calls are separate; cache hits are not fresh neural forwards.",
+  "paired_vs_control": {
+    "n_pairs": 20,
+    "both_correct": 8,
+    "both_wrong": 4,
+    "control_only": 3,
+    "auto_only": 5,
+    "control_only_qids": [
+      193,
+      239,
+      245
+    ],
+    "auto_only_qids": [
+      70,
+      132,
+      153,
+      209,
+      228
+    ],
+    "net_correct_auto_minus_control": 2,
+    "accuracy_difference_percentage_points": 10.0,
+    "mcnemar_exact_two_sided_p_exploratory": 0.7265625,
+    "matched_metric_differences_auto_minus_control": {
+      "api_attempts": {
+        "recorded": 20,
+        "missing_rows": 0,
+        "known_sum": -593,
+        "mean": -29.65,
+        "median": -32.0
+      },
+      "api_attempts_without_usage": {
+        "recorded": 20,
+        "missing_rows": 0,
+        "known_sum": -5,
+        "mean": -0.25,
+        "median": 0.0
+      },
+      "api_successful_calls": {
+        "recorded": 20,
+        "missing_rows": 0,
+        "known_sum": -588,
+        "mean": -29.4,
+        "median": -32.5
+      },
+      "automatic_empty_scopes": {
+        "recorded": 20,
+        "missing_rows": 0,
+        "known_sum": 0,
+        "mean": 0,
+        "median": 0.0
+      },
+      "automatic_rerank_calls": {
+        "recorded": 20,
+        "missing_rows": 0,
+        "known_sum": 220,
+        "mean": 11,
+        "median": 10.5
+      },
+      "automatic_rerank_errors": {
+        "recorded": 20,
+        "missing_rows": 0,
+        "known_sum": 0,
+        "mean": 0,
+        "median": 0.0
+      },
+      "cached_input_tokens": {
+        "recorded": 20,
+        "missing_rows": 0,
+        "known_sum": 0,
+        "mean": 0,
+        "median": 0.0
+      },
+      "combined_model_and_reranker_input_tokens": {
+        "recorded": 20,
+        "missing_rows": 0,
+        "known_sum": 24670918,
+        "mean": 1233545.9,
+        "median": 1010593.0
+      },
+      "elapsed_seconds": {
+        "recorded": 20,
+        "missing_rows": 0,
+        "known_sum": -11488.595753192902,
+        "mean": -574.4297876596451,
+        "median": -439.84448409080505
+      },
+      "independent_rerank_page_calls": {
+        "recorded": 20,
+        "missing_rows": 0,
+        "known_sum": 0,
+        "mean": 0,
+        "median": 0.0
+      },
+      "input_tokens": {
+        "recorded": 20,
+        "missing_rows": 0,
+        "known_sum": -20188262,
+        "mean": -1009413.1,
+        "median": -823943.5
+      },
+      "manual_rerank_calls": {
+        "recorded": 20,
+        "missing_rows": 0,
+        "known_sum": -10,
+        "mean": -0.5,
+        "median": 0.0
+      },
+      "model_total_tokens": {
+        "recorded": 20,
+        "missing_rows": 0,
+        "known_sum": -20277493,
+        "mean": -1013874.65,
+        "median": -827771.0
+      },
+      "n_turns": {
+        "recorded": 20,
+        "missing_rows": 0,
+        "known_sum": -588,
+        "mean": -29.4,
+        "median": -32.5
+      },
+      "output_tokens": {
+        "recorded": 20,
+        "missing_rows": 0,
+        "known_sum": -89231,
+        "mean": -4461.55,
+        "median": -4537.5
+      },
+      "preparation_seconds": {
+        "recorded": 20,
+        "missing_rows": 0,
+        "known_sum": 2169.395471908152,
+        "mean": 108.4697735954076,
+        "median": 96.42713040858507
+      },
+      "reasoning_tokens": {
+        "recorded": 20,
+        "missing_rows": 0,
+        "known_sum": 0,
+        "mean": 0,
+        "median": 0.0
+      },
+      "rerank_calls": {
+        "recorded": 20,
+        "missing_rows": 0,
+        "known_sum": 210,
+        "mean": 10.5,
+        "median": 10.0
+      },
+      "reranker_input_tokens": {
+        "recorded": 20,
+        "missing_rows": 0,
+        "known_sum": 44859180,
+        "mean": 2242959,
+        "median": 2186261.5
+      },
+      "retrieval_calls": {
+        "recorded": 0,
+        "missing_rows": 20,
+        "known_sum": null,
+        "mean": null,
+        "median": null
+      },
+      "retrieval_queries": {
+        "recorded": 0,
+        "missing_rows": 20,
+        "known_sum": null,
+        "mean": null,
+        "median": null
+      },
+      "scored_passages": {
+        "recorded": 20,
+        "missing_rows": 0,
+        "known_sum": 212700,
+        "mean": 10635,
+        "median": 10100.0
+      },
+      "scoring_calls": {
+        "recorded": 20,
+        "missing_rows": 0,
+        "known_sum": 210,
+        "mean": 10.5,
+        "median": 10.0
+      },
+      "scoring_seconds": {
+        "recorded": 20,
+        "missing_rows": 0,
+        "known_sum": 1470.0954938195646,
+        "mean": 73.50477469097822,
+        "median": 68.0645504873246
+      },
+      "search_invocations": {
+        "recorded": 0,
+        "missing_rows": 20,
+        "known_sum": null,
+        "mean": null,
+        "median": null
+      },
+      "search_page_calls": {
+        "recorded": 20,
+        "missing_rows": 0,
+        "known_sum": 0,
+        "mean": 0,
+        "median": 0.0
+      }
+    }
+  },
+  "summary_sha256": "2d88401f023c62d6c5d025564c2d534f01f0376b77650fe2f73e7485f9996e63"
+}

@@ -1,0 +1,80 @@
+{
+  "experiment": "strict-auto20-pilot-v1",
+  "source_commit": "9be44bb383a4d11e345f9abd96f972dddeed7e10",
+  "administrative_revision": "4872263213ed1c84067b7b28c190433c0f962308",
+  "model": "Qwen3.5-35B-A3B",
+  "concurrency": 4,
+  "new_question_runs": 20,
+  "reused_control_questions": 20,
+  "terminal_counts": {
+    "done": 16,
+    "wall_clock_timeout": 4
+  },
+  "timeout_query_ids": [
+    81,
+    127,
+    156,
+    239
+  ],
+  "natural_error_reruns": 0,
+  "control_model_requests": 0,
+  "other_arm_model_requests": 0,
+  "manifest_sha256": "67b4ff0f8f1a9d25583ad77ab150f919dec078aa34c824126648d88433ee1384",
+  "backup": {
+    "archive": {
+      "filename": "auto20_snapshot.tar.gz",
+      "sha256": "55bf0687172693c72492a789b9cae353d99435d830144e21fdc23f56437fc79e",
+      "bytes": 115839759
+    },
+    "receipt": {
+      "sha256": "f19a9789a3697e7c08919c12a5af5edd3986d94f80de12083a63c530ba925dd9",
+      "bytes": 35455
+    },
+    "archive_members": 142,
+    "local_verification": {
+      "verified": true,
+      "terminal_rows": 20,
+      "fresh_review_finals": 40,
+      "manifest_sha256": "67b4ff0f8f1a9d25583ad77ab150f919dec078aa34c824126648d88433ee1384",
+      "archive_bytes_verified": true,
+      "external_model_requests": 0
+    },
+    "frozen_source_files": 135
+  },
+  "shutdown": {
+    "completed_at_utc": "2026-10-23T08:08:10.619805+00:00",
+    "instance_name": "q3535bf",
+    "instance_id": "951a3fe3-8b6a-42f8-a35c-85e9bdae92a3",
+    "observed_cloud_status": "已关机",
+    "storage_preserved": true,
+    "instance_deleted": false,
+    "worker_exited_before_shutdown": true,
+    "unrelated_compute_present": false,
+    "screenshot_sha256": "affa6aeda831c1ae0cc699bb27267a72de3ad202f7d4b485defcd1aeb0134a6b",
+    "completion_heartbeat_id": "20-2",
+    "completion_heartbeat_deleted": true
+  },
+  "public_tool_audit": {
+    "question_count": 20,
+    "tool_calls": {
+      "search": 78,
+      "bash": 495,
+      "read": 81
+    },
+    "ordinary_tool_errors": [],
+    "search_subqueries": 220,
+    "returned_passages": 2200,
+    "returned_passages_with_changed_bm25_to_neural_rank": 2122,
+    "returned_passages_with_passage_bm25_rank_beyond10": 1711,
+    "scope": "Returned passage ranks only; does not measure relevance or causal answer improvement"
+  },
+  "fresh_evaluation": {
+    "finals": 40,
+    "review_method": "Three independent agents received anonymous question/gold/final batches without arm mapping or trajectories",
+    "summary_sha256": "2d88401f023c62d6c5d025564c2d534f01f0376b77650fe2f73e7485f9996e63",
+    "rubric_sha256": "a6c7407daa1934ad3aaa251d412307dc21b8eef36ac1679acd1e53473c92bb12",
+    "ambiguous_final_rules": "Clearly selected gold answer accepted despite an ancillary inconsistent alias; nontrivial full-birth-name component difference stays incorrect under the frozen rubric"
+  },
+  "raw_private_artifacts_committed": false,
+  "full_three_arm_suite_complete": false
+}
