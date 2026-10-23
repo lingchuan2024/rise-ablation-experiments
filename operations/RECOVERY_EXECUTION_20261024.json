@@ -1,6 +1,6 @@
 {
   "version": "strict-recovery-execution-record-v1",
-  "status": "prepared_for_review_not_started",
+  "status": "worker_started_resource_verification",
   "recorded_unix": 1792772064.350712,
   "model": "Qwen3.5-35B-A3B",
   "concurrency": 4,
@@ -74,6 +74,24 @@
     "all_possible_independent_quotas_excluded": false
   },
   "private_trajectory_files_committed": false,
-  "worker_started": false,
-  "shutdown_performed": false
+  "worker_started": true,
+  "shutdown_performed": false,
+  "worker_launched_at_utc": "2026-10-23T16:18:32.624523+00:00",
+  "administrative_commit": "24ac5ab",
+  "administrative_source_sha256": {
+    "operations/recovery_suite.py": "1a32aa4d0254541be3bf3fbd523d3ef239693eaf752acdd78564d4270f708d56",
+    "operations/recover_observed_final.py": "0aaab91e564fca91b59f282cd99a93c1fd22d21c431372a8b5912ae693480cde",
+    "operations/terminal_workspace_maintenance.py": "f50a9fd4d53fdf34d1b4bd752a902cabd6d292bdbf28a2af5155de94868fbf81"
+  },
+  "available_inodes_after_cleanup": 129275,
+  "available_bytes_after_cleanup": 97994158080,
+  "offline_preflight_passed": true,
+  "completion_heartbeat_id": "80-20",
+  "validation": {
+    "recovery_tests_passed": 14,
+    "existing_continuation_tests_passed": 14,
+    "public_final_projection_tests_passed": 9,
+    "workspace_maintenance_tests_passed": 18,
+    "frozen_135_source_hashes_unchanged": true
+  }
 }

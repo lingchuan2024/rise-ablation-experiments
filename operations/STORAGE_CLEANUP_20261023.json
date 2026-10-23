@@ -55,5 +55,21 @@
     "backup_v13_working_remote.py": "601d88c6658db7504454c25d9d52200a8a2291ff2ea74bdf0acf702d59d1cbc1",
     "verify_v13_working.py": "899282e37bcbeec5f147da4a4dd56ce6bff1aff0f4e2b6cfebb53e44f829c2e1",
     "delete_v13_working_remote.py": "56772858b300593013711a6b16d3a92abf7209512e7a3a839aeea9567f7d7d47"
+  },
+  "additional_completed_auto20_working_cleanup": {
+    "backup_verified_locally": true,
+    "archive_bytes": 3405849391,
+    "archive_sha256": "6257bdd422a0bde4a4ac0a1d3516f6877a8ba2ee4d5d8fb9b8ca0802b8384d2b",
+    "manifest_bytes": 44919877,
+    "manifest_sha256": "71cb1b4c6034ce648fabec57f3eb27e5684f9251de2f0db2d9844170e291511d",
+    "files_removed": 121293,
+    "directories_removed": 60372,
+    "finished_unix": 1792772196.8510213,
+    "free_inodes_after": 129275,
+    "free_bytes_after": 97994158080,
+    "old_auto20_pinned_compact_files_preserved": true,
+    "old_auto20_manifest_changed": false,
+    "current_run_modified": false,
+    "runtime_modified": false
   }
 }
