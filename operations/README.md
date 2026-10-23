@@ -25,6 +25,27 @@ are neither terminals nor a substitute for checkpoint/ledger evidence. The
 snapshot exporter must exclude them. This follow-up does not mark the separate
 three-arm100 suite complete or alter prompts to improve scores.
 
+`continuation_snapshot.py` provides `export`, `extract` and `verify`. Export
+requires all100 new terminals, both stage receipts, final phase `complete`,
+an idle worker lock and proof that the exact worker PID/start-ticks/boot
+identity has exited. It includes compact original-byte artifacts for the100
+new runs and the20 reused automatic runs, the six-file public control bundle,
+frozen sources, administrative receipts and220 public finals without labels.
+It excludes duplicate working pools, weights, indexes, credentials and atomic
+temporary files. Keep its raw output in ignored directories.
+
+Download the tar and independent receipt, separately verify their remote/local
+SHA256 and byte counts, then use `extract --archive TAR --receipt RECEIPT
+--expected-receipt-sha256 SHA --expected-receipt-bytes N --output-dir FRESH_DIR`.
+Use `--root FRESH_DIR verify` with the same archive/receipt arguments; require
+`verified=true`, `terminal_rows=100`, `merged_auto_rerank_rows=100`,
+`new_search_paging_rows=20`, `public_finals=220` and
+`archive_bytes_verified=true` before normal cloud shutdown. The old server
+paths remain unchanged in manifests; verification uses the archived bundles.
+An integration test generates100 synthetic terminal artifacts through the
+real recorder/checkpoint contracts, exports them, deletes the simulated
+server tree and verifies the downloaded archive without any server paths.
+
 # Automatic-rerank 20-question run
 
 `auto20_pipeline.py` is an administrative driver outside the frozen runtime.
