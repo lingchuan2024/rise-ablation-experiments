@@ -900,6 +900,29 @@
       "observed_free_inodes": 70806,
       "observed_free_bytes": 89018216448,
       "batch_post_observed_unix": 1792802388.1823525
+    },
+    {
+      "arm": "auto_rerank",
+      "query_id": 1085,
+      "backup_directory": "reports/strict_recovery_v1/workspace_backups/auto_rerank_qid1085_20261024_0856",
+      "archive": {
+        "bytes": 125123089,
+        "sha256": "75993ca6c44b449aec54eb3270db8e9633aa09f1c34983fe3fb8d7c18e2ec28c"
+      },
+      "receipt_file_sha256": "6c0c7b6615abf6cf13d477b2b30fd579ac76f365f28ba34043527e75b3638b98",
+      "receipt_bytes": 1656,
+      "local_full_archive_verified": true,
+      "acknowledgement_sha256": "d21ccf7432af44acc98cc85ff6ef7979f9fcbc47652da11c6a3283086b073a36",
+      "deletion_sha256": "7fbb2366bba86db49f2236f49431ae5bca88d5b05cbd927fe0f3e17aeb90ccea",
+      "files_removed": 4713,
+      "directories_removed": 2264,
+      "finished_unix": 1792803481.3543377,
+      "compact_artifacts_preserved": true,
+      "post_worker_identity_matches": true,
+      "post_phase": "running_auto80",
+      "observed_free_inodes": 70669,
+      "observed_free_bytes": 88850944000,
+      "batch_post_observed_unix": 1792803541.5746841
     }
   ],
   "raw_artifacts_committed": false
