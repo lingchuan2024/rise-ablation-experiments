@@ -104,7 +104,7 @@
     "experiment_sources_modified": false
   },
   "run_status": "running_no_bash20",
-  "updated_unix": 1792829663.52256,
+  "updated_unix": 1792831965.676425,
   "manifest_sha256": "cc56f24667dbe2100f2b58c3d52ab032db15c27f5e041c40b67bca404d53ee3c",
   "config_sha256": "4066e6ae83c5427924a3eb3577eb5c5621a4372b5be673852667b64fe8433c1a",
   "no_bash_contract_sha256": "e9ed046be4d2203d4a248caecc9f2f95060612ca49deb320fee05342d2ab2cff",
@@ -149,19 +149,15 @@
     "started_unix": 1792825932.1616704,
     "entrypoint": "run20"
   },
-  "checked_unix": 1792829618.9717622,
-  "completed_new_runs": 5,
+  "checked_unix": 1792831905.3529716,
+  "completed_new_runs": 9,
   "active_query_ids": [
-    116,
-    122,
-    153,
-    156
+    156,
+    161,
+    209,
+    228
   ],
   "pending_query_ids": [
-    161,
-    193,
-    209,
-    228,
     229,
     239,
     245,
@@ -171,33 +167,33 @@
     270
   ],
   "activity": {
-    "116": {
-      "successful_api_entries": 41,
-      "ledger_mtime": 1792829581,
-      "checkpoint_exists": true,
-      "request_contract_exists": true,
-      "working_exists": true,
-      "dispatch_exists": true
-    },
-    "122": {
-      "successful_api_entries": 39,
-      "ledger_mtime": 1792829564,
-      "checkpoint_exists": true,
-      "request_contract_exists": true,
-      "working_exists": true,
-      "dispatch_exists": true
-    },
-    "153": {
-      "successful_api_entries": 21,
-      "ledger_mtime": 1792829575,
-      "checkpoint_exists": true,
-      "request_contract_exists": true,
-      "working_exists": true,
-      "dispatch_exists": true
-    },
     "156": {
-      "successful_api_entries": 6,
-      "ledger_mtime": 1792829577,
+      "successful_api_entries": 49,
+      "ledger_mtime": 1792831740.0,
+      "checkpoint_exists": true,
+      "request_contract_exists": true,
+      "working_exists": true,
+      "dispatch_exists": true
+    },
+    "161": {
+      "successful_api_entries": 34,
+      "ledger_mtime": 1792831844.0,
+      "checkpoint_exists": true,
+      "request_contract_exists": true,
+      "working_exists": true,
+      "dispatch_exists": true
+    },
+    "209": {
+      "successful_api_entries": 12,
+      "ledger_mtime": 1792831615.0,
+      "checkpoint_exists": true,
+      "request_contract_exists": true,
+      "working_exists": true,
+      "dispatch_exists": true
+    },
+    "228": {
+      "successful_api_entries": 8,
+      "ledger_mtime": 1792831725.0,
       "checkpoint_exists": true,
       "request_contract_exists": true,
       "working_exists": true,
@@ -206,13 +202,13 @@
   },
   "storage": {
     "ready": true,
-    "free_bytes": 91778043904,
-    "free_inodes": 70573,
+    "free_bytes": 90770493440,
+    "free_inodes": 61685,
     "min_free_inodes": 40000,
     "min_free_bytes": 10737418240,
     "poll_seconds": 30
   },
-  "monitoring_receipt": "reports/strict_no_bash20_v1/monitoring/heartbeat_20261024_161338_postmaintenance.json",
+  "monitoring_receipt": "reports/strict_no_bash20_v1/monitoring/heartbeat_20261024_1652_postmaintenance.json",
   "automation": {
     "id": "no-bash20",
     "interval_minutes": 10,
@@ -271,5 +267,55 @@
     "request_errors": 0,
     "new_model_requests_by_monitor": 0,
     "intervention": false
+  },
+  "verified_old_workspace_backups": 96,
+  "remaining_old_recovery_pools": {
+    "auto_rerank": {
+      "_working": [],
+      "_rerank_runtime": []
+    },
+    "search_paging": {
+      "_working": [],
+      "_rerank_runtime": []
+    }
+  },
+  "old_terminal_workspace_cleanup_during_run_1624": {
+    "verified": true,
+    "checked_unix": 1792831902.509933,
+    "namespace": "strict_recovery_v1",
+    "arm": "auto_rerank",
+    "query_ids": [
+      595,
+      1101,
+      393,
+      707,
+      1233,
+      392,
+      1065,
+      1071,
+      1239,
+      473,
+      801,
+      1193
+    ],
+    "new_local_backups": 12,
+    "previous_local_backups": 84,
+    "total_local_backups": 96,
+    "archive_bytes_preserved": 811780818,
+    "directories_removed": 12996,
+    "files_removed": 27594,
+    "last_deletion_unix": 1792831865.849393,
+    "counts_are_removed_paths_not_net_free_inodes": true,
+    "all_new_archives_remote_and_local_preserved": true,
+    "all_compact_artifacts_preserved": true,
+    "all_transactions_closed": true,
+    "every_delete_gated_on_live_worker_running_phase_and_nonempty_pending": true,
+    "new_no_bash_workspaces_touched": false,
+    "other_projects_touched": false,
+    "root_independent_reaudit_receipt": "reports/strict_no_bash20_v1/operations/maintenance_20261024_1624_root_final_reaudit.json",
+    "independent_full_member_audit_receipt": "reports/strict_no_bash20_v1/operations/maintenance_20261024_1624_full_member_independent_audit.json",
+    "all96_consistency_receipt": "reports/strict_no_bash20_v1/operations/maintenance_20261024_1624_all96_consistency.json",
+    "below_warning_after_exhausting_authorized_old_pools": true,
+    "storage_gate_ready_after_maintenance": true
   }
 }
