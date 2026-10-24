@@ -34,6 +34,14 @@
     "test_prune_verified_workspace_archives.py": {
       "sha256": "c2763996358246a94417efbf98c68bb032ffb1edcce2697ee53d9331c669544f",
       "bytes": 11323
+    },
+    "no_bash20_workspace_maintenance.py": {
+      "sha256": "4db7259a346e68a7c76879ff77e61c3334f5328b7fb23847024cda86b9784997",
+      "bytes": 13407
+    },
+    "test_no_bash20_workspace_maintenance.py": {
+      "sha256": "14702cdf8a70e9031aadfe09138fb07de584d9001eb312d24d547781f2610ad0",
+      "bytes": 15318
     }
   },
   "validation": {
@@ -41,7 +49,8 @@
     "frozen_prompt_tests": 9,
     "snapshot_tests": 11,
     "remote_archive_pruning_tests": 14,
-    "all_passed": true
+    "all_passed": true,
+    "completed_pool_maintenance_tests": 40
   },
   "remote_old_archive_cleanup": {
     "verified": true,
@@ -104,7 +113,7 @@
     "experiment_sources_modified": false
   },
   "run_status": "running_no_bash20",
-  "updated_unix": 1792831965.676425,
+  "updated_unix": 1792835894.766926,
   "manifest_sha256": "cc56f24667dbe2100f2b58c3d52ab032db15c27f5e041c40b67bca404d53ee3c",
   "config_sha256": "4066e6ae83c5427924a3eb3577eb5c5621a4372b5be673852667b64fe8433c1a",
   "no_bash_contract_sha256": "e9ed046be4d2203d4a248caecc9f2f95060612ca49deb320fee05342d2ab2cff",
@@ -149,51 +158,34 @@
     "started_unix": 1792825932.1616704,
     "entrypoint": "run20"
   },
-  "checked_unix": 1792831905.3529716,
-  "completed_new_runs": 9,
+  "checked_unix": 1792835827.2461007,
+  "completed_new_runs": 17,
   "active_query_ids": [
-    156,
-    161,
-    209,
-    228
-  ],
-  "pending_query_ids": [
-    229,
-    239,
-    245,
-    246,
     251,
     256,
     270
   ],
+  "pending_query_ids": [],
   "activity": {
-    "156": {
-      "successful_api_entries": 49,
-      "ledger_mtime": 1792831740.0,
+    "251": {
+      "successful_api_entries": 5,
+      "ledger_mtime": 1792835818.0,
       "checkpoint_exists": true,
       "request_contract_exists": true,
       "working_exists": true,
       "dispatch_exists": true
     },
-    "161": {
-      "successful_api_entries": 34,
-      "ledger_mtime": 1792831844.0,
+    "256": {
+      "successful_api_entries": 5,
+      "ledger_mtime": 1792835833.0,
       "checkpoint_exists": true,
       "request_contract_exists": true,
       "working_exists": true,
       "dispatch_exists": true
     },
-    "209": {
-      "successful_api_entries": 12,
-      "ledger_mtime": 1792831615.0,
-      "checkpoint_exists": true,
-      "request_contract_exists": true,
-      "working_exists": true,
-      "dispatch_exists": true
-    },
-    "228": {
-      "successful_api_entries": 8,
-      "ledger_mtime": 1792831725.0,
+    "270": {
+      "successful_api_entries": 3,
+      "ledger_mtime": 1792835792.0,
       "checkpoint_exists": true,
       "request_contract_exists": true,
       "working_exists": true,
@@ -201,14 +193,14 @@
     }
   },
   "storage": {
-    "ready": true,
-    "free_bytes": 90770493440,
-    "free_inodes": 61685,
+    "ready": false,
+    "free_bytes": 89976344576,
+    "free_inodes": 31629,
     "min_free_inodes": 40000,
     "min_free_bytes": 10737418240,
     "poll_seconds": 30
   },
-  "monitoring_receipt": "reports/strict_no_bash20_v1/monitoring/heartbeat_20261024_1652_postmaintenance.json",
+  "monitoring_receipt": "reports/strict_no_bash20_v1/monitoring/post_authorized_maintenance_153_final.json",
   "automation": {
     "id": "no-bash20",
     "interval_minutes": 10,
@@ -317,5 +309,17 @@
     "all96_consistency_receipt": "reports/strict_no_bash20_v1/operations/maintenance_20261024_1624_all96_consistency.json",
     "below_warning_after_exhausting_authorized_old_pools": true,
     "storage_gate_ready_after_maintenance": true
+  },
+  "new_terminal_workspace_maintenance": {
+    "summary": "operations/NO_BASH20_WORKSPACE_MAINTENANCE_20261024.json",
+    "user_explicitly_authorized": true,
+    "verified_backups": 1,
+    "fully_deleted_pools": 0,
+    "partial_pools": 1,
+    "stop_reason": "tail-dispatch admission guard",
+    "solver_infrastructure_failure": false,
+    "all_cleanup_stopped": true,
+    "formal_artifacts_preserved": true,
+    "raw_receipts_downloaded_and_reaudited": true
   }
 }
