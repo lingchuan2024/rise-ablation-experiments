@@ -112,8 +112,8 @@
     "recovery": "Preserve original failed receipt/log; finish all maintenance, then re-run original full resource validation and live-preflight against unchanged manifest and service. No cohort budget reset.",
     "experiment_sources_modified": false
   },
-  "run_status": "running_no_bash20",
-  "updated_unix": 1792835894.766926,
+  "run_status": "complete",
+  "updated_unix": 1792838556.265929,
   "manifest_sha256": "cc56f24667dbe2100f2b58c3d52ab032db15c27f5e041c40b67bca404d53ee3c",
   "config_sha256": "4066e6ae83c5427924a3eb3577eb5c5621a4372b5be673852667b64fe8433c1a",
   "no_bash_contract_sha256": "e9ed046be4d2203d4a248caecc9f2f95060612ca49deb320fee05342d2ab2cff",
@@ -158,40 +158,11 @@
     "started_unix": 1792825932.1616704,
     "entrypoint": "run20"
   },
-  "checked_unix": 1792835827.2461007,
-  "completed_new_runs": 17,
-  "active_query_ids": [
-    251,
-    256,
-    270
-  ],
+  "checked_unix": 1792837827.1594274,
+  "completed_new_runs": 20,
+  "active_query_ids": [],
   "pending_query_ids": [],
-  "activity": {
-    "251": {
-      "successful_api_entries": 5,
-      "ledger_mtime": 1792835818.0,
-      "checkpoint_exists": true,
-      "request_contract_exists": true,
-      "working_exists": true,
-      "dispatch_exists": true
-    },
-    "256": {
-      "successful_api_entries": 5,
-      "ledger_mtime": 1792835833.0,
-      "checkpoint_exists": true,
-      "request_contract_exists": true,
-      "working_exists": true,
-      "dispatch_exists": true
-    },
-    "270": {
-      "successful_api_entries": 3,
-      "ledger_mtime": 1792835792.0,
-      "checkpoint_exists": true,
-      "request_contract_exists": true,
-      "working_exists": true,
-      "dispatch_exists": true
-    }
-  },
+  "activity": {},
   "storage": {
     "ready": false,
     "free_bytes": 89976344576,
@@ -200,11 +171,10 @@
     "min_free_bytes": 10737418240,
     "poll_seconds": 30
   },
-  "monitoring_receipt": "reports/strict_no_bash20_v1/monitoring/post_authorized_maintenance_153_final.json",
+  "monitoring_receipt": "reports/strict_no_bash20_v1/monitoring/heartbeat_20261024_1830.json",
   "automation": {
     "id": "no-bash20",
-    "interval_minutes": 10,
-    "status": "ACTIVE"
+    "status": "DELETED"
   },
   "old_terminal_workspace_cleanup_during_run": {
     "verified": true,
@@ -321,5 +291,14 @@
     "all_cleanup_stopped": true,
     "formal_artifacts_preserved": true,
     "raw_receipts_downloaded_and_reaudited": true
+  },
+  "final_completion": {
+    "summary": "operations/NO_BASH20_COMPLETION_20261024.json",
+    "local_full_snapshot_verified": true,
+    "source_files_verified": 135,
+    "validated_natural_terminals": 20,
+    "shutdown_confirmed": true,
+    "disk_retained": true,
+    "accuracy_review_completed": false
   }
 }
