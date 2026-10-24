@@ -1555,6 +1555,326 @@
       "compact_artifacts_preserved": true,
       "remote_archive_retained": true,
       "operator_reaudit_raw_hashes_passed": true
+    },
+    {
+      "arm": "auto_rerank",
+      "query_id": 387,
+      "backup_directory": "reports/strict_recovery_v1/workspace_backups/auto_rerank_qid387_20261024_1529",
+      "archive": {
+        "sha256": "e986768908e86f8e4e9fcefb6f7458d23daaa481ce97fbe1fca281c9657e85a9",
+        "bytes": 120509200
+      },
+      "receipt_file_sha256": "9594849b9065c84863a94c3c8e8a0538dde3fc79bbe8e190ed99075abc076318",
+      "receipt_bytes": 1654,
+      "local_full_archive_verified": true,
+      "acknowledgement_sha256": "977d6c69ef3e040784567d374ee42c13f9549218b7d00fd545ad0e707799df2a",
+      "deletion_sha256": "b868b63d56eb1799648f14bafd9456e761175428b348746955b95938f4c50a28",
+      "files_removed": 4097,
+      "directories_removed": 2072,
+      "finished_unix": 1792827116.086203,
+      "compact_artifacts_preserved": true,
+      "remote_archive_retained": true,
+      "operator_reaudit_raw_hashes_passed": true
+    },
+    {
+      "arm": "auto_rerank",
+      "query_id": 411,
+      "backup_directory": "reports/strict_recovery_v1/workspace_backups/auto_rerank_qid411_20261024_1532",
+      "archive": {
+        "sha256": "d4aa5b7cef32c20c3fee1457c4a95b0244d0d3ef57c3a0df8e97968ccd052510",
+        "bytes": 102596884
+      },
+      "receipt_file_sha256": "285d8d50b3d10a381894dea7c127dba7ee977cd7da4f7e01783b5045000ec83f",
+      "receipt_bytes": 1655,
+      "local_full_archive_verified": true,
+      "acknowledgement_sha256": "ca06353f95ea265c1a2ec00a933e72a730b0772e162c975ab4df0d606c94b446",
+      "deletion_sha256": "4a3fa3351bc8f926f258b653b4b7730499e2e7f2b0dae82762bb7140d776f777",
+      "files_removed": 3666,
+      "directories_removed": 2064,
+      "finished_unix": 1792827272.2933893,
+      "compact_artifacts_preserved": true,
+      "remote_archive_retained": true,
+      "operator_reaudit_raw_hashes_passed": true
+    },
+    {
+      "arm": "auto_rerank",
+      "query_id": 513,
+      "backup_directory": "reports/strict_recovery_v1/workspace_backups/auto_rerank_qid513_20261024_1534",
+      "archive": {
+        "sha256": "2a10017d16e63301cbe60243a183848d1f1046f8b886c9ae17aa376ae8fdbd8a",
+        "bytes": 119506331
+      },
+      "receipt_file_sha256": "bf6b4f99bed8f4f710b58366385ae9464c44ec9412193fdd7c1248febf60fa0f",
+      "receipt_bytes": 1655,
+      "local_full_archive_verified": true,
+      "acknowledgement_sha256": "b7f230949ebde4dd417acd085ba038932928285bd10cf283c0eee12daadf44b2",
+      "deletion_sha256": "220a5b03b26c6a633ba854a275c26fd569cf9f6773203acc154773fbe433584d",
+      "files_removed": 3393,
+      "directories_removed": 2031,
+      "finished_unix": 1792827419.2692041,
+      "compact_artifacts_preserved": true,
+      "remote_archive_retained": true,
+      "operator_reaudit_raw_hashes_passed": true
+    },
+    {
+      "arm": "auto_rerank",
+      "query_id": 599,
+      "backup_directory": "reports/strict_recovery_v1/workspace_backups/auto_rerank_qid599_20261024_1537",
+      "archive": {
+        "sha256": "cc132608d3ff98e5009a946b63e330779862392121cc8c6471fc514c7fb73fb9",
+        "bytes": 118434974
+      },
+      "receipt_file_sha256": "cdb35cc69ec9dcc55565f2cd7318127cafd1b8b04cbddf36ed3b74b81c85d7f0",
+      "receipt_bytes": 1655,
+      "local_full_archive_verified": true,
+      "acknowledgement_sha256": "65fa002996e8bb832e67e8da61520686106b25f50e551a9ca4530430faf36104",
+      "deletion_sha256": "d08a1acee03dd7d0f334e69020dd65f65f2362feb561b8c604351704ea282435",
+      "files_removed": 3966,
+      "directories_removed": 2028,
+      "finished_unix": 1792827572.8246448,
+      "compact_artifacts_preserved": true,
+      "remote_archive_retained": true,
+      "operator_reaudit_raw_hashes_passed": true
+    },
+    {
+      "arm": "auto_rerank",
+      "query_id": 519,
+      "backup_directory": "reports/strict_recovery_v1/workspace_backups/auto_rerank_qid519_20261024_1539",
+      "archive": {
+        "sha256": "722f4bf7413d91fd3bd3c00323d2747e6d5ebfedecab3421208f2ff72d56ee6c",
+        "bytes": 120494208
+      },
+      "receipt_file_sha256": "eb4ff928b30f766f3ae24c79c550b6c66d01a8fb63e88ef8449e978004e1d100",
+      "receipt_bytes": 1655,
+      "local_full_archive_verified": true,
+      "acknowledgement_sha256": "37b4a0af4f001ab53fa850d711efcd4e074c84208dd61a19cd707fb50ca3018d",
+      "deletion_sha256": "5fedbc834df814027d2063e98b4204f7168934ce17732af3163d135fbd5aaff9",
+      "files_removed": 4060,
+      "directories_removed": 1947,
+      "finished_unix": 1792827721.5863929,
+      "compact_artifacts_preserved": true,
+      "remote_archive_retained": true,
+      "operator_reaudit_raw_hashes_passed": true
+    },
+    {
+      "arm": "auto_rerank",
+      "query_id": 366,
+      "backup_directory": "reports/strict_recovery_v1/workspace_backups/auto_rerank_qid366_20261024_1542",
+      "archive": {
+        "sha256": "9829c5c017ca30c686093a6a1e24a219fc655484765051a630966ab304608c52",
+        "bytes": 106971339
+      },
+      "receipt_file_sha256": "3f15d9207332fdce04e784afeab915a0346561aaefd576029416aad75bd5a5ee",
+      "receipt_bytes": 1655,
+      "local_full_archive_verified": true,
+      "acknowledgement_sha256": "a8085e121ba6f67eb41b569cd8c0d5756ea84eb91816cbd877c315fa96c32d9c",
+      "deletion_sha256": "d6c7c52963047869097546755b4b7f5f0bbb5446daf75f85020667c04ec0fccb",
+      "files_removed": 4919,
+      "directories_removed": 1903,
+      "finished_unix": 1792827883.0857406,
+      "compact_artifacts_preserved": true,
+      "remote_archive_retained": true,
+      "operator_reaudit_raw_hashes_passed": true
+    },
+    {
+      "arm": "auto_rerank",
+      "query_id": 607,
+      "backup_directory": "reports/strict_recovery_v1/workspace_backups/auto_rerank_qid607_20261024_1544",
+      "archive": {
+        "sha256": "ac5a7d12f85c03acae4432e13dedbe78ff403618add567b36e85827bd4440807",
+        "bytes": 130916026
+      },
+      "receipt_file_sha256": "742ffa815dc14ba29f2a67233f22e7753e9bf0e7c1e430d865b942811a05f8bc",
+      "receipt_bytes": 1655,
+      "local_full_archive_verified": true,
+      "acknowledgement_sha256": "e54e968c48b2d7a78619198b6b024b7bee04cd8ac368d0c097253b8bc3d031ef",
+      "deletion_sha256": "28c469fc70dac8cddd28cc7a59b248902b562ce8dd0d3ae5b48f46cf367059fb",
+      "files_removed": 4069,
+      "directories_removed": 1890,
+      "finished_unix": 1792828033.0106127,
+      "compact_artifacts_preserved": true,
+      "remote_archive_retained": true,
+      "operator_reaudit_raw_hashes_passed": true
+    },
+    {
+      "arm": "auto_rerank",
+      "query_id": 507,
+      "backup_directory": "reports/strict_recovery_v1/workspace_backups/auto_rerank_qid507_20261024_1547",
+      "archive": {
+        "sha256": "066297ba1ea8339a0978b6651f5874675d1e01fe6883ea511745c8c77243e9ab",
+        "bytes": 94051172
+      },
+      "receipt_file_sha256": "9b3ae8f793ff45b203bc38e1222a23abf4dd5b438c009085043f15833152e1b7",
+      "receipt_bytes": 1654,
+      "local_full_archive_verified": true,
+      "acknowledgement_sha256": "16ddb889c4c298c0ad25f4db108dabdde84a540168c13f52611736bd47b4eef9",
+      "deletion_sha256": "b296292db614cf3e8f167486b3db52afed67c41dbe50fb6508570899787bd93e",
+      "files_removed": 3874,
+      "directories_removed": 1865,
+      "finished_unix": 1792828177.2749076,
+      "compact_artifacts_preserved": true,
+      "remote_archive_retained": true,
+      "operator_reaudit_raw_hashes_passed": true
+    },
+    {
+      "arm": "auto_rerank",
+      "query_id": 436,
+      "backup_directory": "reports/strict_recovery_v1/workspace_backups/auto_rerank_qid436_20261024_1549",
+      "archive": {
+        "sha256": "411697faa1f856d1d2d1ec21358dadef9b258742cec903db551dab1a32908e7f",
+        "bytes": 105703551
+      },
+      "receipt_file_sha256": "7422826554b0cdd30f34cc4d9fc6f8ea9b6df4071f2590895bd63a8675e9be8e",
+      "receipt_bytes": 1655,
+      "local_full_archive_verified": true,
+      "acknowledgement_sha256": "c53c2bc09914b76b155a6215a95a594af38522ceb09e3334e358cbb5c5365354",
+      "deletion_sha256": "431e329dc4daf63ef8afde06580a1a5b5a1b6ef26ffb6978bf042326deba8efe",
+      "files_removed": 3753,
+      "directories_removed": 1817,
+      "finished_unix": 1792828326.7823975,
+      "compact_artifacts_preserved": true,
+      "remote_archive_retained": true,
+      "operator_reaudit_raw_hashes_passed": true
+    },
+    {
+      "arm": "auto_rerank",
+      "query_id": 587,
+      "backup_directory": "reports/strict_recovery_v1/workspace_backups/auto_rerank_qid587_20261024_1552",
+      "archive": {
+        "sha256": "414d9fdc16b9e61e34854dc2a4e27a9d29330435d0ed0ef15d883b9468c1aaf3",
+        "bytes": 95867146
+      },
+      "receipt_file_sha256": "acee853acf8cde4e8f763ecc1f484063d54c47fd32d12c310692275683c7f014",
+      "receipt_bytes": 1654,
+      "local_full_archive_verified": true,
+      "acknowledgement_sha256": "8405565c534ff80eb4571d026576ccb7a8bdd315db467629f54ce526aa2e7f78",
+      "deletion_sha256": "e3bcf9f8506190bf605dc58e33feb3fe24b1d118653fa113c176a3d535b07dec",
+      "files_removed": 3487,
+      "directories_removed": 1676,
+      "finished_unix": 1792828478.604343,
+      "compact_artifacts_preserved": true,
+      "remote_archive_retained": true,
+      "operator_reaudit_raw_hashes_passed": true
+    },
+    {
+      "arm": "auto_rerank",
+      "query_id": 512,
+      "backup_directory": "reports/strict_recovery_v1/workspace_backups/auto_rerank_qid512_20261024_1555",
+      "archive": {
+        "sha256": "6b4844f736b7550d98f820a377549f8692d9af259bd7c13f1d40e23d5830ece2",
+        "bytes": 78715052
+      },
+      "receipt_file_sha256": "062a9f6c40002acca0773531e7fd9e07939202a16a03c82000d42701e36216d9",
+      "receipt_bytes": 1654,
+      "local_full_archive_verified": true,
+      "acknowledgement_sha256": "7e4fdcb581527d25a765a9393392252a24cd46719021a9b0d345cde7d2f2a257",
+      "deletion_sha256": "f4f1903f9e6d9f257d3749aabad74a77a2871bc6e1a5cd3950e00dd4b99fdb9e",
+      "files_removed": 3759,
+      "directories_removed": 1431,
+      "finished_unix": 1792828644.5637772,
+      "compact_artifacts_preserved": true,
+      "remote_archive_retained": true,
+      "operator_reaudit_raw_hashes_passed": true
+    },
+    {
+      "arm": "auto_rerank",
+      "query_id": 454,
+      "backup_directory": "reports/strict_recovery_v1/workspace_backups/auto_rerank_qid454_20261024_1557",
+      "archive": {
+        "sha256": "fba33bf692531f67bebf4462cd0906ee387879365eb27939858b0332e6e3b812",
+        "bytes": 86860108
+      },
+      "receipt_file_sha256": "cf56ed78503803c64381c5cdb012737780054c5f8a0afbc2df6b370f8afcb8c7",
+      "receipt_bytes": 1653,
+      "local_full_archive_verified": true,
+      "acknowledgement_sha256": "9c1185e3a31a0419330a4de7215349ab0364c423a011e988c51337d5fc017f9e",
+      "deletion_sha256": "b0ad42db3075f1b42543321c4594e47525a8082886b933dfe0a0fad901ed5d8c",
+      "files_removed": 2633,
+      "directories_removed": 1373,
+      "finished_unix": 1792828783.1685998,
+      "compact_artifacts_preserved": true,
+      "remote_archive_retained": true,
+      "operator_reaudit_raw_hashes_passed": true
+    },
+    {
+      "arm": "auto_rerank",
+      "query_id": 761,
+      "backup_directory": "reports/strict_recovery_v1/workspace_backups/auto_rerank_qid761_20261024_1559",
+      "archive": {
+        "sha256": "6168ca9b4c474bc4522ca65150d614eef877eeb0f2fbce43ce1d9088b7911401",
+        "bytes": 120489624
+      },
+      "receipt_file_sha256": "edebd04f6723da45f9ea08d4743416de7e43e47ab398e54818735e694ca72d97",
+      "receipt_bytes": 1655,
+      "local_full_archive_verified": true,
+      "acknowledgement_sha256": "892dcc2546f6ad75b3986a8cff1d6285baeb36ab78f3d7440432c2e0c8574786",
+      "deletion_sha256": "bf7559fb6b02faaf305a5698401f73a5217a0b3400790d1d64e118e6175d46ed",
+      "files_removed": 2506,
+      "directories_removed": 1296,
+      "finished_unix": 1792828917.5318072,
+      "compact_artifacts_preserved": true,
+      "remote_archive_retained": true,
+      "operator_reaudit_raw_hashes_passed": true
+    },
+    {
+      "arm": "auto_rerank",
+      "query_id": 832,
+      "backup_directory": "reports/strict_recovery_v1/workspace_backups/auto_rerank_qid832_20261024_1604",
+      "archive": {
+        "sha256": "de5299a9e79cce7b634c19a6e2b325d6464d7e00c2449c466b01ea666e4fcdd6",
+        "bytes": 52581393
+      },
+      "receipt_file_sha256": "d26417f0c3e066932c88719012cf978fb6b5d753e8de5a73a8d0fa31d8f98e35",
+      "receipt_bytes": 1654,
+      "local_full_archive_verified": true,
+      "acknowledgement_sha256": "732ef1f3b46877ae7809a2c74c04733acc13a4a907181c648d7734ede56dcf66",
+      "deletion_sha256": "f9ddfcb95cb646765ea33534d2e0183d1fab66f3c024de7e3b6993c27ac0f962",
+      "files_removed": 3351,
+      "directories_removed": 1273,
+      "finished_unix": 1792829196.3666658,
+      "compact_artifacts_preserved": true,
+      "remote_archive_retained": true,
+      "operator_reaudit_raw_hashes_passed": true
+    },
+    {
+      "arm": "auto_rerank",
+      "query_id": 317,
+      "backup_directory": "reports/strict_recovery_v1/workspace_backups/auto_rerank_qid317_20261024_1606",
+      "archive": {
+        "sha256": "07c769f3e1ed2e87afbcdfa328a704ae6a1b4cf1bdbf3ca0eb5aefeb58b6be23",
+        "bytes": 64906445
+      },
+      "receipt_file_sha256": "f6530aaeda4c6fd344b55e9558ab16f3710b30c67c5dbf9c1c44d3139af76419",
+      "receipt_bytes": 1654,
+      "local_full_archive_verified": true,
+      "acknowledgement_sha256": "7a8aa579f191c2f5bff726abeef8b0f3e4a4b5d28e192d69d430c710d79dd711",
+      "deletion_sha256": "fe6b9d20f4a49b84de3e107ae31a76ce8e40552989256b462e7b789317f1e506",
+      "files_removed": 2838,
+      "directories_removed": 1270,
+      "finished_unix": 1792829317.8887513,
+      "compact_artifacts_preserved": true,
+      "remote_archive_retained": true,
+      "operator_reaudit_raw_hashes_passed": true
+    },
+    {
+      "arm": "auto_rerank",
+      "query_id": 1138,
+      "backup_directory": "reports/strict_recovery_v1/workspace_backups/auto_rerank_qid1138_20261024_1608",
+      "archive": {
+        "sha256": "635c9cfdecc798469e7e8af83a388ab1cc496e043fefe5593143a24d3c833c09",
+        "bytes": 128820125
+      },
+      "receipt_file_sha256": "fbcea565f9d51af5af30d0e3aba156e56245078490fc3d2e4e4c62c8c4894d8e",
+      "receipt_bytes": 1656,
+      "local_full_archive_verified": true,
+      "acknowledgement_sha256": "3fe7a16c9d258696215f25e6d9030f9e61264bebb775ffdfebbaf2d66613864e",
+      "deletion_sha256": "fd6f8fe103d529fdc5f8ca748e3cad7e9eda0a2b0465b1f1fb8e95f1cb7fdf48",
+      "files_removed": 2703,
+      "directories_removed": 1246,
+      "finished_unix": 1792829443.2670846,
+      "compact_artifacts_preserved": true,
+      "remote_archive_retained": true,
+      "operator_reaudit_raw_hashes_passed": true
     }
   ],
   "raw_artifacts_committed": false

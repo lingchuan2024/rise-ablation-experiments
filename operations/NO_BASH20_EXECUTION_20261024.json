@@ -104,7 +104,7 @@
     "experiment_sources_modified": false
   },
   "run_status": "running_no_bash20",
-  "updated_unix": 1792826172.531562,
+  "updated_unix": 1792829663.52256,
   "manifest_sha256": "cc56f24667dbe2100f2b58c3d52ab032db15c27f5e041c40b67bca404d53ee3c",
   "config_sha256": "4066e6ae83c5427924a3eb3577eb5c5621a4372b5be673852667b64fe8433c1a",
   "no_bash_contract_sha256": "e9ed046be4d2203d4a248caecc9f2f95060612ca49deb320fee05342d2ab2cff",
@@ -149,20 +149,15 @@
     "started_unix": 1792825932.1616704,
     "entrypoint": "run20"
   },
-  "checked_unix": 1792826141.5779333,
-  "completed_new_runs": 0,
+  "checked_unix": 1792829618.9717622,
+  "completed_new_runs": 5,
   "active_query_ids": [
-    70,
-    81,
-    96,
-    116
+    116,
+    122,
+    153,
+    156
   ],
   "pending_query_ids": [
-    122,
-    127,
-    132,
-    153,
-    156,
     161,
     193,
     209,
@@ -176,51 +171,105 @@
     270
   ],
   "activity": {
-    "70": {
-      "successful_api_entries": 1,
-      "ledger_bytes": 852,
-      "ledger_mtime": 1792826119.0,
-      "checkpoint_exists": true,
-      "request_contract_exists": true,
-      "working_exists": true
-    },
-    "81": {
-      "successful_api_entries": 1,
-      "ledger_bytes": 851,
-      "ledger_mtime": 1792826110.0,
-      "checkpoint_exists": true,
-      "request_contract_exists": true,
-      "working_exists": true
-    },
-    "96": {
-      "successful_api_entries": 1,
-      "ledger_bytes": 850,
-      "ledger_mtime": 1792826110.0,
-      "checkpoint_exists": true,
-      "request_contract_exists": true,
-      "working_exists": true
-    },
     "116": {
-      "successful_api_entries": 1,
-      "ledger_bytes": 853,
-      "ledger_mtime": 1792826112.0,
+      "successful_api_entries": 41,
+      "ledger_mtime": 1792829581,
       "checkpoint_exists": true,
       "request_contract_exists": true,
-      "working_exists": true
+      "working_exists": true,
+      "dispatch_exists": true
+    },
+    "122": {
+      "successful_api_entries": 39,
+      "ledger_mtime": 1792829564,
+      "checkpoint_exists": true,
+      "request_contract_exists": true,
+      "working_exists": true,
+      "dispatch_exists": true
+    },
+    "153": {
+      "successful_api_entries": 21,
+      "ledger_mtime": 1792829575,
+      "checkpoint_exists": true,
+      "request_contract_exists": true,
+      "working_exists": true,
+      "dispatch_exists": true
+    },
+    "156": {
+      "successful_api_entries": 6,
+      "ledger_mtime": 1792829577,
+      "checkpoint_exists": true,
+      "request_contract_exists": true,
+      "working_exists": true,
+      "dispatch_exists": true
     }
   },
   "storage": {
     "ready": true,
-    "free_bytes": 93712551936,
-    "free_inodes": 82664,
+    "free_bytes": 91778043904,
+    "free_inodes": 70573,
     "min_free_inodes": 40000,
     "min_free_bytes": 10737418240,
     "poll_seconds": 30
   },
-  "monitoring_receipt": "reports/strict_no_bash20_v1/monitoring/heartbeat_20261024_151542.json",
+  "monitoring_receipt": "reports/strict_no_bash20_v1/monitoring/heartbeat_20261024_161338_postmaintenance.json",
   "automation": {
     "id": "no-bash20",
     "interval_minutes": 10,
     "status": "ACTIVE"
+  },
+  "old_terminal_workspace_cleanup_during_run": {
+    "verified": true,
+    "checked_unix": 1792829469.0075011,
+    "namespace": "strict_recovery_v1",
+    "arm": "auto_rerank",
+    "query_ids": [
+      387,
+      411,
+      513,
+      599,
+      519,
+      366,
+      607,
+      507,
+      436,
+      587,
+      512,
+      454,
+      761,
+      832,
+      317,
+      1138
+    ],
+    "new_local_backups": 16,
+    "previous_local_backups": 68,
+    "total_local_backups": 84,
+    "archive_bytes_preserved": 1647423578,
+    "directories_removed": 27182,
+    "files_removed": 57074,
+    "counts_are_removed_paths_not_net_free_inodes": true,
+    "all_new_archives_remote_and_local_preserved": true,
+    "all_compact_artifacts_preserved": true,
+    "all_transactions_closed": true,
+    "every_delete_gated_on_live_worker_running_phase_and_nonempty_pending": true,
+    "new_no_bash_workspaces_touched": false,
+    "other_projects_touched": false,
+    "root_independent_reaudit_receipt": "reports/strict_no_bash20_v1/operations/maintenance_20261024_1528_root_final_reaudit.json",
+    "residual_budget_terminals_validated_using_their_own_frozen_configuration": true
+  },
+  "service_activity_check": {
+    "first_sample_unix": 1792829534.773553,
+    "second_sample_unix": 1792829595.2665744,
+    "health_http_status": 200,
+    "gpu_utilization_percent": [
+      100,
+      99
+    ],
+    "prompt_tokens_increased": 72946,
+    "generation_tokens_increased": 550,
+    "successful_requests_increased": 4,
+    "request_errors": 0,
+    "new_model_requests_by_monitor": 0,
+    "intervention": false
   }
 }
