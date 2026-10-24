@@ -1222,6 +1222,52 @@
       "observed_free_inodes": 72930,
       "observed_free_bytes": 86320508928,
       "batch_post_observed_unix": 1792811038.108869
+    },
+    {
+      "arm": "search_paging",
+      "query_id": 153,
+      "backup_directory": "reports/strict_recovery_v1/workspace_backups/search_paging_qid153_20261024_1132",
+      "archive": {
+        "bytes": 245807398,
+        "sha256": "1402575062cbedcea057ba63c030dbcf344a9e37f470192508997fc48ef0b1ce"
+      },
+      "receipt_file_sha256": "70cb313a144f0bc8b70f73f8250ed49ffe144251d98a3a36455484180e6d9698",
+      "receipt_bytes": 1657,
+      "local_full_archive_verified": true,
+      "acknowledgement_sha256": "a50618f2318e35b62738fbf02c7454a875c45afc9b5529676021b8fc19911b1f",
+      "deletion_sha256": "b96841b9341b83774122d5048073d2c0e00c2095398d684f07846895bd73da84",
+      "files_removed": 7146,
+      "directories_removed": 3715,
+      "finished_unix": 1792812921.7692719,
+      "compact_artifacts_preserved": true,
+      "post_worker_identity_matches": true,
+      "post_phase": "running_paging20",
+      "observed_free_inodes": 71973,
+      "observed_free_bytes": 85856997376,
+      "batch_post_observed_unix": 1792813131.6731484
+    },
+    {
+      "arm": "search_paging",
+      "query_id": 132,
+      "backup_directory": "reports/strict_recovery_v1/workspace_backups/search_paging_qid132_20261024_1135",
+      "archive": {
+        "bytes": 153141319,
+        "sha256": "0183e0fcbf77c1eaf86ae13b99ae7be254fc4f503aa74841f9967fc107bc7819"
+      },
+      "receipt_file_sha256": "d3321fb2db0d672f490693a4de184221ec985de2b1bbc19dccdb30c3ef4bf325",
+      "receipt_bytes": 1657,
+      "local_full_archive_verified": true,
+      "acknowledgement_sha256": "185a95043876bcac0710fa9fcd2ff25dd98c0ead1d64e44db234d103005e7377",
+      "deletion_sha256": "b8e6707fc42f1c5dba10e4574b9229abb364f802a11f0334f2f3e85221fa291c",
+      "files_removed": 6624,
+      "directories_removed": 2834,
+      "finished_unix": 1792813069.5251014,
+      "compact_artifacts_preserved": true,
+      "post_worker_identity_matches": true,
+      "post_phase": "running_paging20",
+      "observed_free_inodes": 71973,
+      "observed_free_bytes": 85856997376,
+      "batch_post_observed_unix": 1792813131.6731484
     }
   ],
   "raw_artifacts_committed": false
