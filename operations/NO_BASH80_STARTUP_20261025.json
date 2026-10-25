@@ -1,8 +1,5 @@
 {
-  "active_query_ids": [
-    1196,
-    1233
-  ],
+  "active_query_ids": [],
   "actual_api_ledger_records": {
     "qid_1000": {
       "last_unix": 1792925242.2438326,
@@ -85,9 +82,9 @@
       "successful_records": 36
     },
     "qid_1196": {
-      "last_unix": 1792933607.0096712,
-      "records": 32,
-      "successful_records": 32
+      "last_unix": 1792934364.7363153,
+      "records": 46,
+      "successful_records": 46
     },
     "qid_1227": {
       "last_unix": 1792932672.0454535,
@@ -95,9 +92,9 @@
       "successful_records": 15
     },
     "qid_1233": {
-      "last_unix": 1792933624.3448713,
-      "records": 23,
-      "successful_records": 23
+      "last_unix": 1792934307.9067385,
+      "records": 34,
+      "successful_records": 34
     },
     "qid_1239": {
       "last_unix": 1792933474.6202598,
@@ -407,12 +404,13 @@
   },
   "arm": "no_bash",
   "automation": {
+    "deleted_after_verified_completion_and_shutdown": true,
     "id": "no-bash-80",
     "interval_minutes": 30,
     "shutdown_after_verified_completion": true,
-    "status": "ACTIVE"
+    "status": "DELETED"
   },
-  "checked_unix": 1792933682.760349,
+  "checked_unix": 1792934858.9196784,
   "closed_new80_terminal_pool_backups": [
     288,
     376,
@@ -502,6 +500,8 @@
   ],
   "config_sha256": "4066e6ae83c5427924a3eb3577eb5c5621a4372b5be673852667b64fe8433c1a",
   "configuration_unchanged": true,
+  "console_shutdown_verified": true,
+  "console_state": "已关机",
   "date": "2026-10-25",
   "docker_correction": {
     "extra_local_unshare_probe_not_an_original_gate": true,
@@ -514,9 +514,12 @@
     "root_cause": "Administrative checks omitted frozen DOCKER_HOST and diagnosed the wrong default endpoint",
     "security_permissions_changed_for_fix": false
   },
-  "experiment_complete": false,
+  "experiment_complete": true,
+  "final_archive_bytes": 751358817,
+  "final_archive_sha256": "68d38b869f905d6653bc6fd3532b2e52f791e7bcb6527890a1bc4e03a968f49a",
   "frozen_source_map_sha256": "a5a3e172a1581ac95d24cec857a187e14a87b4e21af0cbce366916e6fa3cc5a1",
   "local_archive_bytes": 22889536848,
+  "local_final_backup_verified": true,
   "manifest_sha256": "a651827502c475394665c35f121fa7d687ee4469979e9dc60ace682b441433b4",
   "max_turns": 100,
   "new_dispatches": 80,
@@ -597,13 +600,15 @@
     1163,
     1172,
     1193,
+    1196,
     1227,
+    1233,
     1239
   ],
-  "new_natural_terminals": 78,
+  "new_natural_terminals": 80,
   "old153_partial_not_retried": true,
   "pending_count": 0,
-  "phase": "running_no_bash80",
+  "phase": "complete",
   "question_concurrency": 4,
   "raw_answers_trajectories_credentials_committed": false,
   "reused_first20": 20,
@@ -614,14 +619,14 @@
     "process_start_ticks": 1425703206
   },
   "storage_at_checkpoint": {
-    "free_bytes": 64080744448,
-    "free_inodes": 72218,
+    "free_bytes": 64053878784,
+    "free_inodes": 71011,
     "min_free_bytes": 10737418240,
     "min_free_inodes": 40000,
     "poll_seconds": 30,
     "ready": true
   },
-  "successful_new_model_requests": 1903,
+  "successful_new_model_requests": 1928,
   "target_new_questions": 80,
   "validation": {
     "all_passed": true,
