@@ -2,7 +2,7 @@
   "active_new80_pools_touched": false,
   "all_transactions_closed": true,
   "arm": "no_bash",
-  "checked_unix": 1792903522.642074,
+  "checked_unix": 1792908563.2044868,
   "entries": [
     {
       "archive": {
@@ -288,21 +288,313 @@
         "bytes": 2088,
         "sha256": "c4a8aa821a328f2549767b081faaeba30316b98ad69194d87278977aef57bc5d"
       }
+    },
+    {
+      "archive": {
+        "bytes": 196118085,
+        "sha256": "a77b1476b6e61ba5c3a5faf5fdce0758e300319a0572e797319345b75e83c4a0"
+      },
+      "arm": "no_bash",
+      "backup_directory": "reports/strict_no_bash20_v1/workspace_backups/no_bash_qid96_during80_20261025_133433",
+      "deleted": true,
+      "deletion_receipt_sha256": "99b202f040bc4711341c6793a5d9d1e4689286a76116ebc209e3d48af9399793",
+      "directories_removed": 3250,
+      "files_removed": 6128,
+      "local_full_member_verified": true,
+      "namespace": "strict_no_bash20_v1",
+      "query_id": 96,
+      "receipt": {
+        "bytes": 2088,
+        "sha256": "134f4bfa7e885151fa151343c187fd701fcfd999f64e6f0ae663e0b3e5acab4c"
+      }
+    },
+    {
+      "archive": {
+        "bytes": 154969760,
+        "sha256": "0e47615d44745fa181a158a67979d4ae7d0aaa5e60bc7a54de373c09d8f16ef4"
+      },
+      "arm": "no_bash",
+      "backup_directory": "reports/strict_no_bash20_v1/workspace_backups/no_bash_qid229_during80_20261025_133624",
+      "deleted": true,
+      "deletion_receipt_sha256": "8388949aa0f8444dd12f7f2f55b31f74f5963280fb36550ee96d1ee82dd66694",
+      "directories_removed": 3209,
+      "files_removed": 6057,
+      "local_full_member_verified": true,
+      "namespace": "strict_no_bash20_v1",
+      "query_id": 229,
+      "receipt": {
+        "bytes": 2089,
+        "sha256": "dce8647589d4296c9e575c0811051d12f01abb7030189afde5d287895980c18f"
+      }
+    },
+    {
+      "archive": {
+        "bytes": 202397907,
+        "sha256": "987c7c2ff231dbdb9b4cbed6a6df1b00887b3453d0f607dc43d3c290816343bb"
+      },
+      "arm": "no_bash",
+      "backup_directory": "reports/strict_no_bash20_v1/workspace_backups/no_bash_qid193_during80_20261025_133805",
+      "deleted": true,
+      "deletion_receipt_sha256": "c82ebeee9933caafef42b2c98def17e0a2aa6af91515d225a0bc17e4ae72165e",
+      "directories_removed": 2736,
+      "files_removed": 5462,
+      "local_full_member_verified": true,
+      "namespace": "strict_no_bash20_v1",
+      "query_id": 193,
+      "receipt": {
+        "bytes": 2089,
+        "sha256": "2e4b2c67e87bd72a6231df4ec9cf21caf1ef421fed72e2706a0a2355cdda4077"
+      }
+    },
+    {
+      "archive": {
+        "bytes": 188424906,
+        "sha256": "ed0a2e4f65fe5a124612ff6551c6d3292ccc55fb8147e946c22a01d0905cda79"
+      },
+      "arm": "no_bash",
+      "backup_directory": "reports/strict_no_bash20_v1/workspace_backups/no_bash_qid245_during80_20261025_133953",
+      "deleted": true,
+      "deletion_receipt_sha256": "8210c66e219a4a27f7f76ac6b345744feeb51a9bc35e555c9fe615ba14703e32",
+      "directories_removed": 2493,
+      "files_removed": 5008,
+      "local_full_member_verified": true,
+      "namespace": "strict_no_bash20_v1",
+      "query_id": 245,
+      "receipt": {
+        "bytes": 2089,
+        "sha256": "d5f50c02fdb0dfc7ca1f0791d5f2f3bd095f8f6b6291e7d471fa1b9adbbf9459"
+      }
+    },
+    {
+      "archive": {
+        "bytes": 450924265,
+        "sha256": "ab04c23fb161b704ae579802a26fc0ed688dc688dee8b9ecd71173c4b3a3d513"
+      },
+      "arm": "no_bash",
+      "backup_directory": "reports/strict_no_bash80_v1/workspace_backups/no_bash_qid288_during80_20261025_134134",
+      "deleted": true,
+      "deletion_receipt_sha256": "946ca368152835b109f27620a571a74d17ea6c790f8ae465e9528539bc7bbbc2",
+      "directories_removed": 7411,
+      "files_removed": 17950,
+      "local_full_member_verified": true,
+      "namespace": "strict_no_bash80_v1",
+      "query_id": 288,
+      "receipt": {
+        "bytes": 2091,
+        "sha256": "279ef477449b467fa9c0e80516a5fc367b74d1cb8493b07e2f8606f1a75ef79d"
+      }
+    },
+    {
+      "archive": {
+        "bytes": 426452052,
+        "sha256": "a07d339dabcb82077db5bb549b7df5dbb1ef3758f1c626bfbaeed60a0ad8957e"
+      },
+      "arm": "no_bash",
+      "backup_directory": "reports/strict_no_bash80_v1/workspace_backups/no_bash_qid376_during80_20261025_134534",
+      "deleted": true,
+      "deletion_receipt_sha256": "7ed2379ae0dae5eff2d69c7630b49f5ead5855e06b3cd0e3ebfd3068b7050e95",
+      "directories_removed": 6588,
+      "files_removed": 16453,
+      "local_full_member_verified": true,
+      "namespace": "strict_no_bash80_v1",
+      "query_id": 376,
+      "receipt": {
+        "bytes": 2092,
+        "sha256": "22968c53f24f1ec6f4fea559dfd0661e371e1a8e3d3799c55111b9e1a1f9f15f"
+      }
+    },
+    {
+      "archive": {
+        "bytes": 311947288,
+        "sha256": "ecd71c6dd1be88143c0fd6c9f88aa3b1db44d46bd9ba529f610b8974cc50a22b"
+      },
+      "arm": "no_bash",
+      "backup_directory": "reports/strict_no_bash80_v1/workspace_backups/no_bash_qid370_during80_20261025_134925",
+      "deleted": true,
+      "deletion_receipt_sha256": "15fd96a3497d85fa38a01c8f06cc81a8c8c33e3aa88593ff6c47d6e6d3dd5719",
+      "directories_removed": 5902,
+      "files_removed": 14711,
+      "local_full_member_verified": true,
+      "namespace": "strict_no_bash80_v1",
+      "query_id": 370,
+      "receipt": {
+        "bytes": 2091,
+        "sha256": "27cb9174dd15bf34fa5b578ecc0d218794b3af053ddd1a6d044f5d295029c872"
+      }
+    },
+    {
+      "archive": {
+        "bytes": 328395891,
+        "sha256": "2d10622d5779a059c05497305ae7bf778a5f8f84843df01089d3e28b80da28f7"
+      },
+      "arm": "no_bash",
+      "backup_directory": "reports/strict_no_bash80_v1/workspace_backups/no_bash_qid278_during80_20261025_135248",
+      "deleted": true,
+      "deletion_receipt_sha256": "2ab58078cd993868702e4e355f8230b947ec673a85a5318686d69e8dd62ed86d",
+      "directories_removed": 5577,
+      "files_removed": 10785,
+      "local_full_member_verified": true,
+      "namespace": "strict_no_bash80_v1",
+      "query_id": 278,
+      "receipt": {
+        "bytes": 2090,
+        "sha256": "06c7c2728f2aa4c22e3aac3b382dfba06656f40894e9bcc8b515e41f808f7a6a"
+      }
+    },
+    {
+      "archive": {
+        "bytes": 247083692,
+        "sha256": "030842a1f27c1d457890d8d8a3bbef2d4d74846906d7a72d3129d1db9b60583d"
+      },
+      "arm": "no_bash",
+      "backup_directory": "reports/strict_no_bash80_v1/workspace_backups/no_bash_qid293_during80_20261025_135543",
+      "deleted": true,
+      "deletion_receipt_sha256": "c215e34d3ada987cab2eccc5bc5a82a14dbf313b2c4b388f03612721e94500ed",
+      "directories_removed": 4997,
+      "files_removed": 12506,
+      "local_full_member_verified": true,
+      "namespace": "strict_no_bash80_v1",
+      "query_id": 293,
+      "receipt": {
+        "bytes": 2090,
+        "sha256": "fca4a4ffda04ec7cfe33d823768f13f5dddadedd6e23a58d31c6e6292fe8e160"
+      }
+    },
+    {
+      "archive": {
+        "bytes": 218501510,
+        "sha256": "5e6efb7c455f17d143f3efaef976c98455d0cf60dae224aee55631f4d81b7413"
+      },
+      "arm": "no_bash",
+      "backup_directory": "reports/strict_no_bash80_v1/workspace_backups/no_bash_qid366_during80_20261025_135835",
+      "deleted": true,
+      "deletion_receipt_sha256": "0fd387435b2e340c81c7d3133993e237367e769159244333c3001f1e0c7135ee",
+      "directories_removed": 4266,
+      "files_removed": 10864,
+      "local_full_member_verified": true,
+      "namespace": "strict_no_bash80_v1",
+      "query_id": 366,
+      "receipt": {
+        "bytes": 2090,
+        "sha256": "e394d7937a6ceabc6ec2ad63416478442f3a22aef01673e3cb41580650f3196d"
+      }
+    },
+    {
+      "archive": {
+        "bytes": 170673000,
+        "sha256": "d6f63a230ecf802005eff28299021977bd4f415fcf0700686fa585f0bc89f38b"
+      },
+      "arm": "no_bash",
+      "backup_directory": "reports/strict_no_bash80_v1/workspace_backups/no_bash_qid393_during80_20261025_140118",
+      "deleted": true,
+      "deletion_receipt_sha256": "3d1fd0f4baf4c3a568009fcc42d849655ad576e44200d61f751708c98fdfe9f0",
+      "directories_removed": 3321,
+      "files_removed": 5850,
+      "local_full_member_verified": true,
+      "namespace": "strict_no_bash80_v1",
+      "query_id": 393,
+      "receipt": {
+        "bytes": 2089,
+        "sha256": "7c7e490278afba7394f746ac8ce1b6cc16e21bdb7b0e9bbff4c3f9f67e44a7e2"
+      }
+    },
+    {
+      "archive": {
+        "bytes": 192111755,
+        "sha256": "f1af290c95ec290b315902e134ad678cc0b786256d232577fa8f12d3d3d32c79"
+      },
+      "arm": "no_bash",
+      "backup_directory": "reports/strict_no_bash80_v1/workspace_backups/no_bash_qid387_during80_20261025_140304",
+      "deleted": true,
+      "deletion_receipt_sha256": "9bf9c4723ee45cc7934e51fdd5cb4ecf48910de1bd5622d511e7c727dca9c19b",
+      "directories_removed": 3179,
+      "files_removed": 6534,
+      "local_full_member_verified": true,
+      "namespace": "strict_no_bash80_v1",
+      "query_id": 387,
+      "receipt": {
+        "bytes": 2089,
+        "sha256": "a3c6868ec74d04e62a811be74c4f2d8d96a7bd344a59e2352e90916ff1b5866e"
+      }
+    },
+    {
+      "archive": {
+        "bytes": 155192523,
+        "sha256": "afb8d8805c8f2f5cc05413592510a8c130768471d761762f9942dac9c6f3d188"
+      },
+      "arm": "no_bash",
+      "backup_directory": "reports/strict_no_bash80_v1/workspace_backups/no_bash_qid280_during80_20261025_140502",
+      "deleted": true,
+      "deletion_receipt_sha256": "9ce208587f8be9e3a1d62f688153471f2985521dbfa89b9f038f4fabeada865f",
+      "directories_removed": 2924,
+      "files_removed": 6709,
+      "local_full_member_verified": true,
+      "namespace": "strict_no_bash80_v1",
+      "query_id": 280,
+      "receipt": {
+        "bytes": 2089,
+        "sha256": "169bd10266d4d79f160fd4036737cf5de3031020ac6141eb14512f8057787786"
+      }
     }
   ],
-  "free_inodes_at_checkpoint": 76758,
-  "fully_deleted_pools": 15,
-  "fully_verified_backups": 15,
-  "future_reaudit_candidates": [
+  "free_inodes_at_checkpoint": 74664,
+  "fully_deleted_pools": 28,
+  "fully_verified_backups": 28,
+  "future_reaudit_candidates": [],
+  "historical_partial153_excluded": true,
+  "last_maintenance_batch": "heartbeat_maintenance_20261025_1329",
+  "latest_new_terminal_count": 19,
+  "namespaces": [
+    "strict_no_bash20_v1",
+    "strict_no_bash80_v1"
+  ],
+  "new80_closed_query_ids": [
+    288,
+    376,
+    370,
+    278,
+    293,
+    366,
+    393,
+    387,
+    280
+  ],
+  "new80_fully_closed": 9,
+  "new80_terminal_pools_maintained": true,
+  "new80_terminal_reaudit_candidates": [
+    310,
+    317,
+    392,
+    411,
+    418,
+    420,
+    428,
+    436,
+    454,
+    500
+  ],
+  "old_first20_closed_query_ids": [
+    209,
+    228,
+    256,
+    239,
+    270,
+    251,
+    122,
+    161,
+    70,
+    132,
+    127,
+    116,
+    156,
+    246,
+    81,
     96,
     229,
     193,
     245
   ],
-  "historical_partial153_excluded": true,
-  "last_maintenance_batch": "heartbeat_maintenance_20261025_1229",
-  "latest_new_terminal_count": 5,
-  "namespace": "strict_no_bash20_v1",
+  "old_first20_fully_closed": 19,
   "shared_or_other_user_paths_touched": false,
-  "version": "no-bash80-old-first20-pool-maintenance-summary-v1"
+  "version": "no-bash80-scoped-terminal-pool-maintenance-summary-v2"
 }
