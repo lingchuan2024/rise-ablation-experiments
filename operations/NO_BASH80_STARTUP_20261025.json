@@ -1,0 +1,133 @@
+{
+  "active_query_ids": [
+    288,
+    293,
+    317,
+    366
+  ],
+  "actual_api_ledger_records": {
+    "qid_278": {
+      "last_unix": 1792901501.828609,
+      "records": 13,
+      "successful_records": 13
+    },
+    "qid_280": {
+      "last_unix": 1792901658.1589608,
+      "records": 20,
+      "successful_records": 20
+    },
+    "qid_288": {
+      "last_unix": 1792902088.3690224,
+      "records": 28,
+      "successful_records": 28
+    },
+    "qid_293": {
+      "last_unix": 1792901985.398741,
+      "records": 22,
+      "successful_records": 22
+    },
+    "qid_310": {
+      "last_unix": 1792901855.3190193,
+      "records": 11,
+      "successful_records": 11
+    },
+    "qid_317": {
+      "last_unix": 1792902067.7059197,
+      "records": 13,
+      "successful_records": 13
+    },
+    "qid_366": {
+      "last_unix": 1792902072.4340165,
+      "records": 4,
+      "successful_records": 4
+    }
+  },
+  "arm": "no_bash",
+  "automation": {
+    "id": "no-bash-80",
+    "interval_minutes": 30,
+    "shutdown_after_verified_completion": true,
+    "status": "ACTIVE"
+  },
+  "checked_unix": 1792902110.9211214,
+  "closed_old_first20_pool_backups": [
+    209,
+    228,
+    256,
+    239,
+    270,
+    251,
+    122,
+    161,
+    70
+  ],
+  "config_sha256": "4066e6ae83c5427924a3eb3577eb5c5621a4372b5be673852667b64fe8433c1a",
+  "configuration_unchanged": true,
+  "date": "2026-10-25",
+  "docker_correction": {
+    "extra_local_unshare_probe_not_an_original_gate": true,
+    "original_endpoint_healthy": true,
+    "original_image_restored": true,
+    "original_managed_docker_version": "26.1.3",
+    "original_native_tool_bytes_verified": true,
+    "previous_diagnosis_superseded": true,
+    "prior_evidence_preserved": true,
+    "root_cause": "Administrative checks omitted frozen DOCKER_HOST and diagnosed the wrong default endpoint",
+    "security_permissions_changed_for_fix": false
+  },
+  "experiment_complete": false,
+  "frozen_source_map_sha256": "a5a3e172a1581ac95d24cec857a187e14a87b4e21af0cbce366916e6fa3cc5a1",
+  "local_archive_bytes": 3612307275,
+  "manifest_sha256": "a651827502c475394665c35f121fa7d687ee4469979e9dc60ace682b441433b4",
+  "max_turns": 100,
+  "new_dispatches": 7,
+  "new_natural_terminal_query_ids": [
+    278,
+    280,
+    310
+  ],
+  "new_natural_terminals": 3,
+  "old153_partial_not_retried": true,
+  "pending_count": 73,
+  "phase": "running_no_bash80",
+  "question_concurrency": 4,
+  "raw_answers_trajectories_credentials_committed": false,
+  "reused_first20": 20,
+  "selection": "Fixed B100 positions21-100; completed first20 retained",
+  "service_identity": {
+    "boot_id": "73ec798a-39fc-4633-8bd4-85032c6dd3db",
+    "pid": 128,
+    "process_start_ticks": 1425703206
+  },
+  "storage_at_checkpoint": {
+    "free_bytes": 85759279104,
+    "free_inodes": 61756,
+    "min_free_bytes": 10737418240,
+    "min_free_inodes": 40000,
+    "poll_seconds": 30,
+    "ready": true
+  },
+  "successful_new_model_requests": 111,
+  "target_new_questions": 80,
+  "validation": {
+    "all_passed": true,
+    "live_preflight_passed": true,
+    "maintenance_tests_including_frozen_core": 25,
+    "parent20_files_verified": 143,
+    "scheduler_tests": 23,
+    "snapshot_tests": 11,
+    "source_files_frozen": 135,
+    "standalone_restore_test_passed": true
+  },
+  "version": "strict-no-bash80-startup-administrative-summary-v2",
+  "wall_clock_seconds": 3600,
+  "worker_identity": {
+    "boot_id": "73ec798a-39fc-4633-8bd4-85032c6dd3db",
+    "driver_sha256": "26c04741b97554dfefffdde1ad633dcb81c3a15b5dee1c76ca87ce2e1e0bdd08",
+    "entrypoint": "operations.no_bash80_suite",
+    "pid": 234,
+    "proc_start_ticks": 1425713213,
+    "started_unix": 1792900643.4350634
+  },
+  "worker_started": true
+}
