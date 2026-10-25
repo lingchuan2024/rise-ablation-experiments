@@ -1,7 +1,7 @@
 {
   "active_query_ids": [
-    1085,
-    1126
+    1196,
+    1233
   ],
   "actual_api_ledger_records": {
     "qid_1000": {
@@ -45,9 +45,9 @@
       "successful_records": 46
     },
     "qid_1085": {
-      "last_unix": 1792930498.292588,
-      "records": 35,
-      "successful_records": 35
+      "last_unix": 1792930979.9638815,
+      "records": 41,
+      "successful_records": 41
     },
     "qid_1101": {
       "last_unix": 1792928472.9130588,
@@ -60,9 +60,49 @@
       "successful_records": 12
     },
     "qid_1126": {
-      "last_unix": 1792930490.401353,
-      "records": 30,
-      "successful_records": 30
+      "last_unix": 1792931868.9762948,
+      "records": 52,
+      "successful_records": 52
+    },
+    "qid_1138": {
+      "last_unix": 1792931579.4757478,
+      "records": 10,
+      "successful_records": 10
+    },
+    "qid_1163": {
+      "last_unix": 1792931568.0472188,
+      "records": 7,
+      "successful_records": 7
+    },
+    "qid_1172": {
+      "last_unix": 1792931893.6733935,
+      "records": 14,
+      "successful_records": 14
+    },
+    "qid_1193": {
+      "last_unix": 1792933018.8000312,
+      "records": 36,
+      "successful_records": 36
+    },
+    "qid_1196": {
+      "last_unix": 1792933607.0096712,
+      "records": 32,
+      "successful_records": 32
+    },
+    "qid_1227": {
+      "last_unix": 1792932672.0454535,
+      "records": 15,
+      "successful_records": 15
+    },
+    "qid_1233": {
+      "last_unix": 1792933624.3448713,
+      "records": 23,
+      "successful_records": 23
+    },
+    "qid_1239": {
+      "last_unix": 1792933474.6202598,
+      "records": 5,
+      "successful_records": 5
     },
     "qid_278": {
       "last_unix": 1792901501.828609,
@@ -372,7 +412,7 @@
     "shutdown_after_verified_completion": true,
     "status": "ACTIVE"
   },
-  "checked_unix": 1792930599.0365894,
+  "checked_unix": 1792933682.760349,
   "closed_new80_terminal_pool_backups": [
     288,
     376,
@@ -426,7 +466,18 @@
     801,
     563,
     761,
-    599
+    599,
+    1082,
+    996,
+    1034,
+    922,
+    981,
+    1000,
+    1038,
+    814,
+    1065,
+    978,
+    980
   ],
   "closed_old_first20_pool_backups": [
     209,
@@ -465,10 +516,10 @@
   },
   "experiment_complete": false,
   "frozen_source_map_sha256": "a5a3e172a1581ac95d24cec857a187e14a87b4e21af0cbce366916e6fa3cc5a1",
-  "local_archive_bytes": 19295224379,
+  "local_archive_bytes": 22889536848,
   "manifest_sha256": "a651827502c475394665c35f121fa7d687ee4469979e9dc60ace682b441433b4",
   "max_turns": 100,
-  "new_dispatches": 72,
+  "new_dispatches": 80,
   "new_natural_terminal_query_ids": [
     278,
     280,
@@ -538,13 +589,21 @@
     1065,
     1071,
     1082,
+    1085,
     1101,
-    1117
+    1117,
+    1126,
+    1138,
+    1163,
+    1172,
+    1193,
+    1227,
+    1239
   ],
-  "new_natural_terminals": 70,
+  "new_natural_terminals": 78,
   "old153_partial_not_retried": true,
-  "pending_count": 8,
-  "phase": "waiting_storage",
+  "pending_count": 0,
+  "phase": "running_no_bash80",
   "question_concurrency": 4,
   "raw_answers_trajectories_credentials_committed": false,
   "reused_first20": 20,
@@ -555,14 +614,14 @@
     "process_start_ticks": 1425703206
   },
   "storage_at_checkpoint": {
-    "free_bytes": 67780845568,
-    "free_inodes": 32329,
+    "free_bytes": 64080744448,
+    "free_inodes": 72218,
     "min_free_bytes": 10737418240,
     "min_free_inodes": 40000,
     "poll_seconds": 30,
-    "ready": false
+    "ready": true
   },
-  "successful_new_model_requests": 1733,
+  "successful_new_model_requests": 1903,
   "target_new_questions": 80,
   "validation": {
     "all_passed": true,
