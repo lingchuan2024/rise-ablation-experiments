@@ -1,9 +1,9 @@
 {
   "active_query_ids": [
-    473,
-    486,
-    507,
-    512
+    525,
+    692,
+    707,
+    725
   ],
   "actual_api_ledger_records": {
     "qid_278": {
@@ -97,14 +97,14 @@
       "successful_records": 19
     },
     "qid_473": {
-      "last_unix": 1792908408.6823783,
-      "records": 41,
-      "successful_records": 41
+      "last_unix": 1792910094.1398652,
+      "records": 59,
+      "successful_records": 58
     },
     "qid_486": {
-      "last_unix": 1792908458.666129,
-      "records": 24,
-      "successful_records": 24
+      "last_unix": 1792909587.006605,
+      "records": 32,
+      "successful_records": 32
     },
     "qid_500": {
       "last_unix": 1792908280.418248,
@@ -112,12 +112,112 @@
       "successful_records": 13
     },
     "qid_507": {
-      "last_unix": 1792908383.4046125,
+      "last_unix": 1792911177.7863388,
+      "records": 44,
+      "successful_records": 43
+    },
+    "qid_512": {
+      "last_unix": 1792908897.4959354,
+      "records": 6,
+      "successful_records": 6
+    },
+    "qid_513": {
+      "last_unix": 1792911309.9499943,
+      "records": 30,
+      "successful_records": 30
+    },
+    "qid_515": {
+      "last_unix": 1792910649.9081156,
+      "records": 18,
+      "successful_records": 18
+    },
+    "qid_519": {
+      "last_unix": 1792910898.2005377,
+      "records": 20,
+      "successful_records": 20
+    },
+    "qid_525": {
+      "last_unix": 1792914060.7667377,
+      "records": 53,
+      "successful_records": 53
+    },
+    "qid_532": {
+      "last_unix": 1792912690.3892806,
+      "records": 42,
+      "successful_records": 42
+    },
+    "qid_540": {
+      "last_unix": 1792911499.2834756,
+      "records": 11,
+      "successful_records": 11
+    },
+    "qid_549": {
+      "last_unix": 1792911732.7640061,
+      "records": 11,
+      "successful_records": 11
+    },
+    "qid_563": {
+      "last_unix": 1792911620.994887,
+      "records": 3,
+      "successful_records": 3
+    },
+    "qid_571": {
+      "last_unix": 1792912088.6078978,
+      "records": 12,
+      "successful_records": 12
+    },
+    "qid_587": {
+      "last_unix": 1792912769.850028,
+      "records": 21,
+      "successful_records": 21
+    },
+    "qid_592": {
+      "last_unix": 1792913616.9169443,
+      "records": 29,
+      "successful_records": 29
+    },
+    "qid_595": {
+      "last_unix": 1792913166.6427517,
+      "records": 9,
+      "successful_records": 9
+    },
+    "qid_599": {
+      "last_unix": 1792913146.3769548,
+      "records": 10,
+      "successful_records": 10
+    },
+    "qid_607": {
+      "last_unix": 1792913363.4531271,
+      "records": 5,
+      "successful_records": 5
+    },
+    "qid_624": {
+      "last_unix": 1792913785.7731676,
       "records": 13,
       "successful_records": 13
     },
-    "qid_512": {
-      "last_unix": 1792908448.7433233,
+    "qid_627": {
+      "last_unix": 1792913726.5772274,
+      "records": 7,
+      "successful_records": 7
+    },
+    "qid_681": {
+      "last_unix": 1792913996.8348222,
+      "records": 7,
+      "successful_records": 7
+    },
+    "qid_692": {
+      "last_unix": 1792914074.4153073,
+      "records": 7,
+      "successful_records": 7
+    },
+    "qid_707": {
+      "last_unix": 1792914111.682448,
+      "records": 10,
+      "successful_records": 10
+    },
+    "qid_725": {
+      "last_unix": 1792914102.939233,
       "records": 1,
       "successful_records": 1
     }
@@ -129,7 +229,7 @@
     "shutdown_after_verified_completion": true,
     "status": "ACTIVE"
   },
-  "checked_unix": 1792908530.9082735,
+  "checked_unix": 1792914139.014958,
   "closed_new80_terminal_pool_backups": [
     288,
     376,
@@ -139,7 +239,23 @@
     366,
     393,
     387,
-    280
+    280,
+    473,
+    515,
+    418,
+    454,
+    486,
+    436,
+    428,
+    500,
+    420,
+    317,
+    392,
+    310,
+    411,
+    512,
+    513,
+    507
   ],
   "closed_old_first20_pool_backups": [
     209,
@@ -178,10 +294,10 @@
   },
   "experiment_complete": false,
   "frozen_source_map_sha256": "a5a3e172a1581ac95d24cec857a187e14a87b4e21af0cbce366916e6fa3cc5a1",
-  "local_archive_bytes": 8290928616,
+  "local_archive_bytes": 11916176770,
   "manifest_sha256": "a651827502c475394665c35f121fa7d687ee4469979e9dc60ace682b441433b4",
   "max_turns": 100,
-  "new_dispatches": 23,
+  "new_dispatches": 43,
   "new_natural_terminal_query_ids": [
     278,
     280,
@@ -201,11 +317,31 @@
     428,
     436,
     454,
-    500
+    473,
+    486,
+    500,
+    507,
+    512,
+    513,
+    515,
+    519,
+    532,
+    540,
+    549,
+    563,
+    571,
+    587,
+    592,
+    595,
+    599,
+    607,
+    624,
+    627,
+    681
   ],
-  "new_natural_terminals": 19,
+  "new_natural_terminals": 39,
   "old153_partial_not_retried": true,
-  "pending_count": 57,
+  "pending_count": 37,
   "phase": "running_no_bash80",
   "question_concurrency": 4,
   "raw_answers_trajectories_credentials_committed": false,
@@ -217,14 +353,14 @@
     "process_start_ticks": 1425703206
   },
   "storage_at_checkpoint": {
-    "free_bytes": 80578592768,
-    "free_inodes": 74664,
+    "free_bytes": 76407611392,
+    "free_inodes": 60197,
     "min_free_bytes": 10737418240,
     "min_free_inodes": 40000,
     "poll_seconds": 30,
     "ready": true
   },
-  "successful_new_model_requests": 528,
+  "successful_new_model_requests": 907,
   "target_new_questions": 80,
   "validation": {
     "all_passed": true,
