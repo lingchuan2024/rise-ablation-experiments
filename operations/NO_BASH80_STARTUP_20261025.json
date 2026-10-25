@@ -1,9 +1,9 @@
 {
   "active_query_ids": [
     288,
-    293,
-    317,
-    366
+    366,
+    370,
+    376
   ],
   "actual_api_ledger_records": {
     "qid_278": {
@@ -17,14 +17,14 @@
       "successful_records": 20
     },
     "qid_288": {
-      "last_unix": 1792902088.3690224,
-      "records": 28,
-      "successful_records": 28
+      "last_unix": 1792903213.0485334,
+      "records": 48,
+      "successful_records": 48
     },
     "qid_293": {
-      "last_unix": 1792901985.398741,
-      "records": 22,
-      "successful_records": 22
+      "last_unix": 1792902338.753925,
+      "records": 27,
+      "successful_records": 27
     },
     "qid_310": {
       "last_unix": 1792901855.3190193,
@@ -32,14 +32,24 @@
       "successful_records": 11
     },
     "qid_317": {
-      "last_unix": 1792902067.7059197,
-      "records": 13,
-      "successful_records": 13
+      "last_unix": 1792902553.2432106,
+      "records": 26,
+      "successful_records": 26
     },
     "qid_366": {
-      "last_unix": 1792902072.4340165,
-      "records": 4,
-      "successful_records": 4
+      "last_unix": 1792903221.5756807,
+      "records": 26,
+      "successful_records": 26
+    },
+    "qid_370": {
+      "last_unix": 1792903230.0287688,
+      "records": 22,
+      "successful_records": 22
+    },
+    "qid_376": {
+      "last_unix": 1792903192.7832727,
+      "records": 9,
+      "successful_records": 9
     }
   },
   "arm": "no_bash",
@@ -49,7 +59,7 @@
     "shutdown_after_verified_completion": true,
     "status": "ACTIVE"
   },
-  "checked_unix": 1792902110.9211214,
+  "checked_unix": 1792903484.6824718,
   "closed_old_first20_pool_backups": [
     209,
     228,
@@ -59,7 +69,13 @@
     251,
     122,
     161,
-    70
+    70,
+    132,
+    127,
+    116,
+    156,
+    246,
+    81
   ],
   "config_sha256": "4066e6ae83c5427924a3eb3577eb5c5621a4372b5be673852667b64fe8433c1a",
   "configuration_unchanged": true,
@@ -77,18 +93,20 @@
   },
   "experiment_complete": false,
   "frozen_source_map_sha256": "a5a3e172a1581ac95d24cec857a187e14a87b4e21af0cbce366916e6fa3cc5a1",
-  "local_archive_bytes": 3612307275,
+  "local_archive_bytes": 5047735982,
   "manifest_sha256": "a651827502c475394665c35f121fa7d687ee4469979e9dc60ace682b441433b4",
   "max_turns": 100,
-  "new_dispatches": 7,
+  "new_dispatches": 9,
   "new_natural_terminal_query_ids": [
     278,
     280,
-    310
+    293,
+    310,
+    317
   ],
-  "new_natural_terminals": 3,
+  "new_natural_terminals": 5,
   "old153_partial_not_retried": true,
-  "pending_count": 73,
+  "pending_count": 71,
   "phase": "running_no_bash80",
   "question_concurrency": 4,
   "raw_answers_trajectories_credentials_committed": false,
@@ -100,14 +118,14 @@
     "process_start_ticks": 1425703206
   },
   "storage_at_checkpoint": {
-    "free_bytes": 85759279104,
-    "free_inodes": 61756,
+    "free_bytes": 84243537920,
+    "free_inodes": 76758,
     "min_free_bytes": 10737418240,
     "min_free_inodes": 40000,
     "poll_seconds": 30,
     "ready": true
   },
-  "successful_new_model_requests": 111,
+  "successful_new_model_requests": 202,
   "target_new_questions": 80,
   "validation": {
     "all_passed": true,
