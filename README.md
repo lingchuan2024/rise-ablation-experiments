@@ -74,3 +74,5 @@ python -m evaluation.uniform_judge --help
 `runs/`、`reports/`、工作池、模型、语料、索引、归档与凭据均默认忽略；本次不新增上传轨迹、公开终答集合、评分私有映射或逐题标签。仓库已存在两份冻结研究 fixture：`data/queries_100.jsonl` 和 `data/historical_v14_evaluation.json`，包含基准题目/参考答案及历史评估内容，使用时需遵守相应数据条件。API key 只通过本地环境或隐藏输入提供，禁止写入命令参数、README、配置或 Git。
 
 历史根 README 保留在 [docs/HISTORICAL_README.md](docs/HISTORICAL_README.md)，其“尚未运行”等描述仅对应当时阶段；当前范围与结果以本页为准。上游许可证与来源见 [NOTICE.md](NOTICE.md) 和 [code/LICENSE](code/LICENSE)。
+
+公开前对所有远端分支、标签与 PR 历史进行了凭据检查，范围、误报分类及维护要求见[公开审计记录](docs/PUBLICATION_AUDIT_20261026.md)。
