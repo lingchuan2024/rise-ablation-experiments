@@ -1,6 +1,6 @@
 # 从新版 strict B100 派生的三组消融
 
-本目录交付提示词、工具接口、独立运行封装、冻结对照复用检查、部署epoch和统一盲评代码。**本轮三组共300次求解（其中30次为pilot）尚未运行。** 自动重排的独立20题探索性试跑已完成，结果与备份关机记录见[试跑报告](AUTO20_REPORT_20261023.md)。离线通过不等于当前服务器已通过本轮live preflight。
+本目录保留原始 strict 三组各100题的协议与封装。后续实际执行范围为 auto_rerank 100题、search_paging 20题、no_bash 100题；原始三组各100的300次方案未全部完成。当前四组统一评分及代码导航见[根 README](../README.md)，实际续跑/恢复见 [operations](../operations/README.md)。下文“单独试跑20题”及其旧评分是历史阶段记录，不是最新统一评分。离线通过不等于当前服务器已通过 live-preflight。
 
 离线验证共195项通过（新套件110、冻结strict流程75、原工具10）；旧116个冻结源码文件与B100身份完全相同。可查[验证记录](OFFLINE_VERIFICATION.json)及[逐组提示词差异](prompt_audit/PROMPT_DIFF.md)。
 

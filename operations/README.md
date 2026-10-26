@@ -1,3 +1,16 @@
+# 实际执行与恢复代码导航
+
+当前四组范围和统一结果以[根 README](../README.md)为准。这里保存行政调度与完整性保护代码，不改冻结求解器。
+
+- `continuation_suite.py` / `recovery_suite.py`：自动重排续跑与基础设施恢复、分页20题。
+- `no_bash20_suite.py` / `no_bash80_suite.py`：固定100题的分阶段执行，已完成终态只读复用。
+- `no_bash80_workspace_maintenance.py`：按 namespace+arm+qid 绑定终态池，完整备份及本机全成员验证后才允许删除重复池。
+- `no_bash80_snapshot.py`：白名单快照导出、独立提取及本机验证；不收录权重、语料、凭据或重复工作池。
+
+所有 `status`/恢复均需核验真实进程身份和原始账本，不以 PID 或旧计数代替。调度、维护与资源扫描共享互斥门禁，尾批禁止清理。原硬门禁仅暂停新派发，不停止已有题。以下各节是按时间保留的历史操作说明；旧阶段题数不能覆盖最新总账，禁止直接重跑已结束的临时编排。
+
+---
+
 # Continue automatic remaining80, then snippet paging first20
 
 `continuation_suite.py` is an administrative scheduler for the 2026-10-23
