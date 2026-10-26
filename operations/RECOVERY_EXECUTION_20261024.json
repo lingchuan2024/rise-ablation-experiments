@@ -1,0 +1,135 @@
+{
+  "version": "strict-recovery-execution-record-v1",
+  "status": "running_auto80",
+  "recorded_unix": 1792772064.350712,
+  "model": "Qwen3.5-35B-A3B",
+  "concurrency": 4,
+  "frozen_experiment_commit": "9be44bb383a4d11e345f9abd96f972dddeed7e10",
+  "frozen_source_files": 135,
+  "original_continuation_manifest_sha256": "0d82c408352829635682ae80b4361f9de43b9b2bb8ef322439afdb50f56ab3da",
+  "recovery_plan_file_sha256": "c26698f9a32e2d864cb7a694fc0ca0140babc5f5e5f2c4dd5d19094224bfd0bb",
+  "protocol_amendment": true,
+  "natural_terminals_reused": [
+    278,
+    280,
+    288
+  ],
+  "already_returned_final_recovered": 310,
+  "observed_final_file_sha256": "4e72c7fc133f2961562fc6ca1131ae2019298ec015c3848f91b17031e3b83465",
+  "restart_remaining_budget": [
+    {
+      "query_id": 293,
+      "calls_charged": 23,
+      "elapsed_seconds_charged": 1713,
+      "remaining_max_turns": 77,
+      "remaining_wall_clock_seconds": 1887,
+      "known_input_tokens": 574007,
+      "known_output_tokens": 5740,
+      "possible_inflight_call_upper_bound": 1
+    },
+    {
+      "query_id": 317,
+      "calls_charged": 8,
+      "elapsed_seconds_charged": 991,
+      "remaining_max_turns": 92,
+      "remaining_wall_clock_seconds": 2609,
+      "known_input_tokens": 84225,
+      "known_output_tokens": 908,
+      "possible_inflight_call_upper_bound": 1
+    },
+    {
+      "query_id": 366,
+      "calls_charged": 2,
+      "elapsed_seconds_charged": 872,
+      "remaining_max_turns": 98,
+      "remaining_wall_clock_seconds": 2728,
+      "known_input_tokens": 1909,
+      "known_output_tokens": 287,
+      "possible_inflight_call_upper_bound": 1
+    }
+  ],
+  "new_solver_invocations_planned": 96,
+  "new_outcomes_planned": 97,
+  "existing_automatic_first20_reused": 20,
+  "historical_control100_reused": true,
+  "stage_order": [
+    "automatic_remaining80_resolved_including_references_and_recovery",
+    "snippet_paging_first20"
+  ],
+  "completion_expected": {
+    "target_coverage": 100,
+    "validated_natural_terminals_including_reused3": 99,
+    "materialized_observed_final": 1,
+    "merged_automatic_questions": 100,
+    "search_paging_questions": 20,
+    "public_final_records_with_control": 220
+  },
+  "solver_settings_changed": "Only the three explicitly marked recovery attempts have reduced max_turns and wall_clock_seconds; model, prompts, tools, sampling, per-call output cap, candidate pools and C4 are unchanged. No score-based choice is used.",
+  "analysis_policy": "Report recovery exceptions and all known prior usage; unknown in-flight usage remains an upper-bound uncertainty. Do not label the amended result as an unchanged single-attempt protocol. Include paired sensitivity results excluding the four interrupted question IDs.",
+  "storage_admission": {
+    "min_free_inodes": 40000,
+    "min_free_bytes": 10737418240,
+    "pause_new_dispatch_only": true,
+    "statvfs_matches_observed_df_inode_counts": true,
+    "all_possible_independent_quotas_excluded": false
+  },
+  "private_trajectory_files_committed": false,
+  "worker_started": true,
+  "shutdown_performed": false,
+  "worker_launched_at_utc": "2026-10-23T16:18:32.624523+00:00",
+  "administrative_commit": "24ac5ab",
+  "administrative_source_sha256": {
+    "operations/recovery_suite.py": "1a32aa4d0254541be3bf3fbd523d3ef239693eaf752acdd78564d4270f708d56",
+    "operations/recover_observed_final.py": "0aaab91e564fca91b59f282cd99a93c1fd22d21c431372a8b5912ae693480cde",
+    "operations/terminal_workspace_maintenance.py": "f50a9fd4d53fdf34d1b4bd752a902cabd6d292bdbf28a2af5155de94868fbf81",
+    "operations/recovery_snapshot.py": "9f80b21527ff367cd5581508874c0837a1a990ffef6cc2257721728bc29f3b88"
+  },
+  "available_inodes_after_cleanup": 129275,
+  "available_bytes_after_cleanup": 97994158080,
+  "offline_preflight_passed": true,
+  "completion_heartbeat_id": "80-20",
+  "validation": {
+    "recovery_tests_passed": 14,
+    "existing_continuation_tests_passed": 14,
+    "public_final_projection_tests_passed": 9,
+    "workspace_maintenance_tests_passed": 18,
+    "frozen_135_source_hashes_unchanged": true,
+    "recovery_snapshot_tests_passed": 10,
+    "snapshot_restore_after_deleted_simulated_server_passed": true
+  },
+  "recovery_manifest_sha256": "85ea1642f45d659026b4a081818c896020fbdcbd9eed1d0eef2d9f7d9740f8ca",
+  "recovery_manifest_file_sha256": "9aeadb7e10afb89e18ccf0bc0c29d78e7caddcf5b85ff97b84cb4b4cc7b2e583",
+  "live_preflight": {
+    "passed": true,
+    "receipt_sha256": "603aea365d4aa42ada0a3cde2daaf9ff80f6b242bd240c265e0369397e6c83ef",
+    "probe_passed": {
+      "auto_rerank": true,
+      "search_paging": true
+    }
+  },
+  "observed_at_utc": "2026-10-23T16:28:58.703274+00:00",
+  "observed_active_auto_query_ids": [
+    293,
+    317,
+    366,
+    370
+  ],
+  "observed_new_terminal_count": 0,
+  "observed_materialized_final_count": 1,
+  "observed_reused_continuation_terminal_count": 3,
+  "observed_available_inodes": 126009,
+  "recovery_snapshot_deployed_at_unix": 1792773452.7151792,
+  "recovery_snapshot_deployment_receipt": "operations/recovery_snapshot_deployment.json",
+  "snapshot_expected_counts": {
+    "target_coverage": 100,
+    "validated_natural_terminals": 99,
+    "new_natural_terminals": 96,
+    "reused_continuation_natural_terminals": 3,
+    "materialized_observed_finals": 1,
+    "new_outcomes": 97,
+    "reused_auto20_rows": 20,
+    "merged_auto_rerank_rows": 100,
+    "search_paging_rows": 20,
+    "public_finals": 220
+  }
+}

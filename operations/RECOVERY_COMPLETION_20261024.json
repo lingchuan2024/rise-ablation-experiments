@@ -1,0 +1,57 @@
+{
+  "version": "strict-recovery-backup-and-shutdown-receipt-v1",
+  "observed_beijing": "2026-10-24T13:41:21.669618+08:00",
+  "target_coverage": 100,
+  "natural_terminal_accounting": {
+    "new": 96,
+    "reused": 3,
+    "total": 99
+  },
+  "materialized_observed_finals": 1,
+  "new_outcomes": 97,
+  "reused_auto20_rows": 20,
+  "merged_auto_rerank_rows": 100,
+  "search_paging_rows": 20,
+  "public_finals": 220,
+  "source_pins_verified": 53,
+  "snapshot": {
+    "archive_sha256": "1d5c9c0ae2e6d5c34a6caaea0a607d3195e9d151a8792570b4a2c5a699f54e08",
+    "archive_bytes": 641212811,
+    "receipt_file_sha256": "e0fd998e0b7dad301746130f8eaa5e0b68b414deaa577a3c086f340ba49a44a6",
+    "receipt_bytes": 264776,
+    "files": 1256,
+    "local_full_verification_passed": true
+  },
+  "shutdown": {
+    "actual_console_state": "已关机",
+    "worker_exited": true,
+    "three_locks_free": true,
+    "system_disk_preserved": true,
+    "mounted_storage_preserved": true,
+    "instance_deleted": false,
+    "storage_deleted": false
+  },
+  "workspace_backups": {
+    "count": 64,
+    "auto_rerank": 48,
+    "search_paging": 16,
+    "small_receipts_in_snapshot": 192,
+    "separate_large_archives_preserved": true
+  },
+  "local_evidence_directory": "reports/strict_recovery_v1/downloaded/final_20261024_132748",
+  "local_shutdown_receipt": {
+    "file": "shutdown_receipt.json",
+    "sha256": "c27febacfc3eaee983ea21eff0100efc4efae09f8b0c13e94c89307c91df94c7",
+    "bytes": 3310
+  },
+  "accuracy_review_completed": false,
+  "coverage_is_not_accuracy": true,
+  "infrastructure_exception_qids": [
+    293,
+    310,
+    317,
+    366
+  ],
+  "sensitivity_analysis_excluding_infrastructure_exceptions_required": true,
+  "raw_artifacts_committed": false
+}

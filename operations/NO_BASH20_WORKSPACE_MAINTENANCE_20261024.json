@@ -1,0 +1,95 @@
+{
+  "version": "strict-no-bash20-workspace-maintenance-summary-v1",
+  "date": "2026-10-24",
+  "namespace": "strict_no_bash20_v1",
+  "arm": "no_bash",
+  "human_scope_authorized": true,
+  "authorization": "Explicit approval to back up and fully verify completed no_bash20 pools locally, then remove only their two repeated workspace roots until sufficient capacity; preserve active questions, compact artifacts and others.",
+  "administrative_files": {
+    "no_bash20_workspace_maintenance.py": {
+      "sha256": "4db7259a346e68a7c76879ff77e61c3334f5328b7fb23847024cda86b9784997",
+      "bytes": 13407
+    },
+    "test_no_bash20_workspace_maintenance.py": {
+      "sha256": "14702cdf8a70e9031aadfe09138fb07de584d9001eb312d24d547781f2610ad0",
+      "bytes": 15318
+    }
+  },
+  "tests": {
+    "new_safety": 22,
+    "frozen_core_regression": 18,
+    "total": 40,
+    "all_passed": true
+  },
+  "frozen_core_sha256": "f50a9fd4d53fdf34d1b4bd752a902cabd6d292bdbf28a2af5155de94868fbf81",
+  "experiment_settings_modified": false,
+  "old_recovery_closed_backups": 96,
+  "new_verified_workspace_archives": 1,
+  "new_fully_deleted_pools": 0,
+  "new_partial_maintenance_pools": 1,
+  "active_questions_cleaned": false,
+  "other_projects_touched": false,
+  "shared_resource_paths_deleted": false,
+  "raw_artifacts_committed": false,
+  "entries": [
+    {
+      "query_id": 153,
+      "backup_directory": "reports/strict_no_bash20_v1/workspace_backups/no_bash_qid153_20261024_1749",
+      "archive": {
+        "bytes": 438584111,
+        "sha256": "b40f6cb3b32f9553bd19b04bec04402a612dbfd7b87603584ede8d7918ba1c11"
+      },
+      "archive_and_all_members_verified": true,
+      "exported_files": 19068,
+      "exported_directories": 8960,
+      "files_removed": 19068,
+      "directories_removed": 7556,
+      "counts_are_removed_paths_not_net_free_inodes": true,
+      "deleted": false,
+      "partial_maintenance": true,
+      "stop_reason": "Actual evidence showed all pending questions dispatched; live deletion guard stopped before the next rmdir.",
+      "must_not_retry_with_original_receipt": true,
+      "formal_artifacts_after_match": true,
+      "full_local_archive_preserved": true,
+      "remote_archive_preserved": true,
+      "raw_small_receipts_mirrored_to_final_snapshot_operations": true,
+      "small_receipts": {
+        "receipt.json": {
+          "sha256": "9268d4d067c5abed914e9c58f3c295543cddc0e13e4eabb6351f4a436521dc2b",
+          "bytes": 2074
+        },
+        "local_verification.json": {
+          "sha256": "7e1e6e334f1c59f8c8069770be2baf5edaa05383e7f82b1309dfd2d3c7d7aab4",
+          "bytes": 2189
+        },
+        "download_receipt.json": {
+          "sha256": "d6f4a4b7033d7a76478769576138e78b25a88a02fa390a2bf503e5539afd9ee1",
+          "bytes": 867
+        },
+        "root_post_maintenance_reaudit.json": {
+          "sha256": "3afb89f0d2c96c5910d8532cad345cdd92d660a723f6f7e5e940ff1aadf9a69a",
+          "bytes": 912
+        },
+        "remote_operations_mirror_receipt.json": {
+          "sha256": "37459d8bf23f4bcadbd40345ac3337c998968745646a9b492a4c77dfdb939357",
+          "bytes": 1545
+        },
+        "maintenance_interrupted_1792835684227006913.json": {
+          "sha256": "2b0b98efb9f231f2ba9bf20fd333d0d1152537cd8c35aee425b1c8ae136e9c58",
+          "bytes": 1896
+        }
+      }
+    }
+  ],
+  "monitoring_receipt": "reports/strict_no_bash20_v1/monitoring/post_authorized_maintenance_153_final.json",
+  "monitoring_sha256": "e2d8447b042a100351f5cc4cd9c480c2d826a583ff95f153fb56048734207ca8",
+  "latest_completed": 17,
+  "latest_active": [
+    251,
+    256,
+    270
+  ],
+  "latest_pending": [],
+  "checked_unix": 1792835827.2461007,
+  "all_workspace_cleanup_stopped_at_tail": true
+}

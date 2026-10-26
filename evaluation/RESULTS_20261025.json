@@ -1,0 +1,157 @@
+{
+  "version": "uniform-deepseek320-final-v1",
+  "created_utc": "2026-10-25T14:34:00.313360+00:00",
+  "requested_model": "deepseek-v4.1-flash",
+  "returned_models": {
+    "deepseek-v4-1-flash-261017": 201
+  },
+  "review_method": "Two uniform arm/qid-blinded requests per question, independently shuffled answer order; third fresh request for any disagreement/uncertainty question, no prior labels shown; per-answer majority. Same model throughout, not human adjudication and not independent model families.",
+  "rubric_id": "strict-public-final-gold-v1",
+  "reviewed_finals": 320,
+  "question_count": 100,
+  "two_full_passes": true,
+  "third_pass_questions": 1,
+  "groups": {
+    "v14": {
+      "correct": 61,
+      "incorrect": 39,
+      "total": 100,
+      "accuracy_percent": 61.0,
+      "wilson95_percent": [
+        51.203017045840994,
+        69.98312599360536
+      ],
+      "empty_finals": 15,
+      "nonempty_incorrect": 24,
+      "first_second_disagreements": 0,
+      "flagged_cases": 1
+    },
+    "no_bash": {
+      "correct": 61,
+      "incorrect": 39,
+      "total": 100,
+      "accuracy_percent": 61.0,
+      "wilson95_percent": [
+        51.203017045840994,
+        69.98312599360536
+      ],
+      "empty_finals": 16,
+      "nonempty_incorrect": 23,
+      "first_second_disagreements": 0,
+      "flagged_cases": 0
+    },
+    "auto_rerank": {
+      "correct": 68,
+      "incorrect": 32,
+      "total": 100,
+      "accuracy_percent": 68.0,
+      "wilson95_percent": [
+        58.33738138954789,
+        76.3308526750007
+      ],
+      "empty_finals": 21,
+      "nonempty_incorrect": 11,
+      "first_second_disagreements": 0,
+      "flagged_cases": 1
+    },
+    "search_paging": {
+      "correct": 7,
+      "incorrect": 13,
+      "total": 20,
+      "accuracy_percent": 35.0,
+      "wilson95_percent": [
+        18.11918241010855,
+        56.71457233147581
+      ],
+      "empty_finals": 9,
+      "nonempty_incorrect": 4,
+      "first_second_disagreements": 0,
+      "flagged_cases": 1
+    }
+  },
+  "paired_comparisons_vs_v14": [
+    {
+      "first": "auto_rerank",
+      "second": "v14",
+      "paired_questions": 100,
+      "first_correct": 68,
+      "second_correct": 61,
+      "both_correct": 54,
+      "first_only_correct": 14,
+      "second_only_correct": 7,
+      "both_incorrect": 25,
+      "delta_percentage_points": 7.0,
+      "mcnemar_exact_two_sided": 0.18924713134765625,
+      "holm_adjusted_p_three_vs_v14": 0.5677413940429688
+    },
+    {
+      "first": "search_paging",
+      "second": "v14",
+      "paired_questions": 20,
+      "first_correct": 7,
+      "second_correct": 11,
+      "both_correct": 5,
+      "first_only_correct": 2,
+      "second_only_correct": 6,
+      "both_incorrect": 7,
+      "delta_percentage_points": -20.0,
+      "mcnemar_exact_two_sided": 0.2890625,
+      "holm_adjusted_p_three_vs_v14": 0.578125
+    },
+    {
+      "first": "no_bash",
+      "second": "v14",
+      "paired_questions": 100,
+      "first_correct": 61,
+      "second_correct": 61,
+      "both_correct": 50,
+      "first_only_correct": 11,
+      "second_only_correct": 11,
+      "both_incorrect": 28,
+      "delta_percentage_points": 0.0,
+      "mcnemar_exact_two_sided": 1.0,
+      "holm_adjusted_p_three_vs_v14": 1.0
+    }
+  ],
+  "auto_infrastructure_sensitivity": {
+    "excluded_qids": [
+      293,
+      310,
+      317,
+      366
+    ],
+    "policy": "Same previously specified infrastructure-exception set as prior recovery assessment, no new score-dependent exclusions.",
+    "comparison": {
+      "first": "auto_rerank",
+      "second": "v14",
+      "paired_questions": 96,
+      "first_correct": 64,
+      "second_correct": 59,
+      "both_correct": 52,
+      "first_only_correct": 12,
+      "second_only_correct": 7,
+      "both_incorrect": 25,
+      "delta_percentage_points": 5.208333333333333,
+      "mcnemar_exact_two_sided": 0.359283447265625
+    }
+  },
+  "packet_sha256": "d71c7275c2222a884f7e076e8e80441f67683695153907bb0353fd526cb822fa",
+  "protocol_sha256": "abe40ae4071123b0ea23beba0349ea34d6d36f264632176f10bedbdba8d8094a",
+  "limitations": [
+    "Strict frozen-gold comparison, not external fact checking.",
+    "A single model may share systematic errors across passes.",
+    "Model provider alias maps to returned version; underlying weight hash unavailable.",
+    "Four groups have distinct execution histories and configurations; p values describe paired selected answers, not causal component effects.",
+    "Paging cohort20 does not estimate completed100 results.",
+    "Usage excludes generic endpoint probes, invalid responses and failed transport requests; no monetary cost inferred."
+  ],
+  "validation": {
+    "passed": true,
+    "all_source_pins_verified": true,
+    "all320_case_and_final_hashes_match": true,
+    "all_empty_finals_false": true,
+    "identical_finals_same_labels": true
+  },
+  "source_summary_sha256": "27553edd689a700c19c4396d5c631f0fc594a384fc1094ad50ac6463f5314de2",
+  "publication_scope": "Aggregate statistics only; no new per-case answers, labels or private mapping."
+}

@@ -1,0 +1,652 @@
+{
+  "active_query_ids": [],
+  "actual_api_ledger_records": {
+    "qid_1000": {
+      "last_unix": 1792925242.2438326,
+      "records": 16,
+      "successful_records": 16
+    },
+    "qid_1020": {
+      "last_unix": 1792927181.6649852,
+      "records": 8,
+      "successful_records": 8
+    },
+    "qid_1034": {
+      "last_unix": 1792928814.8628788,
+      "records": 38,
+      "successful_records": 38
+    },
+    "qid_1038": {
+      "last_unix": 1792927391.9118457,
+      "records": 16,
+      "successful_records": 16
+    },
+    "qid_1060": {
+      "last_unix": 1792927154.081641,
+      "records": 6,
+      "successful_records": 6
+    },
+    "qid_1065": {
+      "last_unix": 1792927775.136579,
+      "records": 11,
+      "successful_records": 11
+    },
+    "qid_1071": {
+      "last_unix": 1792927736.9036293,
+      "records": 10,
+      "successful_records": 10
+    },
+    "qid_1082": {
+      "last_unix": 1792929909.6426241,
+      "records": 46,
+      "successful_records": 46
+    },
+    "qid_1085": {
+      "last_unix": 1792930979.9638815,
+      "records": 41,
+      "successful_records": 41
+    },
+    "qid_1101": {
+      "last_unix": 1792928472.9130588,
+      "records": 6,
+      "successful_records": 6
+    },
+    "qid_1117": {
+      "last_unix": 1792929022.1081963,
+      "records": 12,
+      "successful_records": 12
+    },
+    "qid_1126": {
+      "last_unix": 1792931868.9762948,
+      "records": 52,
+      "successful_records": 52
+    },
+    "qid_1138": {
+      "last_unix": 1792931579.4757478,
+      "records": 10,
+      "successful_records": 10
+    },
+    "qid_1163": {
+      "last_unix": 1792931568.0472188,
+      "records": 7,
+      "successful_records": 7
+    },
+    "qid_1172": {
+      "last_unix": 1792931893.6733935,
+      "records": 14,
+      "successful_records": 14
+    },
+    "qid_1193": {
+      "last_unix": 1792933018.8000312,
+      "records": 36,
+      "successful_records": 36
+    },
+    "qid_1196": {
+      "last_unix": 1792934364.7363153,
+      "records": 46,
+      "successful_records": 46
+    },
+    "qid_1227": {
+      "last_unix": 1792932672.0454535,
+      "records": 15,
+      "successful_records": 15
+    },
+    "qid_1233": {
+      "last_unix": 1792934307.9067385,
+      "records": 34,
+      "successful_records": 34
+    },
+    "qid_1239": {
+      "last_unix": 1792933474.6202598,
+      "records": 5,
+      "successful_records": 5
+    },
+    "qid_278": {
+      "last_unix": 1792901501.828609,
+      "records": 13,
+      "successful_records": 13
+    },
+    "qid_280": {
+      "last_unix": 1792901658.1589608,
+      "records": 20,
+      "successful_records": 20
+    },
+    "qid_288": {
+      "last_unix": 1792903669.8621118,
+      "records": 51,
+      "successful_records": 51
+    },
+    "qid_293": {
+      "last_unix": 1792902338.753925,
+      "records": 27,
+      "successful_records": 27
+    },
+    "qid_310": {
+      "last_unix": 1792901855.3190193,
+      "records": 11,
+      "successful_records": 11
+    },
+    "qid_317": {
+      "last_unix": 1792902553.2432106,
+      "records": 26,
+      "successful_records": 26
+    },
+    "qid_366": {
+      "last_unix": 1792905187.0353618,
+      "records": 46,
+      "successful_records": 46
+    },
+    "qid_370": {
+      "last_unix": 1792905915.7522333,
+      "records": 54,
+      "successful_records": 54
+    },
+    "qid_376": {
+      "last_unix": 1792905576.0995831,
+      "records": 28,
+      "successful_records": 28
+    },
+    "qid_387": {
+      "last_unix": 1792904510.5740113,
+      "records": 11,
+      "successful_records": 11
+    },
+    "qid_392": {
+      "last_unix": 1792905265.2912574,
+      "records": 6,
+      "successful_records": 6
+    },
+    "qid_393": {
+      "last_unix": 1792905830.545972,
+      "records": 13,
+      "successful_records": 13
+    },
+    "qid_411": {
+      "last_unix": 1792906188.9763114,
+      "records": 15,
+      "successful_records": 15
+    },
+    "qid_418": {
+      "last_unix": 1792907519.4334025,
+      "records": 41,
+      "successful_records": 41
+    },
+    "qid_420": {
+      "last_unix": 1792906342.650725,
+      "records": 16,
+      "successful_records": 16
+    },
+    "qid_428": {
+      "last_unix": 1792906423.870878,
+      "records": 15,
+      "successful_records": 15
+    },
+    "qid_436": {
+      "last_unix": 1792907344.4136715,
+      "records": 24,
+      "successful_records": 24
+    },
+    "qid_454": {
+      "last_unix": 1792907213.0767143,
+      "records": 19,
+      "successful_records": 19
+    },
+    "qid_473": {
+      "last_unix": 1792910094.1398652,
+      "records": 59,
+      "successful_records": 58
+    },
+    "qid_486": {
+      "last_unix": 1792909587.006605,
+      "records": 32,
+      "successful_records": 32
+    },
+    "qid_500": {
+      "last_unix": 1792908280.418248,
+      "records": 13,
+      "successful_records": 13
+    },
+    "qid_507": {
+      "last_unix": 1792911177.7863388,
+      "records": 44,
+      "successful_records": 43
+    },
+    "qid_512": {
+      "last_unix": 1792908897.4959354,
+      "records": 6,
+      "successful_records": 6
+    },
+    "qid_513": {
+      "last_unix": 1792911309.9499943,
+      "records": 30,
+      "successful_records": 30
+    },
+    "qid_515": {
+      "last_unix": 1792910649.9081156,
+      "records": 18,
+      "successful_records": 18
+    },
+    "qid_519": {
+      "last_unix": 1792910898.2005377,
+      "records": 20,
+      "successful_records": 20
+    },
+    "qid_525": {
+      "last_unix": 1792914427.1761801,
+      "records": 58,
+      "successful_records": 58
+    },
+    "qid_532": {
+      "last_unix": 1792912690.3892806,
+      "records": 42,
+      "successful_records": 42
+    },
+    "qid_540": {
+      "last_unix": 1792911499.2834756,
+      "records": 11,
+      "successful_records": 11
+    },
+    "qid_549": {
+      "last_unix": 1792911732.7640061,
+      "records": 11,
+      "successful_records": 11
+    },
+    "qid_563": {
+      "last_unix": 1792911620.994887,
+      "records": 3,
+      "successful_records": 3
+    },
+    "qid_571": {
+      "last_unix": 1792912088.6078978,
+      "records": 12,
+      "successful_records": 12
+    },
+    "qid_587": {
+      "last_unix": 1792912769.850028,
+      "records": 21,
+      "successful_records": 21
+    },
+    "qid_592": {
+      "last_unix": 1792913616.9169443,
+      "records": 29,
+      "successful_records": 29
+    },
+    "qid_595": {
+      "last_unix": 1792913166.6427517,
+      "records": 9,
+      "successful_records": 9
+    },
+    "qid_599": {
+      "last_unix": 1792913146.3769548,
+      "records": 10,
+      "successful_records": 10
+    },
+    "qid_607": {
+      "last_unix": 1792913363.4531271,
+      "records": 5,
+      "successful_records": 5
+    },
+    "qid_624": {
+      "last_unix": 1792913785.7731676,
+      "records": 13,
+      "successful_records": 13
+    },
+    "qid_627": {
+      "last_unix": 1792913726.5772274,
+      "records": 7,
+      "successful_records": 7
+    },
+    "qid_681": {
+      "last_unix": 1792913996.8348222,
+      "records": 7,
+      "successful_records": 7
+    },
+    "qid_692": {
+      "last_unix": 1792914620.6240704,
+      "records": 19,
+      "successful_records": 19
+    },
+    "qid_707": {
+      "last_unix": 1792916033.132323,
+      "records": 40,
+      "successful_records": 40
+    },
+    "qid_725": {
+      "last_unix": 1792917647.8409095,
+      "records": 47,
+      "successful_records": 46
+    },
+    "qid_741": {
+      "last_unix": 1792917875.6157072,
+      "records": 40,
+      "successful_records": 39
+    },
+    "qid_742": {
+      "last_unix": 1792918240.2543898,
+      "records": 35,
+      "successful_records": 35
+    },
+    "qid_759": {
+      "last_unix": 1792918181.1489735,
+      "records": 19,
+      "successful_records": 19
+    },
+    "qid_761": {
+      "last_unix": 1792918165.4004886,
+      "records": 5,
+      "successful_records": 5
+    },
+    "qid_775": {
+      "last_unix": 1792921632.248924,
+      "records": 37,
+      "successful_records": 36
+    },
+    "qid_801": {
+      "last_unix": 1792918411.2968822,
+      "records": 8,
+      "successful_records": 8
+    },
+    "qid_802": {
+      "last_unix": 1792921549.7393053,
+      "records": 42,
+      "successful_records": 42
+    },
+    "qid_805": {
+      "last_unix": 1792921911.0067103,
+      "records": 47,
+      "successful_records": 46
+    },
+    "qid_810": {
+      "last_unix": 1792921998.0605955,
+      "records": 41,
+      "successful_records": 41
+    },
+    "qid_814": {
+      "last_unix": 1792923137.3066103,
+      "records": 22,
+      "successful_records": 22
+    },
+    "qid_832": {
+      "last_unix": 1792923760.0661092,
+      "records": 36,
+      "successful_records": 36
+    },
+    "qid_834": {
+      "last_unix": 1792922132.7899425,
+      "records": 8,
+      "successful_records": 8
+    },
+    "qid_922": {
+      "last_unix": 1792924870.1742854,
+      "records": 37,
+      "successful_records": 37
+    },
+    "qid_978": {
+      "last_unix": 1792922692.8393817,
+      "records": 14,
+      "successful_records": 14
+    },
+    "qid_980": {
+      "last_unix": 1792924495.2155945,
+      "records": 20,
+      "successful_records": 20
+    },
+    "qid_981": {
+      "last_unix": 1792926280.2750099,
+      "records": 48,
+      "successful_records": 48
+    },
+    "qid_996": {
+      "last_unix": 1792926180.6656961,
+      "records": 44,
+      "successful_records": 44
+    }
+  },
+  "arm": "no_bash",
+  "automation": {
+    "deleted_after_verified_completion_and_shutdown": true,
+    "id": "no-bash-80",
+    "interval_minutes": 30,
+    "shutdown_after_verified_completion": true,
+    "status": "DELETED"
+  },
+  "checked_unix": 1792934858.9196784,
+  "closed_new80_terminal_pool_backups": [
+    288,
+    376,
+    370,
+    278,
+    293,
+    366,
+    393,
+    387,
+    280,
+    473,
+    515,
+    418,
+    454,
+    486,
+    436,
+    428,
+    500,
+    420,
+    317,
+    392,
+    310,
+    411,
+    512,
+    513,
+    507,
+    525,
+    592,
+    692,
+    532,
+    519,
+    587,
+    624,
+    571,
+    742,
+    725,
+    741,
+    759,
+    681,
+    810,
+    805,
+    775,
+    802,
+    707,
+    549,
+    627,
+    540,
+    834,
+    595,
+    607,
+    801,
+    563,
+    761,
+    599,
+    1082,
+    996,
+    1034,
+    922,
+    981,
+    1000,
+    1038,
+    814,
+    1065,
+    978,
+    980
+  ],
+  "closed_old_first20_pool_backups": [
+    209,
+    228,
+    256,
+    239,
+    270,
+    251,
+    122,
+    161,
+    70,
+    132,
+    127,
+    116,
+    156,
+    246,
+    81,
+    96,
+    229,
+    193,
+    245
+  ],
+  "config_sha256": "4066e6ae83c5427924a3eb3577eb5c5621a4372b5be673852667b64fe8433c1a",
+  "configuration_unchanged": true,
+  "console_shutdown_verified": true,
+  "console_state": "已关机",
+  "date": "2026-10-25",
+  "docker_correction": {
+    "extra_local_unshare_probe_not_an_original_gate": true,
+    "original_endpoint_healthy": true,
+    "original_image_restored": true,
+    "original_managed_docker_version": "26.1.3",
+    "original_native_tool_bytes_verified": true,
+    "previous_diagnosis_superseded": true,
+    "prior_evidence_preserved": true,
+    "root_cause": "Administrative checks omitted frozen DOCKER_HOST and diagnosed the wrong default endpoint",
+    "security_permissions_changed_for_fix": false
+  },
+  "experiment_complete": true,
+  "final_archive_bytes": 751358817,
+  "final_archive_sha256": "68d38b869f905d6653bc6fd3532b2e52f791e7bcb6527890a1bc4e03a968f49a",
+  "frozen_source_map_sha256": "a5a3e172a1581ac95d24cec857a187e14a87b4e21af0cbce366916e6fa3cc5a1",
+  "local_archive_bytes": 22889536848,
+  "local_final_backup_verified": true,
+  "manifest_sha256": "a651827502c475394665c35f121fa7d687ee4469979e9dc60ace682b441433b4",
+  "max_turns": 100,
+  "new_dispatches": 80,
+  "new_natural_terminal_query_ids": [
+    278,
+    280,
+    288,
+    293,
+    310,
+    317,
+    366,
+    370,
+    376,
+    387,
+    392,
+    393,
+    411,
+    418,
+    420,
+    428,
+    436,
+    454,
+    473,
+    486,
+    500,
+    507,
+    512,
+    513,
+    515,
+    519,
+    525,
+    532,
+    540,
+    549,
+    563,
+    571,
+    587,
+    592,
+    595,
+    599,
+    607,
+    624,
+    627,
+    681,
+    692,
+    707,
+    725,
+    741,
+    742,
+    759,
+    761,
+    775,
+    801,
+    802,
+    805,
+    810,
+    814,
+    832,
+    834,
+    922,
+    978,
+    980,
+    981,
+    996,
+    1000,
+    1020,
+    1034,
+    1038,
+    1060,
+    1065,
+    1071,
+    1082,
+    1085,
+    1101,
+    1117,
+    1126,
+    1138,
+    1163,
+    1172,
+    1193,
+    1196,
+    1227,
+    1233,
+    1239
+  ],
+  "new_natural_terminals": 80,
+  "old153_partial_not_retried": true,
+  "pending_count": 0,
+  "phase": "complete",
+  "question_concurrency": 4,
+  "raw_answers_trajectories_credentials_committed": false,
+  "reused_first20": 20,
+  "selection": "Fixed B100 positions21-100; completed first20 retained",
+  "service_identity": {
+    "boot_id": "73ec798a-39fc-4633-8bd4-85032c6dd3db",
+    "pid": 128,
+    "process_start_ticks": 1425703206
+  },
+  "storage_at_checkpoint": {
+    "free_bytes": 64053878784,
+    "free_inodes": 71011,
+    "min_free_bytes": 10737418240,
+    "min_free_inodes": 40000,
+    "poll_seconds": 30,
+    "ready": true
+  },
+  "successful_new_model_requests": 1928,
+  "target_new_questions": 80,
+  "validation": {
+    "all_passed": true,
+    "live_preflight_passed": true,
+    "maintenance_tests_including_frozen_core": 25,
+    "parent20_files_verified": 143,
+    "scheduler_tests": 23,
+    "snapshot_tests": 11,
+    "source_files_frozen": 135,
+    "standalone_restore_test_passed": true
+  },
+  "version": "strict-no-bash80-startup-administrative-summary-v2",
+  "wall_clock_seconds": 3600,
+  "worker_identity": {
+    "boot_id": "73ec798a-39fc-4633-8bd4-85032c6dd3db",
+    "driver_sha256": "26c04741b97554dfefffdde1ad633dcb81c3a15b5dee1c76ca87ce2e1e0bdd08",
+    "entrypoint": "operations.no_bash80_suite",
+    "pid": 234,
+    "proc_start_ticks": 1425713213,
+    "started_unix": 1792900643.4350634
+  },
+  "worker_started": true
+}

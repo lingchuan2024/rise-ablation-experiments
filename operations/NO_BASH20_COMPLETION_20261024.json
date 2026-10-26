@@ -1,0 +1,77 @@
+{
+  "version": "strict-no-bash20-completion-shutdown-receipt-v1",
+  "recorded_unix": 1792838556.2634418,
+  "recorded_beijing": "2026-10-24T18:42:36.263448+08:00",
+  "instance": {
+    "name": "q3535bf",
+    "uuid": "951a3fe3-8b6a-42f8-a35c-85e9bdae92a3",
+    "console_url": "https://saas-tenant-86809123-test-mlops-cn-huabei1.eks.ebcloud.com/dev-machine/detail?name=q3535bf&namespace="
+  },
+  "experiment": {
+    "phase": "complete",
+    "target_coverage": 20,
+    "validated_natural_terminals": 20,
+    "new_no_bash_rows": 20,
+    "reused_control_rows": 20,
+    "control_bundle_rows": 100,
+    "public_finals": 40,
+    "source_files_verified": 135,
+    "archive_bytes_verified": true,
+    "verified": true,
+    "worker_exited": true,
+    "three_worker_locks_verified_idle": true,
+    "budget_or_model_configuration_changes": false,
+    "natural_terminal_reruns": 0,
+    "other_arm_runs": 0,
+    "accuracy_review_status": "not_completed"
+  },
+  "automation": {
+    "id": "no-bash20",
+    "deleted": true
+  },
+  "maintenance": {
+    "old_closed_workspace_transactions": 96,
+    "new_no_bash_verified_archives": 1,
+    "new_no_bash_partial_pools": 1,
+    "partial_qid": 153,
+    "partial_pool_not_retried": true,
+    "all_partial_evidence_in_final_archive": true
+  },
+  "backup": {
+    "archive": {
+      "sha256": "a5f2615a8ece00bf9b3a809a2dc511904b81e97e308d0f11ec9a8072a813dbf6",
+      "bytes": 179794707
+    },
+    "receipt": {
+      "sha256": "7daba7b99aeed05d75368bf456798f0cbd9a12ee549f96f167ecc37a280e4a48",
+      "bytes": 73940
+    },
+    "local_verified": true,
+    "verification_receipt": "reports/strict_no_bash20_v1/downloaded/complete_20261024_1832/local_verification.json",
+    "completion_shutdown_receipt": "reports/strict_no_bash20_v1/downloaded/complete_20261024_1832/completion_shutdown_receipt.json",
+    "completion_shutdown_receipt_file": {
+      "sha256": "dec249d307b6da3e9a256a2550f06a7abc375121406c9cf3cc22ffa8bcb5ca3d",
+      "bytes": 3638
+    }
+  },
+  "shutdown": {
+    "observed_console_state": "已关机",
+    "normal_shutdown": true,
+    "confirmed_using_console_ax_and_screenshot": true,
+    "instance_deleted": false,
+    "system_disk_retained": true,
+    "mounted_models_shared_volume_retained": true,
+    "mounted_volume_path": "/root/data",
+    "screenshot_format_receipt": {
+      "sha256": "37200d727c9f2064a5c994e6a1a3b574258db41dbd7adabb0315bfe0d2092e41",
+      "bytes": 567
+    },
+    "temporary_screenshot_viewport_reset": true,
+    "screenshot_file": {
+      "sha256": "937f00c2042d8b4beec2e2771c0a859079ee38c60d47c0b5098acb1ba5cfc94d",
+      "bytes": 248750,
+      "width": 1280,
+      "height": 960
+    }
+  }
+}

@@ -1,0 +1,52 @@
+{
+  "status": "offline_verified_c4_live_checks_pending",
+  "offline_preflight": {
+    "passed": true,
+    "live_ready": false,
+    "network_requests": 0,
+    "version": "official-rise-plus-rerank-qwen35-v1",
+    "arms": [
+      "A",
+      "B"
+    ],
+    "fixed100": 100,
+    "pilot_query_ids": [
+      70,
+      81,
+      96,
+      116,
+      122,
+      127,
+      132,
+      153,
+      156,
+      161
+    ],
+    "config_sha256": "4066e6ae83c5427924a3eb3577eb5c5621a4372b5be673852667b64fe8433c1a",
+    "contract_sha256": {
+      "A": "72aa69302bca3796f6a05cb408c4ec7eed9230f766590bf8b86cce680c0eb67a",
+      "B": "981ecf7a06dc9dd36528a44cc4d3b3f06394b0b0c3a83c631887a9ae007a055a"
+    }
+  },
+  "tests": {
+    "passed": true,
+    "count": 75,
+    "command": "python -m unittest discover -s strict_experiment -p 'test_*.py' -q",
+    "network": false,
+    "gpu": false
+  },
+  "source_freeze_sha256": "117de83a879148180330aa9b5de0079c3e5d23a22bb0680a0c6e2784f1035c41",
+  "formal_answers_generated": 0,
+  "live_preflight_passed": false,
+  "actual_run_manifest_created": false,
+  "target": "Yingbo Cloud q3535bf",
+  "service_pid": 3365,
+  "model_context": 262144,
+  "worker_concurrency": 4,
+  "source_model_revision": "59d61f3ce65a6d9863b86d2e96597125219dc754",
+  "prior_c3_capacity": {
+    "status": "passed_but_not_reused_for_c4",
+    "report": "operations/capacity_c3_attempt2.json",
+    "formal_questions_started": 0
+  }
+}

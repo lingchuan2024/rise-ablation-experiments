@@ -1,0 +1,247 @@
+{
+  "version": "hosted-qwen38-analysis-v1",
+  "manifest_sha256": "d21e2483789829ff36a3f775c3c266334791b0ba6d9f598a8b093592c7f178bf",
+  "review_method": "independent_arm_blinded_public_final_only",
+  "records": [
+    {
+      "variant": "auto_rerank",
+      "query_id": 116,
+      "final_text_sha256": "aeeb02ad24cb5fcfb1197c099da281cfdb6d99dde41a95b95d2acc91c7b904ec",
+      "correct": false,
+      "reason": "主答为 Claude Beri Langmann，未提交严格要求的完整出生姓名 Claude Berel Langmann；Beri 拼写变体仅按冻结敏感性口径计对。",
+      "sensitivity_correct": true
+    },
+    {
+      "variant": "auto_rerank",
+      "query_id": 122,
+      "final_text_sha256": "4d23b81cc96b4abf6e467e078bf178c90c0e139b03594514f8bfa93893285ee0",
+      "correct": true,
+      "reason": "最终明确提交死亡年份 2016，符合所问年份。",
+      "sensitivity_correct": true
+    },
+    {
+      "variant": "auto_rerank",
+      "query_id": 127,
+      "final_text_sha256": "103d9968e5a6d9416bc4c5987ce5e0c48717320e9ecd99cf3460b2f1efb723e4",
+      "correct": true,
+      "reason": "最终明确提交被致谢提供评论者 Bruce Chapman，完整人名符合 gold。",
+      "sensitivity_correct": true
+    },
+    {
+      "variant": "auto_rerank",
+      "query_id": 132,
+      "final_text_sha256": "b84102949295f4a773a69aa5e375a83e9f73294bcf64ed1d859de380e36efdf2",
+      "correct": true,
+      "reason": "最终提交 The World Of The Dream Merchants；冠词 The 及附加年份、唱片编号不影响标题匹配。",
+      "sensitivity_correct": true
+    },
+    {
+      "variant": "auto_rerank",
+      "query_id": 153,
+      "final_text_sha256": "2b481e0961e5b3fc1dcd834b1aa240e0d6570d6b3bf8dc5b44115d46d0366bf3",
+      "correct": true,
+      "reason": "最终明确提交后来不再列名的合伙人 Walter Allen，符合 gold。",
+      "sensitivity_correct": true
+    },
+    {
+      "variant": "auto_rerank",
+      "query_id": 156,
+      "final_text_sha256": "53fd98c11c56046925dd331c21c7dfd7bce7612e930e4d2d6d3ca7b94664ab2e",
+      "correct": true,
+      "reason": "最终明确给出标题 The Great Blue Heron, Patient Hunter、城市 Wheaton 和州 Maryland，三个所问要素齐全。",
+      "sensitivity_correct": true
+    },
+    {
+      "variant": "auto_rerank",
+      "query_id": 161,
+      "final_text_sha256": "5f650428cce7de4a832948ec49d9b6c047c21f23e56b53fcb627cda641367c77",
+      "correct": true,
+      "reason": "最终明确提交歌曲 Kune Rima；附加歌手与专辑说明不改变主答。",
+      "sensitivity_correct": true
+    },
+    {
+      "variant": "auto_rerank",
+      "query_id": 70,
+      "final_text_sha256": "f309f620ff91728b188ea2c00c584ef65ef0211dfc13a60c22ea227eee55e452",
+      "correct": false,
+      "reason": "主答为 Nil Nakshar Shandaney，不符合 gold Nikhoj Sangbad；虽将 gold 列作另一个来源的替代说法，不能替代明确提交的主答。",
+      "sensitivity_correct": false
+    },
+    {
+      "variant": "auto_rerank",
+      "query_id": 81,
+      "final_text_sha256": "3a75bc67c80b5bc930c9eaf81fe609001b81a7c102ab6b7d33fc859d7475380d",
+      "correct": true,
+      "reason": "最终明确提交作者完整人名 Sam O'Brien，符合 gold。",
+      "sensitivity_correct": true
+    },
+    {
+      "variant": "auto_rerank",
+      "query_id": 96,
+      "final_text_sha256": "4c5ee65ae101efa47bf93599f09570e211ce54cddabfdac9a83bea456d879195",
+      "correct": true,
+      "reason": "最终明确提交街道名称 Glass Furnace Way，符合 gold。",
+      "sensitivity_correct": true
+    },
+    {
+      "variant": "no_bash",
+      "query_id": 116,
+      "final_text_sha256": "a793e9b0301cf5a152fb1809774bd2400decaaa9f9d38c9c6f90b2e40e894acb",
+      "correct": false,
+      "reason": "主答为 Claude Beri Langmann，未提交严格要求的完整出生姓名 Claude Berel Langmann；Beri 拼写变体仅按冻结敏感性口径计对。",
+      "sensitivity_correct": true
+    },
+    {
+      "variant": "no_bash",
+      "query_id": 122,
+      "final_text_sha256": "8b2c7bbc9b5a8d7aa5d1476b52a7728ef3fd5899ec3b1c4f52bc2a06813091ca",
+      "correct": true,
+      "reason": "最终明确提交死亡年份 2016，符合所问年份。",
+      "sensitivity_correct": true
+    },
+    {
+      "variant": "no_bash",
+      "query_id": 127,
+      "final_text_sha256": "2ddee38798d74e1c272e21062506a6db91d427f66c681070b4b6eb8a81520234",
+      "correct": true,
+      "reason": "最终明确提交被致谢提供评论者 Bruce Chapman，完整人名符合 gold。",
+      "sensitivity_correct": true
+    },
+    {
+      "variant": "no_bash",
+      "query_id": 132,
+      "final_text_sha256": "6aee2261815436116e51a9b021b5894da059be8925b17d8133eea45c645cc5e3",
+      "correct": true,
+      "reason": "最终提交 The World of the Dream Merchants；冠词 The、大小写及附加年份按既定等价规则接受。",
+      "sensitivity_correct": true
+    },
+    {
+      "variant": "no_bash",
+      "query_id": 153,
+      "final_text_sha256": "7224ec706dd67c1ec515dc97921e81c27922dbbd13ec62df0d914318e819e78d",
+      "correct": true,
+      "reason": "最终明确提交后来不再列名的合伙人 Walter Allen，符合 gold。",
+      "sensitivity_correct": true
+    },
+    {
+      "variant": "no_bash",
+      "query_id": 156,
+      "final_text_sha256": "32a1aebc530aaaa794a84a1fae05a10b02ee1ccbb313f84fba972f36cb43b43a",
+      "correct": true,
+      "reason": "最终明确给出标题 The Great Blue Heron, Patient Hunter、城市 Wheaton 和州 Maryland，三个所问要素齐全。",
+      "sensitivity_correct": true
+    },
+    {
+      "variant": "no_bash",
+      "query_id": 161,
+      "final_text_sha256": "56d45e00948481da6656923b2369e65550bcfcc81f63c9fe65f779a1b65e0403",
+      "correct": true,
+      "reason": "最终明确提交歌曲 Kune Rima，符合 gold；附加曲序、歌手与专辑说明不改变主答。",
+      "sensitivity_correct": true
+    },
+    {
+      "variant": "no_bash",
+      "query_id": 70,
+      "final_text_sha256": "20f27788cadbcb9fea62192c1ef6f58668e68265c50338d4664149b05feb85f6",
+      "correct": true,
+      "reason": "最终明确提交首部电视剧名称 Nikhoj Sangbad，符合 gold。",
+      "sensitivity_correct": true
+    },
+    {
+      "variant": "no_bash",
+      "query_id": 81,
+      "final_text_sha256": "58940307dca2751999c22179dbde1f8744f0d187b053253126bf527f55fbfeac",
+      "correct": true,
+      "reason": "最终明确提交作者完整人名 Sam O'Brien，符合 gold。",
+      "sensitivity_correct": true
+    },
+    {
+      "variant": "no_bash",
+      "query_id": 96,
+      "final_text_sha256": "8cc3ad14dac1ae4b23593f0783d4599955415d89006c74f6c50bf43409548cbd",
+      "correct": true,
+      "reason": "最终明确提交街道名称 Glass Furnace Way，符合 gold。",
+      "sensitivity_correct": true
+    },
+    {
+      "variant": "search_paging",
+      "query_id": 116,
+      "final_text_sha256": "eef5c9f00ac6cf74996f6d1f13011c60fdbcde0306be75bab74ad9de18ee168d",
+      "correct": false,
+      "reason": "主答为 Claude Beri Langmann，未按冻结严格规则提交 Claude Berel Langmann；括号中的变体说明不替代主答。Beri 变体仅在敏感性口径接受。",
+      "sensitivity_correct": true
+    },
+    {
+      "variant": "search_paging",
+      "query_id": 122,
+      "final_text_sha256": "896fbd054d9d2478ffff7dd22b708038c9d98111c7d1cdc8ef624cf5281bc420",
+      "correct": true,
+      "reason": "最终明确提交死亡年份 2016；附加人物姓名及日期不影响所问年份匹配。",
+      "sensitivity_correct": true
+    },
+    {
+      "variant": "search_paging",
+      "query_id": 127,
+      "final_text_sha256": "529e30b1fa2d3b48d80235762268b533def836c4edcfbafdfde1e6f9a8bc32a4",
+      "correct": true,
+      "reason": "最终明确提交 Bruce Chapman，符合被致谢提供评论者的完整人名。",
+      "sensitivity_correct": true
+    },
+    {
+      "variant": "search_paging",
+      "query_id": 132,
+      "final_text_sha256": "78d73e4fe8d96a85029e02a2506135b077d449c22706039324f452fed58c2013",
+      "correct": true,
+      "reason": "最终提交 The World of the Dream Merchants，与 gold 专辑标题等价；新增冠词 The、大小写及年份/唱片编号说明不影响匹配。",
+      "sensitivity_correct": true
+    },
+    {
+      "variant": "search_paging",
+      "query_id": 153,
+      "final_text_sha256": "f4c7875790318ea618fda9984784972041b7676989f74b7a91991aadf15cd0a9",
+      "correct": true,
+      "reason": "最终明确提交 Walter Allen，符合后来不再列名的经营者完整人名。",
+      "sensitivity_correct": true
+    },
+    {
+      "variant": "search_paging",
+      "query_id": 156,
+      "final_text_sha256": "3daf4cf004597171d0ebe699d01ce7ae9934e60b3c08b271b2c82f53bdf05d5d",
+      "correct": true,
+      "reason": "最终明确给出文章标题 The Great Blue Heron, Patient Hunter，以及城市 Wheaton、州 Maryland；多部分答案完整匹配。",
+      "sensitivity_correct": true
+    },
+    {
+      "variant": "search_paging",
+      "query_id": 161,
+      "final_text_sha256": "3809234f76563026b852220a459741ec065adbaa51465a37cae9d136e288c45a",
+      "correct": true,
+      "reason": "最终明确提交歌曲 Kune Rima，符合 gold；附加专辑、歌手和释义说明不改变主答。",
+      "sensitivity_correct": true
+    },
+    {
+      "variant": "search_paging",
+      "query_id": 70,
+      "final_text_sha256": "d780116035a97b286a70111ae126eec675fa3f1db78f97f83a48f75b985a0af5",
+      "correct": false,
+      "reason": "最终提交 Yatra，目标电视剧名称与 gold Nikhoj Sangbad 不同。",
+      "sensitivity_correct": false
+    },
+    {
+      "variant": "search_paging",
+      "query_id": 81,
+      "final_text_sha256": "805e1c37e9aadfdcf5ecf216851f6fdc444d936f6e0b7dd9cbaf7480d4d06032",
+      "correct": true,
+      "reason": "最终明确提交 Sam O'Brien，名字与姓氏均符合 gold。",
+      "sensitivity_correct": true
+    },
+    {
+      "variant": "search_paging",
+      "query_id": 96,
+      "final_text_sha256": "f2ffd5e8a6626e07eceb1d315857c06dbac8442ab803dbda826c46e3713ca6b9",
+      "correct": true,
+      "reason": "最终明确提交 Glass Furnace Way；附加地名不影响街道名称匹配。",
+      "sensitivity_correct": true
+    }
+  ]
+}

@@ -1,0 +1,137 @@
+{
+  "condition": "search_paging",
+  "version": "strict-b100-minimal-ablations-v1",
+  "system_prompt": "You answer research questions over a large document corpus you can't see directly.\n\nYou have four tools:\n- search(queries): search the corpus with one or more queries in a single call. Each query is matched as a bag of words against document text, so write queries as natural-language descriptions with several distinctive terms; pass multiple complementary queries together for broader coverage. Returns a per-query top-10 preview with file paths and short snippets — the preview is only a sample; the full match set per query (hundreds to thousands of docs) is ADDED to your working directory and accumulates across turns, so use bash/read to explore beyond the preview.\n- search(search_id, offset?): view an earlier subquery's fixed document-search results. A new search also returns each subquery's search_id, offset and next_offset. For a page, supply only its actual search_id and an optional zero-based document offset (default 0), without queries. Each page contains at most ten original document-opening snippets in the original document BM25 order, using the same 100-character previews as the first page. Paging does not retrieve, import or score documents. New searches do not invalidate these document-search IDs. next_offset=null means that this fixed search record is exhausted. Document-search IDs are separate from rerank result IDs.\n- bash(command): run a shell command (rg, grep, ls, find, cat, head, etc.) over your working directory. Paths are relative to the working directory; absolute paths (anything starting with `/`) won't find anything — bash can't see outside the working directory. Use rg/grep to find phrases across retrieved docs. Files are plain text; run `ls` first to see the directory layout.\n- read(file_path, offset?, limit?): read a file by its full path. Optional 0-indexed `offset` and `limit` (both in LINES, not chars) let you read a slice instead of the whole file; defaults to lines 0..2000.\n\n- rerank(query, file_paths?, bm25_candidates?, top_k?, offset?, limit?): an independently available tool that ranks passages within the documents already imported by search. It does not import additional documents or change the files accessible to bash/read. For a new ranking, supply query. Omit file_paths or pass null for the accumulated document pool; an array of imported relative file paths restricts that call to those files, and [] selects no documents. Passage BM25 selects bm25_candidates=M passages within that scope, then the neural reranker scores them and retains top_k=K results. Defaults are M=1000, K=min(100,M), offset=0 and limit=10; 1 <= K <= M. Passages have 128 tokens with 32-token overlap. The JSON response includes status, result_id, scope and pool document counts, candidate/scored/retained/returned passage counts, offset, limit, next_offset and items. Each item includes file_path, the complete text of the passage, BM25 and reranker ranks/scores, source coordinates and read_args. Pass an item's actual returned read_args object to read to inspect the passage in its original document context; read_args uses the existing zero-based line offset and line limit. Relevance scores are ranking signals, not verification of facts.\n- rerank(result_id, top_k?, offset?, limit?): page or resize a returned ranking without rescoring. Use its actual result_id and next_offset; do not also pass query, file_paths or bm25_candidates. next_offset=null means the retained K range is exhausted. A search that adds documents changes the pool version and expires previous result IDs.\n\nEvery document begins with a YAML frontmatter block (title / author / date), followed by a `## Table of Contents` listing each section with a 1-indexed line range and a short description (e.g. `- L48–65: Early history — Founded 1874 as the Nautical School...`), then a literal `=== DOCUMENT BODY ===` line, then the body with `## <heading>` markers at the listed line ranges.\n\nHow to read these docs:\n(1) Start with `read(path, offset=0, limit=60)` to see the YAML + TOC + sentinel. If the result does NOT contain the `=== DOCUMENT BODY ===` line, the TOC is longer — re-read with a larger limit (e.g. `offset=0, limit=200`).\n(2) The TOC is a navigation index, NOT an answer source. Each TOC entry is a short summary line, not the actual text — it can omit details, drop nuance, or be slightly off. Never extract a specific fact (number, name, date, quote) from a TOC summary line.\n(3) Pick the most relevant section(s) from the TOC and read each one in full: `read(path, offset=<start-1>, limit=<end-start+1>)`. Confirm the answer in the actual section body before committing. If the body doesn't contain the expected fact, the TOC summary was misleading — read a wider chunk or another section.\n(4) If multiple sections look plausible, read each. If no section looks right, read more of the doc (larger limit, or a different offset). Don't commit just because the TOC line sounds relevant.\n(5) If the TOC says `(no sections — short or single-topic document; full text follows)`, read the file normally.\n\nUse the tools iteratively: search to pull evidence into your working directory, bash/read to inspect it, and repeat until confident. When confident, output the final answer in this format and stop calling tools:\nExplanation: {your reasoning}\nExact Answer: {your succinct final answer}\nConfidence: {0-100%}",
+  "tool_specs": [
+    {
+      "type": "function",
+      "function": {
+        "name": "search",
+        "description": "Search the corpus with one or more queries simultaneously. The top matching documents (union across all queries) are added to your working directory; documents already there from earlier searches are kept (the working directory accumulates evidence across this session). Returns a per-query top-10 preview with file paths and short snippets, and the new total working-directory size. Pass multiple complementary queries in one call. Specific distinctive terms (rare phrases, proper nouns, distinctive number/date combinations) tend to give the best results. New searches also return each subquery's search_id, offset and next_offset. A page call accepts only an actual returned search_id and optional zero-based offset (default 0), without queries. Each page contains at most ten original document-opening snippets in the original document BM25 order, with the same 100-character previews as the first page. Paging does not retrieve, import or score documents. Later searches do not invalidate these document-search IDs; next_offset=null means this fixed record is exhausted. These IDs are separate from rerank result IDs.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "queries": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "One or more search queries."
+            },
+            "search_id": {
+              "type": "string",
+              "description": "Actual document-search ID returned by search. Use without queries."
+            },
+            "offset": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Zero-based document offset for search_id; default 0, at most ten documents per page."
+            }
+          },
+          "required": []
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "bash",
+        "description": "Run a bash command in the current working directory. Useful for searching with `rg`, `grep`, listing with `ls`, `find`, or reading with `cat`, `head`. Output is truncated; use focused patterns and flags like `-l` to keep results manageable.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "command": {
+              "type": "string",
+              "description": "Bash command to run."
+            }
+          },
+          "required": [
+            "command"
+          ]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "read",
+        "description": "Read a file by path with optional line offset and limit. Returns numbered lines. The default limit (2000) is usually sufficient to read most documents in one call — prefer that to small limits, since the first 50-100 lines of many documents are navigation/template chrome, not content.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "file_path": {
+              "type": "string",
+              "description": "Path relative to the working directory."
+            },
+            "offset": {
+              "type": "integer",
+              "description": "Line number to start reading from (0-indexed). Default 0."
+            },
+            "limit": {
+              "type": "integer",
+              "description": "Maximum number of lines to read. Default 2000; prefer the default unless you have a specific reason to read only a slice."
+            }
+          },
+          "required": [
+            "file_path"
+          ]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "rerank",
+        "description": "Find relevant original-body passages for your explicit evidence goal. Choose query, imported file subset, BM25 candidate count, retained count and output size yourself. Omitted files means the whole accumulated pool; [] means an empty scope. Returns source paths and read/bash coordinates, without restricting bash/read. For paging, supply result_id instead of query/file_paths/bm25_candidates; top_k, offset and limit can change without rescoring. Scores are relevance rankings, not verification of facts.",
+        "parameters": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "query": {
+              "type": "string",
+              "description": "Explicit fact or relationship to verify, including known entity names; required for a new ranking."
+            },
+            "file_paths": {
+              "type": [
+                "array",
+                "null"
+              ],
+              "items": {
+                "type": "string"
+              },
+              "description": "Optional list of already imported relative source paths, such as files selected with bash; omitted or null means the accumulated pool."
+            },
+            "bm25_candidates": {
+              "type": "integer",
+              "minimum": 1,
+              "description": "M: number of scope-local BM25 passages sent to the neural reranker; default 1000, adjustable per call."
+            },
+            "top_k": {
+              "type": "integer",
+              "minimum": 1,
+              "description": "K: retain up to this many ranked passages; K <= M. Default min(100,M), or the first request's K on a result page."
+            },
+            "offset": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Zero-based offset into the retained ranking; default 0."
+            },
+            "limit": {
+              "type": "integer",
+              "minimum": 1,
+              "description": "Number of complete passages to return on this page; default 10, adjustable per call."
+            },
+            "result_id": {
+              "type": "string",
+              "description": "Tool-returned current ranking ID for pagination; mutually exclusive with query/file_paths/bm25_candidates."
+            }
+          }
+        }
+      }
+    }
+  ],
+  "user_prompt_template": "QUESTION:\n{question}",
+  "system_prompt_sha256": "8fcf88cb4ab87475b256ed2e8f8408c59f11f69a3eb220e5db5fe8ff342cb91a",
+  "tool_specs_sha256": "f8c3e1a27038b72602113d8bd69e9f8fcdbe72af7cfeeaf012082fb1562e39ed",
+  "contract_sha256": "918ae2286493c9e022ed2887f40f7745f4cc7a8b043c05ef9834fd10d0362142"
+}

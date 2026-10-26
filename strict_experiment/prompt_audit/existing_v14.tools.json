@@ -1,0 +1,127 @@
+[
+  {
+    "type": "function",
+    "function": {
+      "name": "search",
+      "description": "Search the corpus with one or more queries simultaneously. The top matching documents (union across all queries) are added to your working directory; documents already there from earlier searches are kept (the working directory accumulates evidence across this session). Returns a per-query top-10 preview with file paths and short snippets, and the new total working-directory size. Pass multiple complementary queries in one call. Specific distinctive terms (rare phrases, proper nouns, distinctive number/date combinations) tend to give the best results.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "queries": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "One or more search queries."
+          }
+        },
+        "required": [
+          "queries"
+        ]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "bash",
+      "description": "Run a bash command in the current working directory. Useful for searching with `rg`, `grep`, listing with `ls`, `find`, or reading with `cat`, `head`. Output is truncated; use focused patterns and flags like `-l` to keep results manageable.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "command": {
+            "type": "string",
+            "description": "Bash command to run."
+          },
+          "timeout": {
+            "type": "number",
+            "exclusiveMinimum": 0,
+            "maximum": 60,
+            "description": "Optional timeout in seconds; the backend clamps it to 1–60 seconds (default 60)."
+          }
+        },
+        "required": [
+          "command"
+        ]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "read",
+      "description": "Read an imported original document. Offsets and limits are in LINES; offsets are zero-based. The default limit is 2000 lines when limit is omitted; this is a fallback, not a recommended read size. Set limit explicitly for each read. Prefer a rerank item's read_args or a located section's line range to inspect the needed original context directly. For an unfamiliar document without a located range, start with offset=0, limit=60 to inspect its header and any table of contents, then read the relevant body sections. If navigation or a long table of contents fills that preview, advance offset or increase limit explicitly; do not treat the preview as proof that evidence is absent. For additional body context, 100–200 lines is a starting point, not a cap: expand or page as needed, and use a larger explicit limit when a complete section or document is necessary. These rules also apply to short or single-topic documents. Line counts are not token budgets; this tool has no total token/byte output cap. Individual long lines may be truncated at 2000 characters. Character coordinates differ from these line arguments. If read_may_truncate is true, use the item's bash_args for exact passage recovery.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "file_path": {
+            "type": "string",
+            "description": "Path relative to the working directory."
+          },
+          "offset": {
+            "type": "integer",
+            "description": "Line number to start reading from (0-indexed). Default 0."
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Maximum number of lines to read. Set this explicitly: start with 60 lines for an unfamiliar document, or use a known section's range or a rerank item's read_args. Expand or page when needed; 2000 is only the fallback if omitted."
+          }
+        },
+        "required": [
+          "file_path"
+        ]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "rerank",
+      "description": "Find relevant original-body passages for your explicit evidence goal. Choose query, imported file subset, BM25 candidate count, retained count and output size yourself. Omitted files means the whole accumulated pool; [] means an empty scope. Returns source paths and read/bash coordinates, without restricting bash/read. For paging, supply result_id instead of query/file_paths/bm25_candidates; top_k, offset and limit can change without rescoring. Scores are relevance rankings, not verification of facts.\n\nOptional file-subset example (the entity names and paths below are fictional placeholders):\n1. To locate candidate files for an already identified entity, call bash with {\"command\": \"rg -l -i 'EXAMPLE_ENTITY|EXAMPLE_ALIAS' .\"}. Suppose it returns only these paths:\n./docs/example_a.txt\n./docs/example_b.txt\n2. Explicitly pass those observed paths to rerank, for example: {\"query\": \"EXAMPLE_ENTITY specific missing relationship\", \"file_paths\": [\"docs/example_a.txt\", \"docs/example_b.txt\"], \"bm25_candidates\": 200, \"top_k\": 30, \"limit\": 5}. BM25 candidate selection and neural reranking then use only that file subset. The values 200/30/5 are adjustable examples, not required settings.\n3. Inspect useful passages in their original context by passing an item's actual returned read_args to read. For example, if read_args is {\"file_path\": \"docs/example_a.txt\", \"offset\": 40, \"limit\": 12}, call read with that object; use the returned coordinates rather than copying the example coordinates.\nYou decide whether this sequence is useful; it is not required for every question. Do not automatically treat the preceding bash output as the rerank scope: it may contain body text, errors or truncated output. Check the returned paths and explicitly set file_paths yourself. Omitting file_paths still ranks the full accumulated pool. Selecting a subset affects only that rerank call; bash/read retain access to the full original-document pool.",
+      "parameters": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Explicit fact or relationship to verify, including known entity names; required for a new ranking."
+          },
+          "file_paths": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "description": "Optional list of already imported relative source paths, such as files selected with bash; omitted or null means the accumulated pool."
+          },
+          "bm25_candidates": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "M: number of scope-local BM25 passages sent to the neural reranker; default 1000, adjustable per call."
+          },
+          "top_k": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "K: retain up to this many ranked passages; K <= M. Default min(100,M), or the first request's K on a result page."
+          },
+          "offset": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Zero-based offset into the retained ranking; default 0."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Number of complete passages to return on this page; default 10, adjustable per call."
+          },
+          "result_id": {
+            "type": "string",
+            "description": "Tool-returned current ranking ID for pagination; mutually exclusive with query/file_paths/bm25_candidates."
+          }
+        }
+      }
+    }
+  }
+]

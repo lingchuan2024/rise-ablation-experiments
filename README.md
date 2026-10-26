@@ -1,109 +1,76 @@
-# v14 三项独立消融实验
+# RISE：v14 与三组检索消融实验
 
-本目录从冻结 v14 的 `code/` 独立复制，运行三组各100题，共300次问题求解。完整 v14 对照复用历史100题结果；不新增第四组，不混入 v15 bash 修复。历史对照属于既有运行，报告中标注时间和运行环境差异。
+本仓库整理 Qwen3.5-35B-A3B 上的 v14 完整系统，以及 `auto_rerank`、`search_paging`、`no_bash` 三组变体的求解代码、冻结协议、调度与恢复工具、统一评分入口。
 
-| 组别 | 模型可见工具与行为 |
+## 已完成结果
+
+2026-10-25 对四组共 320 份公开终答使用同一 DeepSeek V4.1 Flash 规则重新评分；未重新求解，也未沿用旧正确性标签。
+
+| 方法 | 正确 / 实际评分题数 | 正确率 |
+|---|---:|---:|
+| v14（完整系统） | 61 / 100 | 61% |
+| auto_rerank | 68 / 100 | 68% |
+| search_paging | 7 / 20 | 35% |
+| no_bash | 61 / 100 | 61% |
+
+安全聚合结果见 [RESULTS_20261025.json](evaluation/RESULTS_20261025.json)。分页组只有实际完成的 20 题；相同 20 题上的 v14 为 11/20，不能用它直接比较另一组全 100 题比例。
+
+三组变体由冻结的 **strict B100** 协议派生，v14 是历史完整系统；四组不是所有条件完全相同的单因素实验。自动重排同时改变调用时机、候选范围、返回内容及独立工具可用性，不能把收益全部归于排序模型。自动组另保留 4 题基础设施异常历史，其中 qid310 采用保全的公开终答，不能称其 100 题均为完整自然终态。按预先记录的异常集合排除这 4 题，自动组与 v14 同题为 64/96 和 59/96。无 bash 组完成固定 100 题，保留原读取截断行为，没有额外补偿工具。分页组没有实际翻页调用，结果不能解释为“使用翻页造成下降”。
+
+自动组相对 v14 为 +7 个百分点，配对 McNemar 精确双侧 p=0.189（3 次比较 Holm 校正后 0.568），目前不能据此宣称显著提升。完成数与正确率是不同指标。
+
+## 代码导航
+
+| 目录 / 入口 | 用途 |
 |---|---|
-| `search_paging` | search 首屏十篇 snippet，按原检索排名每页十篇翻阅同一次检索的后续结果；保留 bash、read、独立 rerank |
-| `auto_rerank` | 每条 search 子查询召回自身 top1000 后立即重排；沿用原子查询，片段 BM25 前1000→神经重排；search 返回前十个完整片段及来源回读坐标；保留 bash/read，不暴露独立 rerank 工具 |
-| `no_bash` | search、read、独立 rerank；移除 bash 工具及 bash 指导 |
+| [run_v14.py](run_v14.py) | v14 完整系统启动封装，强制启用独立 rerank |
+| [code/](code/) | RISE 求解器、search/read/bash、独立 rerank 与反馈实现 |
+| [run_ablation.py](run_ablation.py) | 早期从 v14 派生变体的入口；不是后续 strict 实际执行入口 |
+| [strict_experiment/](strict_experiment/) | strict A/B 协议与 B100 对照身份、配置及完整性检查 |
+| [strict_ablations/](strict_ablations/README.md) | 三组 strict 工具契约、提示词、预检及调度测试 |
+| [operations/](operations/README.md) | 实际续跑、恢复、no_bash 调度、维护、快照与独立验证 |
+| [evaluation/](evaluation/README.md) | 四组统一匿名评分与离线汇总工具 |
+| [server/](server/) | 历史 v14 服务器部署、预检与运行管理 |
 
-所有组使用原固定100题、Qwen3.5-35B-A3B、BF16/official-thinking-v1、262144上下文、level0、100轮、3600秒/题、32000单次输出、API重试参数3、read默认2000行、文档BM25 top1000/十篇100字符首预览。固定 `Qwen/Qwen3-Reranker-0.6B@6e9e69830b95c52b5fd889b7690dda3329508de3`，128-token片段、32-token重叠。原始100题文件SHA256为 `129a2998335f3b238096c5e2d96a369f1cc690485094cd2df16e203ff90dd67c`。
+strict 自动组通过 `continuation_suite.py` / `recovery_suite.py` 完成续跑与恢复；分页组使用其独立命名空间；no_bash 使用 `no_bash20_suite.py` 与 `no_bash80_suite.py`，已完成部分只读复用。它们是执行组织方式，不是新增实验组。恢复须保留 checkpoint 和累计预算，不能把 partial 当成新题重置。
 
-`run_ablation.py --ablation-variant ... --space-passage-index ...` 是单组入口。正式套件用 `server/suite.py`：原题单顺序切成十个10题块，每块按 A/B/C、B/C/A、C/A/B 循环运行三组，每次只运行一组、总并发4。首块是健康检查批次，冻结后执行，若源码、参数及资源不变，其30次问题求解直接计入完整300次；后续不重跑这批自然错误。每组共用独立输出根，checkpoint/原文池/重排缓存互相隔离。
+## 环境与运行
 
-## 当前状态
-
-按当前请求，本次仅完成代码和本地离线检查，没有进行远程检查、部署、容量测量或正式实验；没有启动实例或模型服务。离线检查通过不表示远程就绪，live preflight 尚未执行。后续正式运行还需要目标主机上存续的 Qwen 服务、其配置和 launcher 回执、原始语料/索引/映射、固定reranker缓存、Docker socket/镜像和新的 C4 长上下文与reranker共存容量证据。旧批次容量报告不能作为本套件新服务的通过回执。
-
-## 检查与执行
-
-本地零网络检查：
-
-```bash
-python server/suite.py preflight
-```
-
-完整本地回归可运行 `python -m pytest -q code/tests --ignore=code/tests/test_v10_cli.py --ignore=code/tests/test_v11_cli.py`。这两个历史CLI测试依赖本目录未交付的旧 `run_v10.py` / `run_v11.py`，与本次入口无关；保留的 `baseline_snapshot` 是真实冻结文件，用于逐字回归核对。
-
-部署后，先使用目标Python在已有服务上运行 `measure-capacity`。它不会启动服务；明确执行代表进行性能请求，消耗与正式300次分开。服务配置JSON须含既有vLLM `command`，launcher回执须含 `pid` 和 `config_sha256`，命令行与当前 `/proc/<pid>/cmdline` 必须匹配。
+Python >=3.10。求解器安装：
 
 ```bash
-python server/suite.py measure-capacity \
-  --python /absolute/runtime/bin/python \
-  --base-url http://127.0.0.1:8000/v1 \
-  --service-config /absolute/service_config.json \
-  --service-receipt /absolute/service_launcher.json \
-  --hf-home /absolute/hf-cache --reranker-device cuda:0
+python -m venv .venv
+source .venv/bin/activate
+pip install -e code
+python run_v14.py --help
+python -m strict_ablations.runner --help
+python operations/no_bash80_suite.py --help
 ```
 
-取得本次 `binding.json` 后准备清单，显式提供目标主机真实资源路径：
+求解还依赖原始语料、文档 BM25 索引与映射、离线 passage 索引、Qwen3-Reranker-0.6B 权重、Qwen3.5-35B-A3B 模型服务和原隔离运行环境。这些大文件与主机配置不随仓库分发。`run_v14.py` 只启用独立重排，不会自动填入原服务器配置；必须显式指定 `--model`、`--concurrency 4`、索引、语料、输出目录等参数，并使用相应冻结配置的服务环境，不能依赖底层默认模型或并发。
+
+正式 strict 执行使用冻结 common_config：题级并发上限 4、100 turns、3600 秒/题、BF16、262144 上下文、32768 单次输出、API retry=1。历史 v14 的单次输出及重试配置与此不同，具体以各自 manifest 为准。reranker 使用固定版本及 128-token 分段 / 32-token 重叠。不要手抄参数替换 manifest 或为了通过预检修改源码 pins。
+
+依次执行离线检查、资源准备、完整 live-preflight、正式调度。各入口参数及契约见 [strict 文档](strict_ablations/README.md) 和 [operations 文档](operations/README.md)。`live-preflight` 会访问服务；它不是无副作用的离线测试。原 Docker 检查必须继承冻结 `runtime_environment` 中的 `DOCKER_HOST`，不能用默认 socket 的状态替代判断。历史绝对资源路径需在新的实验配置中明确适配；修改后应作为新的执行身份，不能伪装成历史复现。
+
+冻结 solver/tool 的 135 份文件保留原样；本次新增的是便携评分工具与文档。可以先运行不访问模型的检查：
 
 ```bash
-python server/suite.py prepare \
-  --python /absolute/runtime/bin/python --data-root /absolute/rise-data \
-  --base-url http://127.0.0.1:8000/v1 \
-  --document-index /absolute/bm25_full --filename-map /absolute/corpus_filename_docid_map.json \
-  --corpus /absolute/bcp_plus_structured --passage-index /absolute/passage_index_128_32 \
-  --service-config /absolute/service_config.json --service-receipt /absolute/service_launcher.json \
-  --capacity-report /absolute/capacity/binding.json \
-  --docker-host unix:///absolute/docker.sock --docker-image sha256:EXACT_VERIFIED_IMAGE \
-  --hf-home /absolute/hf-cache --reranker-device cuda:0
-python server/suite.py preflight --live
-python server/suite.py run --first-block-only
-python server/suite.py status
-python server/suite.py run --resume-after-preflight
+python -m unittest evaluation.test_uniform_judge -v
+python -m unittest discover -s strict_ablations -t .
+python -m evaluation.uniform_judge --help
 ```
 
-准备后源码、题单、参数、资源证据及服务身份冻结；不要覆盖清单或已有结果。实时预检验证同服务容量绑定、全部映射来源、真实reranker前向、三波四并发Docker staging/copy/run，以及两次原生模型工具往返。预检成功才可正式运行。基础设施故障停止新问题/工具/模型请求并保留checkpoint；包括native reranker失败，即使工具将异常转换为JSON错误。普通参数错误、自然超时、错误答案和弃答保留为结果。故障修复后必须重新通过 live preflight，再显式恢复，单题原轮次/累计预算继续。
+## 统一评分
 
-准备和正式状态位于 `server/reports/`；每组结果位于 `runs/<variant>/_per_query/`，完整轨迹在同组 `_traces/`，transport独立累计。各10题块的 `_summary.json` 会被下一块的摘要替换，完整100题分析必须读取 `_per_query/` 与累计transport，不能把最后一块摘要当全组。
+[评分说明](evaluation/README.md) 提供 `collect → prepare → run → summarize` 工作流。只向评分模型提供题目、冻结 gold 与公开终答，去除组名、qid、旧标签与求解轨迹；每题两次独立打乱顺序，出现分歧或不确定标记时新增第三次评审并多数表决。空答为错，题目要求完整姓名时必须满足姓名完整性。评分是对冻结 gold 的一致性判断，不是外部事实核查。
 
-## 评估
+当前结果实际返回模型为 `deepseek-v4-1-flash-261017`。两次评审来自同一模型，仍可能共享系统误差，不能称为人工仲裁或独立模型共识。新评分模块是便携重构版，已离线复核历史 320 份评分并得到一致统计；历史请求仍绑定当时实际执行脚本的 SHA，不能用新代码替代历史运行证明。
 
-沿用历史 v14 严格口径，只用公开 final 与冻结gold：无终答和弃答计错，完整姓名和多部分答案必须完整，允许既有等价格式。对新300份公开终答重新复核，不能复用旧脚本中按qid写死的人工判分表。历史参考为 `independent_rerank_v14_20261014/analysis_qwen35_full100_20261019/reports/evaluation.json`（61/100）。报告按组列正确率、逐题转换、轮次、耗时、模型token、工具/翻页次数、自动与主动重排次数及评分开销；容量和预检请求分开计算。历史对照对比不自动构成同期单因素因果证明。
+旧 [strict_ablations/analyze.py](strict_ablations/analyze.py) 面向 strict control100 + 三组各100 的 **400** 份方案，仍要求完整覆盖；不要为了当前 320 份结果放宽其门禁。
 
-实验结果存在后生成数值汇总与隐藏组别的终答复核包：
+## 数据、隐私与历史记录
 
-```bash
-python analyze_ablations.py --output reports/analysis
-```
+`runs/`、`reports/`、工作池、模型、语料、索引、归档与凭据均默认忽略；本次不新增上传轨迹、公开终答集合、评分私有映射或逐题标签。仓库已存在两份冻结研究 fixture：`data/queries_100.jsonl` 和 `data/historical_v14_evaluation.json`，包含基准题目/参考答案及历史评估内容，使用时需遵守相应数据条件。API key 只通过本地环境或隐藏输入提供，禁止写入命令参数、README、配置或 Git。
 
-按 `review_packet.json` 复核，填写 `review_template.json` 的 `correct` 和 `reason`，然后重新汇总：
-
-```bash
-python analyze_ablations.py --output reports/analysis --reviews reports/analysis/review_template.json
-```
-
-只有该组100题全部完成且逐份复核通过才报告完整正确率；未运行、部分完成或未复核时保留相应状态，不把历史标签套用到新终答。代码交付时没有生成实验结果或新准确率。
-
-## 本地验证记录
-
-代码与运行封装回归：304 项通过、2 项跳过。跳过项分别需要显式开启 Docker 集成和 Linux bubblewrap。执行目录为 `code/`：
-
-```bash
-python -m pytest -q tests ../server/test_suite.py \
-  --ignore=tests/test_v10_cli.py --ignore=tests/test_v11_cli.py \
-  --junitxml=../reports/pytest.xml -r s
-```
-
-两个排除项依赖本目录不交付的旧 v10/v11 入口；三组新实验的 CLI、工具注册、断点恢复和运行封装均有测试覆盖。`baseline_snapshot/` 仅补齐原 v14 测试缺失的两份真实历史基线文件。
-
-`source_manifest.json` 记录 v14 来源、改动文件、题单和历史评估哈希；`reports/validation.json` 与 `reports/pytest.xml` 保存交付检查记录。当前未进行远程预检或正式模型评测。
-
-## GitHub 版本管理
-
-仓库：[lingchuan2024/rise-ablation-experiments](https://github.com/lingchuan2024/rise-ablation-experiments)，可见性为私有。`main` 保存当前可用代码。
-
-- `v14-frozen-baseline`：原 v14 代码快照，文件哈希见 `baseline_manifest.json`。
-- `v14-ablations-v1`：三个消融版本的首个代码交付。
-- 后续修改使用功能分支与 Pull Request；正式实验清单记录所运行的 commit，不随运行修改源码。
-
-仅跟踪代码、测试、说明及两份固定研究数据。语料、索引、模型权重、运行轨迹、生成报告和认证信息均由 `.gitignore` 排除。两个固定数据文件通过 `.gitattributes` 保留原始字节，以保持 SHA256 校验。
-
-```bash
-git clone https://github.com/lingchuan2024/rise-ablation-experiments.git
-cd rise-ablation-experiments
-python -m pip install -e code
-python server/suite.py preflight
-```
+历史根 README 保留在 [docs/HISTORICAL_README.md](docs/HISTORICAL_README.md)，其“尚未运行”等描述仅对应当时阶段；当前范围与结果以本页为准。上游许可证与来源见 [NOTICE.md](NOTICE.md) 和 [code/LICENSE](code/LICENSE)。
